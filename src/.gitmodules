@@ -1,0 +1,8 @@
+[submodule "steam"]
+	path = main/src/deps/steam
+	url = git@github.com:utiasASRL/steam.git
+	branch = master
+[submodule "lgmath"]
+	path = main/src/deps/lgmath
+	url = https://github.com/utiasASRL/lgmath.git
+	branch = master
