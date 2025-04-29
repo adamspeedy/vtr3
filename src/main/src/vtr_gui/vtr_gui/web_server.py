@@ -41,8 +41,8 @@ logger.addHandler(hd)
 #current_dir = osp.dirname(osp.abspath(os.path.abspath(__file__)))
 #print(current_dir+"/vtr-gui/build")
 #app = flask.Flask(__name__, static_folder=current_dir+"/vtr-gui/build", template_folder=current_dir+"/vtr-gui/build", static_url_path="")
-app = flask.Flask(__name__, static_folder="/home/adam/Desktop/CurrentBranch/src/main/src/vtr_gui/vtr_gui/vtr-gui/build", template_folder="/home/adam/Desktop/CurrentBranch/src/main/src/vtr_gui/vtr_gui/vtr-gui/build", static_url_path="")
-#app = flask.Flask(__name__, static_folder="vtr-gui/build", template_folder="vtr-gui/build", static_url_path="")
+#app = flask.Flask(__name__, static_folder="/home/adam/Desktop/CurrentBranch/src/main/src/vtr_gui/vtr_gui/vtr-gui/build", template_folder="/home/adam/Desktop/CurrentBranch/src/main/src/vtr_gui/vtr_gui/vtr-gui/build", static_url_path="")
+app = flask.Flask(__name__, static_folder="vtr-gui/build", template_folder="vtr-gui/build", static_url_path="")
 app.config['DEBUG'] = True
 app.config['CACHE'] = True
 app.config['CACHE_PATH'] = osp.abspath(osp.join(osp.dirname(__file__), 'cache'))
