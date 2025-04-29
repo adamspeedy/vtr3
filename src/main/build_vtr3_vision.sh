@@ -12,7 +12,7 @@ echo "Running a loop from 1 to $ITERATION:"
 for ((i=1; i<=$ITERATION; i++))
 do
     echo "Iteration $i of $ITERATION"
-    VTR_PIPELINE=VISION colcon build --packages-select vtr_vision --cmake-args -DITERATION_BUILD_VISION=${i}
+    VTR_PIPELINE=VISION colcon build --packages-select vtr_vision --symlink-install --cmake-args -DITERATION_BUILD_VISION=${i} 
     wait $!
 done
 
