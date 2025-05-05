@@ -342,22 +342,24 @@ void ConversionExtractionModule::run_(tactic::QueryCache &qdata0, tactic::Output
       for (auto &future : feature_futures) {
         rig_features.channels.emplace_back(future.get());
 
-        for (auto &cam : rig_features.channels.back().cameras) 
-        {
-          CLOG(INFO, "preprocessing") << "Number of keypoints found: " << cam.keypoints.size() << " for cam " << rig_features.channels.back().name;
-          CLOG(INFO, "preprocessing") << "Feature loc: " << cam.keypoints[0].pt.x << " , " << cam.keypoints[0].pt.y<< " for cam " << rig_features.channels.back().name << " , " << cam.name;
-        }
+        // for (auto &cam : rig_features.channels.back().cameras) 
+        // {
+        //   CLOG(INFO, "preprocessing") << "Number of keypoints found: " << cam.keypoints.size() << " for cam " << rig_features.channels.back().name;
+        //   CLOG(INFO, "preprocessing") << "Feature loc: " << cam.keypoints[0].pt.x << " , " << cam.keypoints[0].pt.y<< " for cam " << rig_features.channels.back().name << " , " << cam.name;
+        // }
       }
     }
   }
 
   if (config_->visualize){
-    CLOG(INFO, "preprocessing") << "Visualize";
+    //CLOG(INFO, "stereo.matcher") << "Visualize";
     visualize::showRGBImage(*qdata.vis_mutex, qdata, "left");
     if (config_->visualize_raw_features)  // check if visualization is enabled
+      //CLOG(INFO, "stereo.matcher") << "Visualize raw features";
       visualize::showRawFeatures(*qdata.vis_mutex, qdata, " raw features");
 
     if (config_->visualize_disparity)  // check if visualization is enabled
+      //CLOG(INFO, "stereo.matcher") << "Visualize disparity";
       visualize::showDisparity(*qdata.vis_mutex, qdata, " disparity");
   }
 }

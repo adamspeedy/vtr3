@@ -145,6 +145,7 @@ ChannelExtra BFE::extractFeaturesExtra(const ChannelImages &channel) {
 
 ChannelFeatures BFE::extractChannelFeatures(const ChannelImages &channel,
                                             bool fully_matched = false) {
+  //CLOG(DEBUG, "stereo.matcher") << "Running channel extraction" ;
   if (fully_matched && channel.cameras.size() == 2)
     return extractStereoFeatures(channel);
 
@@ -170,6 +171,7 @@ ChannelFeatures BFE::extractChannelFeatures(const ChannelImages &channel,
 ChannelFeatures BFE::extractChannelFeaturesDisp(
     const ChannelImages &channel, const ChannelImages &channel_disp, 
     bool fully_matched = false) {
+  //CLOG(DEBUG, "stereo.matcher") << "Running channel extraction disp" ;
   if (fully_matched && channel.cameras.size() == 2)
     // return extractStereoFeaturesDisp(channel, channel_disp);
     return extractStereoFeaturesDisp(channel, channel_disp);

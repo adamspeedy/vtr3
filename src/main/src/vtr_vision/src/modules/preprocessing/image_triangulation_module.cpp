@@ -49,7 +49,7 @@ void ImageTriangulationModule::run_(tactic::QueryCache &qdata0, tactic::OutputCa
 
   // check if the required data is in this cache
   if (!qdata.rig_features.valid() || !qdata.rig_calibrations.valid()){
-    CLOG(WARNING, "stereo.preprocessing") << "Error the cache does not contain features for triangulation";
+    CLOG(WARNING, "stereo.triangulation") << "Error the cache does not contain features for triangulation";
     return;
   }
 
@@ -57,8 +57,6 @@ void ImageTriangulationModule::run_(tactic::QueryCache &qdata0, tactic::OutputCa
   // Inputs, frames, calibration
   const auto &features = *qdata.rig_features;
   const auto &calibrations = *qdata.rig_calibrations;
-
-  CLOG(DEBUG, "stereo.preprocessing") << "Features size: " << features.size();
 
   // Outputs, candidate_landmarks
   auto &candidate_landmarks = qdata.candidate_landmarks.emplace();
@@ -71,8 +69,8 @@ void ImageTriangulationModule::run_(tactic::QueryCache &qdata0, tactic::OutputCa
   for (; feature_itr != features.end() && calibration_itr != calibrations.end();
        ++feature_itr, ++calibration_itr) {
     // add an empty set of rig landmarks for this rig
-    CLOG(DEBUG, "stereo.preprocessing") << "Each rig feature loop";
-    CLOG(DEBUG, "stereo.preprocessing") << calibration_itr->extrinsics.size();
+    // CLOG(DEBUG, "stereo.triangulation") << "Each rig feature loop";
+    // CLOG(DEBUG, "stereo.triangulation") << calibration_itr->extrinsics.size();
 
 
     candidate_landmarks->emplace_back(vtr::vision::RigLandmarks());
@@ -90,13 +88,10 @@ void ImageTriangulationModule::run_(tactic::QueryCache &qdata0, tactic::OutputCa
       d_min = f * baseline / config_->max_triangulation_depth;
       d_max = f * baseline / config_->min_triangulation_depth;
     } else {
-      CLOG(WARNING, "stereo.preprocessing") << "Baseline ignored";
+      CLOG(WARNING, "stereo.triangulation") << "Baseline ignored";
     }
 
     for (const auto &channel : feature_itr->channels) {
-      
-      CLOG(DEBUG, "stereo.preprocessing") << "Each channel feature loop";
-
       // add an empty set of channel landmarks to this rig
       rig_landmarks.channels.emplace_back(vtr::vision::ChannelLandmarks());
       auto &landmarks = rig_landmarks.channels.back();
@@ -144,7 +139,7 @@ void ImageTriangulationModule::run_(tactic::QueryCache &qdata0, tactic::OutputCa
               channel.cameras[camera_idx].keypoints[keypoint_idx].pt);
           feat_infos.emplace_back(
               channel.cameras[camera_idx].feat_infos[keypoint_idx]);
-          CLOG(DEBUG, "stereo.preprocessing") << "Last point had value of " << keypoints.back();
+          // CLOG(DEBUG, "stereo.triangulation") << "Last point had value of " << keypoints.back();
 
         }
 
@@ -156,7 +151,7 @@ void ImageTriangulationModule::run_(tactic::QueryCache &qdata0, tactic::OutputCa
               *calibration_itr, keypoints, feat_infos,
                &landmarks.covariances(0, keypoint_idx));
           landmarks.valid.at(keypoint_idx) = true;
-          CLOG(DEBUG, "stereo.preprocessing") << "3D point " << landmarks.points.col(keypoint_idx);
+          // CLOG(DEBUG, "stereo.triangulation") << "3D point " << landmarks.points.col(keypoint_idx);
         }
       }
     }

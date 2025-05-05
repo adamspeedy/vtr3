@@ -82,8 +82,7 @@ void StereoPipeline::runOdometry_(const tactic::QueryCache::Ptr &qdata0, const t
     qdata.timestamp_odo.emplace(timestamp_odo_);
     setOdometryPrior(qdata, graph);
   }
-  CLOG(WARNING, "stereo.pipeline")
-      << "Finished setting odometry prior, running modules";
+  CLOG(WARNING, "stereo.pipeline") << "Finished setting odometry prior, running modules";
   for (auto module : odometry_) module->run(*qdata0, *output0, graph, executor);
 
   // If VO failed, revert T_r_m to the initial prior estimate

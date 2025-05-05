@@ -40,8 +40,7 @@ auto LandmarkRecallModule::Config::fromROS(
 
 void LandmarkRecallModule::run_(tactic::QueryCache &qdata0, tactic::OutputCache &, const tactic::Graph::Ptr &graph,
                 const std::shared_ptr<tactic::TaskExecutor> &) {
-  auto &qdata = dynamic_cast<CameraQueryCache &>(qdata0);
-
+  auto &qdata = dynamic_cast<CameraQueryCache &>(qdata0);             
   // check if the required data is in the cache
   if (!qdata.rig_features.valid()) return;
 
@@ -76,13 +75,12 @@ void LandmarkRecallModule::run_(tactic::QueryCache &qdata0, tactic::OutputCache 
     map_id = *qdata.vid_loc;
   else if (config_->landmark_source == "live")
     map_id = *qdata.vid_odo;
-
+    
   for (uint32_t rig_idx = 0; rig_idx < query_features.size(); ++rig_idx) {
     auto &rig_name = query_features[rig_idx].name;
 
     // make sure we have loaded the sensor transform for this vertex
     loadSensorTransform(map_id, rig_name, graph);
-
     // Retrieve landmarks for the target frame.
     map_landmarks.emplace_back(recallLandmarks(rig_name, map_id, graph));
   }
@@ -128,6 +126,7 @@ void LandmarkRecallModule::recallLandmark(
     const vision::LandmarkMatch &landmark_obs, const uint32_t &landmark_idx,
     const uint32_t &num_landmarks, const std::string &rig_name,
     const VertexId &map_id, const std::shared_ptr<const Graph> &graph) {
+  //CLOG(DEBUG, "stereo.recall") << "We are in the recallLandmark module";   
   // Get the index to the vertex the landmark was first seen in.
   // TODO: For multi experience, we need to find an index where the run is
   // loaded.
@@ -230,7 +229,6 @@ LandmarkFrame LandmarkRecallModule::recallLandmarks(
     const std::string &rig_name, const VertexId &map_id,
     const std::shared_ptr<const Graph> &graph) {
   LandmarkFrame landmark_frame;
-
   // The observations and landmarks we are currently dealing with.
   auto &map_obs = landmark_frame.observations;
   auto &map_lm = landmark_frame.landmarks;
@@ -270,8 +268,8 @@ LandmarkFrame LandmarkRecallModule::recallLandmarks(
       const auto &obs = channel_obs.cameras[0];
 
       // Determine the number of landmarks this channel is observing.
-      auto num_landmarks = obs.landmarks.size();
-
+      auto num_landmarks = obs.landmarks.size(); //this is the total number of landmarks we are working with
+      //CLOG(DEBUG, "stereo.recall") << "number of landmarks: " << num_landmarks;  
       // Resize our structure accordingly
       auto &channel_lm = map_lm.channels.back();
       channel_lm.points.resize(3, num_landmarks);
@@ -391,6 +389,7 @@ void LandmarkRecallModule::loadSensorTransform(const VertexId &vid,
                                                const Graph::ConstPtr &graph) {
   // Check to see if the transform associated with this landmark is already
   // accounted for.
+  //CLOG(DEBUG, "stereo.recall") << "Loading sensor transform for vertex: " << vid;
   if (T_s_v_map_.find(vid) != T_s_v_map_.end()) return;
 
   // If not, we should try and extract the T_s_v transform for this vertex.
@@ -403,8 +402,8 @@ void LandmarkRecallModule::loadSensorTransform(const VertexId &vid,
   auto locked_msg = locked_rc_transforms->sharedLocked();
   auto rc_transforms = locked_msg.get().getDataPtr();
   common::conversions::fromROSMsg(*rc_transforms, T_s_v_map_[vid]);
-
   T_s_v_map_[vid].setZeroCovariance();
+  CLOG(DEBUG, "stereo.recall") << "vertexID: " << vid << ", Transform T_s_v: " << T_s_v_map_[vid];
 }
 
 }  // namespace vision

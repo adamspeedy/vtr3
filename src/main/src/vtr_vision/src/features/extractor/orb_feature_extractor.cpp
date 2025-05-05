@@ -228,7 +228,7 @@ void OFE::binKeypoints(const cv::Size &size, Keypoints &keypoints) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Extracts a list of descriptors and keypoints from a single image.
 Features OFE::extractFeatures(const cv::Mat &image) {
-  CLOG(DEBUG, "stereo.matcher") << "Extracting features from image" ;
+  //CLOG(DEBUG, "stereo.matcher") << "Extracting features from image" ;
   uMat uimage;
   image.copyTo(uimage);
   // create a new empty frame
@@ -305,7 +305,7 @@ Features OFE::extractFeatures(const cv::Mat &image) {
 /// rectified stereo images.
 ChannelFeatures OFE::extractStereoFeatures(const cv::Mat &left_img,
                                            const cv::Mat &right_img) {
-  CLOG(DEBUG, "stereo.matcher") << "Running stereo feature matching" ;
+  //CLOG(DEBUG, "stereo.matcher") << "Running stereo feature matching" ;
   // create a new empty frame
   ChannelFeatures features_temp;
   features_temp.cameras.reserve(2);
@@ -321,10 +321,10 @@ ChannelFeatures OFE::extractStereoFeatures(const cv::Mat &left_img,
   features_temp.cameras.push_back(handle_right.get());
 
   // We need to match for the stereo case
-  vtr::vision::ASRLFeatureMatcher::Config matcher_config =
-      config_.stereo_matcher_config_;
-  matcher_config.descriptor_match_thresh_ =
-      config_.stereo_matcher_config_.stereo_descriptor_match_thresh_;
+  vtr::vision::ASRLFeatureMatcher::Config matcher_config = config_.stereo_matcher_config_;
+  matcher_config.descriptor_match_thresh_ = config_.stereo_matcher_config_.stereo_descriptor_match_thresh_;
+  // don't ask me how but the feature matcher seems to still get all of the parameters from the config.
+
   // set the number of threads
   matcher_config.num_threads_ = 8;
   vtr::vision::ASRLFeatureMatcher matcher(matcher_config);
@@ -342,11 +342,11 @@ ChannelFeatures OFE::extractStereoFeatures(const cv::Mat &left_img,
     // if the rig is rectified or not set, just do regular stereo matching
     matches = matcher.matchStereoFeatures(features_temp.cameras[0],
                                           features_temp.cameras[1]);
-    CLOG(DEBUG, "stereo.matcher") << "matchStereoFeatures" ;
+    // CLOG(DEBUG, "stereo.matcher") << "Rig is rectified" ;
   } else {
     // if not rectified, we need to do epipolar matching
     auto tf = calib_.extrinsics[0].inverse() * calib_.extrinsics[1];
-    CLOG(DEBUG, "stereo.matcher") << "matchFeatures" ;
+    // CLOG(DEBUG, "stereo.matcher") << "rig is not rectified" ;
     // pre-cache some data to make the operations easier to read
     CameraIntrinsic &K0 = calib_.intrinsics[0];
     CameraIntrinsic &K1 = calib_.intrinsics[1];
@@ -402,6 +402,7 @@ ChannelFeatures OFE::extractStereoFeatures(const cv::Mat &left_img,
 ChannelFeatures OFE::extractStereoFeaturesDisp(
     const cv::Mat &left_img, const cv::Mat &disp) {
     ChannelFeatures features_temp;
+    //CLOG(DEBUG, "stereo.matcher") << "extract channel features disp running" ;
     return features_temp;
 }
 

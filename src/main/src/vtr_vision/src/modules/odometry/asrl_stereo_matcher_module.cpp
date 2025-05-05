@@ -66,34 +66,36 @@ auto ASRLStereoMatcherModule::Config::fromROS(
 void ASRLStereoMatcherModule::run_(tactic::QueryCache &qdata0, tactic::OutputCache &output, const tactic::Graph::Ptr &graph,
                 const std::shared_ptr<tactic::TaskExecutor> &executor) {
   auto &qdata = dynamic_cast<CameraQueryCache &>(qdata0);
-  CLOG(DEBUG, "stereo.matcher") << "inside ASRL Stereo Matcher.";
   // if we dont have map and query landarks (i.e. first frame, then return)
   if (qdata.candidate_landmarks.valid() == false ||
       qdata.map_landmarks.valid() == false) {
     CLOG(DEBUG, "stereo.matcher") << "No valid landmarks, likely the first frame.";
     return;
   }
-  CLOG(DEBUG, "stereo.matcher") << "After Accessing candidate landmarks.";
 
   // match features and record how many we found
   auto num_matches = matchFeatures(qdata, graph, false);
+  CLOG(DEBUG, "stereo.matcher") << "num matches: " << num_matches;
   // what if there were too few?
   if (num_matches < config_->min_matches) {
     CLOG(WARNING, "stereo.matcher") << "Rematching because we didn't meet minimum matches!";
     // run again, and use the forced loose pixel thresh
     num_matches = matchFeatures(qdata, graph, true);
   }
-  CLOG(DEBUG, "stereo.matcher") << "After Running Match Features";
 
   if (config_->visualize_feature_matches &&
       qdata.raw_matches.valid())
     visualize::showMatches(*qdata.vis_mutex, qdata, *qdata.raw_matches,
                            " raw matches", true);
+                           // purple --> predictor
+                           // light blue --> invalid
+                           // yellow --> valid greyscale
+                           // green --> valid non-greyscale
 }
 
 unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
                                                 const Graph::ConstPtr &, bool force_loose_pixel_thresh) {
-  CLOG(DEBUG, "stereo.matcher") << "Running matcher";
+  //CLOG(DEBUG, "stereo.matcher") << "Running matcher";
   // make sure the raw matches are empty (we may have used this function before)
   qdata.raw_matches.clear();
   // output matches
@@ -101,11 +103,11 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
 
   // grab the query landmarks.
   std::vector<vision::RigLandmarks> &query_landmarks = *qdata.candidate_landmarks;
-  CLOG(INFO, "stereo.matcher") << "landmark query size: " << query_landmarks.size();
   CLOG(INFO, "stereo.matcher") << "landmark query size : " << query_landmarks[0].channels[0].points.cols();
 
   // grab the map landmarks
   std::vector<LandmarkFrame> &map_landmarks = *qdata.map_landmarks;
+  CLOG(INFO, "stereo.matcher") << "map landmark size : " << map_landmarks[0].landmarks.channels[0].points.cols();
 
   // grab the features contained in the query frame.
   std::vector<vision::RigFeatures> &query_features = *qdata.rig_features;
@@ -116,13 +118,11 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
 
   // predicted inverse transformation matrix
   Eigen::Matrix<double, 3, 4> Ti;
-
   bool use_tight_pixel_thresh =
       qdata.T_r_m_prior.valid() &&
       sqrt(qdata.T_r_m_prior->cov()(0, 0)) < config_->tight_matching_x_sigma &&
       sqrt(qdata.T_r_m_prior->cov()(1, 1)) < config_->tight_matching_y_sigma &&
       sqrt(qdata.T_r_m_prior->cov()(5, 5)) < config_->tight_matching_theta_sigma;
-
   // force the loose pixel thresh
   if (force_loose_pixel_thresh) {
     use_tight_pixel_thresh = false;
@@ -135,9 +135,16 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
   if (config_->prediction_method == PredictionMethod::se3 &&
       qdata.T_r_m_prior.valid()) {
 
-    CLOG(DEBUG, "stereo.matcher") << "Using SE3 prediction";
+    //CLOG(DEBUG, "stereo.matcher") << "Using SE3 prediction";
     // get the candidate transform given by a different function and transform
     // it to the camera frame
+
+
+    // CLOG(DEBUG, "stereo.matcher") << "T_s_r :" << (*qdata.T_s_r).matrix();
+    // CLOG(DEBUG, "stereo.matcher") << "T_r_m_prior: " << (*qdata.T_r_m_prior).matrix();
+    // CLOG(DEBUG, "stereo.matcher") << "T_sensor_vehicle_map[vid_odo]: " << (*qdata.T_sensor_vehicle_map)[*qdata.vid_odo].matrix();
+    // CLOG(DEBUG, "stereo.matcher") << "T_sensor_vehicle_map[vid_odo].inv: " << (*qdata.T_sensor_vehicle_map)[*qdata.vid_odo].inverse().matrix();
+    
     auto T_q_m = (*qdata.T_s_r) * (*qdata.T_r_m_prior) *
                  ((*qdata.T_sensor_vehicle_map)[*qdata.vid_odo].inverse());
 
@@ -208,13 +215,15 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
               qdata.T_r_m_prior.valid()) {
             // Grab the corresponding query 3D point
             const auto &pt_query3 = qry_channel_lm.points.col(qry_lm_idx);
-
+            //CLOG(DEBUG, "stereo.matcher") << "query point" << pt_query3.homogeneous();
+            //CLOG(DEBUG, "stereo.matcher") << "Ti" << Ti;
             // transform the homogenised point
             Eigen::Vector3d qry_mod_pt = Ti * pt_query3.homogeneous();
 
             // copy the new normalised pixel position
             qry_pt.x = qry_mod_pt.hnormalized()(0);
             qry_pt.y = qry_mod_pt.hnormalized()(1);
+            //CLOG(DEBUG, "stereo.matcher") << "point" << qry_pt;
           }
 
           // reset the best descriptor distance
@@ -255,6 +264,7 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
                     &map_channel_lm.appearance.descriptors.at<unsigned char>(
                         map_lm_idx, 0),
                     qry_channel_lm.appearance.feat_type.bytes_per_desc);
+                //CLOG(DEBUG, "stereo.matcher") << "match distance: " << match_dist;
               } else if ((qry_channel_lm.appearance.feat_type.impl ==
                          vision::FeatureImpl::ASRL_GPU_SURF) ||
                          qry_channel_lm.appearance.feat_type.impl ==
@@ -302,7 +312,6 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
     }
   }
 
-  CLOG(DEBUG, "stereo.matcher") << "Total matches: " << total_matches;
   return total_matches;
 }
 
@@ -314,25 +323,32 @@ bool ASRLStereoMatcherModule::checkConditions(
   // check that the octave of the two keypoints are roughly similar
   if (config_->check_laplacian_bit &&
       lm_info_qry.laplacian_bit != lm_info_map.laplacian_bit) {
-    //CLOG(DEBUG, "stereo.matcher") << "laplacian query: " << lm_info_qry.laplacian_bit << " map: " << lm_info_map.laplacian_bit;
     return false;
   }
+  // else{
+  //   CLOG(DEBUG, "stereo.matcher") << "laplacian query: " << lm_info_qry.laplacian_bit << " map: " << lm_info_map.laplacian_bit;
+  // }
 
   // check that the responses of the two keypoints are roughly similar
   if (config_->check_response) {
     float highest_response = std::max(kp_query.response, kp_map.response);
     float lowest_response = std::min(kp_query.response, kp_map.response);
     if (lowest_response / highest_response < config_->min_response_ratio) {
-      //CLOG(DEBUG, "stereo.matcher") << "check response: " << lowest_response / highest_response;
       return false;
     }
+    // else{
+    //   CLOG(DEBUG, "stereo.matcher") << "check response: " << lowest_response / highest_response;
+    // }
   }
 
   // check that the octave of the two keypoints are roughly similar
   if (config_->check_octave && kp_query.octave != kp_map.octave) {
-    // CLOG(DEBUG, "stereo.matcher") << "octave query: " << kp_query.octave << " map: " << kp_map.octave;  
+    
     return false;
   }
+  // else{
+  //   CLOG(DEBUG, "stereo.matcher") << "octave query: " << kp_query.octave << " map: " << kp_map.octave;  
+  // }
 
   // generate a window from the keypoint precision if the configuration says so
   float window_scale = config_->use_pixel_variance
@@ -350,7 +366,9 @@ bool ASRLStereoMatcherModule::checkConditions(
   if (window_size > 0 && (std::abs(qry_pt.x - map_pt.x) > window_size ||
                           std::abs(qry_pt.y - map_pt.y) > window_size))
     return false;
-
+  // else{
+  //   CLOG(DEBUG, "stereo.matcher") << "check window size: " << window_size;
+  // }
   // if we got here, all checks passed
   return true;
 }
