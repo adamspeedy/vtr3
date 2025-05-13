@@ -24,6 +24,18 @@ def generate_launch_description():
         #"prefix": 'valgrind --tool=callgrind',
     }
 
+    camera_tf_publisher = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='camera_tf_publisher',
+        arguments=[
+            '0', '0', '0.25', '1.57', '-3.14', '1.57', 'default_mount', 'camera'
+        ],
+        remappings=[
+            ('/tf_static', '/a200_0656/tf_static')
+        ]
+    )
+
     return LaunchDescription([
         DeclareLaunchArgument('data_dir', default_value='', description='directory to store graph, if blank use setup UI'),
         DeclareLaunchArgument('model_dir', default_value="", description='model directory (folder for PyTorch .pt models)'),
@@ -32,6 +44,10 @@ def generate_launch_description():
         DeclareLaunchArgument('planner', default_value='cbit', description='use no planner. Publish zero'),
         DeclareLaunchArgument('base_params', description='base parameter file (sensor, robot specific)'),
         DeclareLaunchArgument('override_params', default_value='', description='scenario specific parameter overrides'),
+
+        # Added camera transform publisher
+        camera_tf_publisher,
+        # Note how we choose which parameters to use based on whether we have entered a data_dir variable.
         Node(**commonNodeArgs,
             parameters=[
                 PathJoinSubstitution((config_dir, LaunchConfiguration("base_params"))),
