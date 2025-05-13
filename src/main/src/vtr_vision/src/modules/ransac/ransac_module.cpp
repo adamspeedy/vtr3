@@ -32,7 +32,6 @@ auto RansacModule::Config::fromROS(
   // clang-format off
   config->enable = node->declare_parameter<bool>(param_prefix + ".enable", config->enable);
   config->is_odometry = node->declare_parameter<bool>(param_prefix + ".is_odometry", config->is_odometry);
-
   config->iterations = node->declare_parameter<int>(param_prefix + ".iterations", config->iterations);
   config->flavor = node->declare_parameter<std::string>(param_prefix + ".flavor", config->flavor);
   config->sigma = node->declare_parameter<double>(param_prefix + ".sigma", config->sigma);
@@ -185,7 +184,7 @@ void RansacModule::run_(tactic::QueryCache &qdata0, tactic::OutputCache &output,
       success = false;
     } else {
       // Success, set the output (in the vehicle frame)
-
+       //CLOG(DEBUG, "stereo.ransac") << "ransac solution: " << solution;
 
       VertexId map_id = VertexId::Invalid();
       if (qdata.vid_loc.valid())
@@ -206,6 +205,10 @@ void RansacModule::run_(tactic::QueryCache &qdata0, tactic::OutputCache &output,
       *qdata.T_r_m =
           T_s_v_q.inverse() * lgmath::se3::Transformation(solution) * T_s_v_m;
       qdata.T_r_m->setZeroCovariance();
+      // CLOG(DEBUG, "stereo.ransac") << "T_r_m: " << *qdata.T_r_m;
+      // CLOG(DEBUG, "stereo.ransac") << "T_s_v_m: " << T_s_v_m;
+      // CLOG(DEBUG, "stereo.ransac") << "T_s_v_q: " << T_s_v_q;
+
       success = true;
     }
   }
@@ -215,6 +218,9 @@ void RansacModule::run_(tactic::QueryCache &qdata0, tactic::OutputCache &output,
                << "/" << flattened_matches.size() << " is not enough inliers! ";
     inliers.clear();
     success = false;
+  }
+  else{
+    CLOG(INFO, "stereo.ransac") << "RansacModule " << inliers.size()<< "/" << flattened_matches.size() << " inliers! ";
   }
 
   // Inflate matches

@@ -100,7 +100,7 @@ SimpleMatches ASRLFeatureMatcher::matchFeatures(
         << "ASRLFeatureMatcher::matchfeatures(): feature types do not match!";
     return matches;
   }
-
+  // CLOG(DEBUG, "stereo.matching") << "Homography: " << G; // <--this is just identity
   // parallelize
 #pragma omp parallel for num_threads(config_.num_threads_)
 
@@ -111,9 +111,10 @@ SimpleMatches ASRLFeatureMatcher::matchFeatures(
 
     // this stores all the required data for checking the epipolar line
     EpipoleHelper eh;
-
+    
     // now check if we need to precache anything depending on the match type
-    if (type == CheckType::HOMOGRAPHY) {
+    if (type == CheckType::HOMOGRAPHY) {    // <--this check runs
+      // CLOG(DEBUG, "stereo.matching") << "Checking Homography" ;
       // transform the keypoint through the homography matrix
       kp1.pt = transformKeypoint(kp1.pt, G);
 
@@ -148,6 +149,13 @@ SimpleMatches ASRLFeatureMatcher::matchFeatures(
                           frame2.feat_infos[jj], eh, x_window_min,
                           x_window_max_mod, y_window_size, type)) {
         // passed!
+        // CLOG(DEBUG, "stereo.matching") << "Keypoint Passed";
+        // CLOG(DEBUG, "stereo.matching") << "x_window_max_mod: " << x_window_max_mod;
+        // CLOG(DEBUG, "stereo.matching") << "x_window_max: " << x_window_max;
+        // CLOG(DEBUG, "stereo.matching") << "x_window_min: " << x_window_min;
+        // CLOG(DEBUG, "stereo.matching") << "y_window_size: " << y_window_size;
+        // CLOG(DEBUG, "stereo.matching") << "keypoint 1: " << kp1.pt.x << ", " << kp1.pt.y;
+        // CLOG(DEBUG, "stereo.matching") << "keypoint 2: " << frame2.keypoints[jj].pt.x << ", " << frame2.keypoints[jj].pt.y;
 
         // initialise the distance to the worst case
         float dist = std::numeric_limits<float>::max();
@@ -157,6 +165,8 @@ SimpleMatches ASRLFeatureMatcher::matchFeatures(
           dist = briefmatch(&frame1.descriptors.at<unsigned char>(ii, 0),
                             &frame2.descriptors.at<unsigned char>(jj, 0),
                             frame1.feat_type.bytes_per_desc);
+        // CLOG(DEBUG, "stereo.matching") << "dist: " << dist;  
+        // CLOG(DEBUG, "stereo.matching") << "best_dist: " << best_dist;                  
         } else if (frame1.feat_type.impl == FeatureImpl::ASRL_GPU_SURF) {
           dist = surfmatch(&frame1.descriptors.at<float>(ii, 0),
                            &frame2.descriptors.at<float>(jj, 0),
@@ -171,7 +181,7 @@ SimpleMatches ASRLFeatureMatcher::matchFeatures(
         }
       }
     }
-
+    
     // did we find a good match?
     if (best_dist < std::numeric_limits<float>::max()) {
       SimpleMatch match;
@@ -181,7 +191,7 @@ SimpleMatches ASRLFeatureMatcher::matchFeatures(
       matches.push_back(match);
     }
   }
-
+  CLOG(DEBUG, "stereo.matcher") << " Stereo Matches: " << matches.size();
   return matches;
 }
 
