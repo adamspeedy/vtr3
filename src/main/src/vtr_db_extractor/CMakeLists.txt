@@ -3,6 +3,7 @@ project(vtr_db_extractor LANGUAGES CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+include("${CMAKE_CURRENT_LIST_DIR}/../vtr_common/vtr_include.cmake")
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
