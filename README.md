@@ -1,5 +1,5 @@
 # Visual Teach & Repeat 
-This is my implementation of the vtr3 framework developed by ASRL.
+This is my implementation of the vtr3 framework developed by ASRL. This branch is specifically meant to not include the ability for deep learnt features using torch.
 ## Installing the framework:
 clone this repository with recursive modules enabled:
 ```
