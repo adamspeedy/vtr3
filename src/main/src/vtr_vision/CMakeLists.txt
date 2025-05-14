@@ -19,7 +19,7 @@ find_package(ament_cmake REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(cv_bridge REQUIRED)
 
-find_package(Torch REQUIRED)
+
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 
 find_package(lgmath REQUIRED)
@@ -35,29 +35,6 @@ find_package(vtr_tactic REQUIRED)
 if(DEFINED VTR_ENABLE_VISION)
 
 find_package(gpusurf REQUIRED) # currently assuming this is required
-
-#file(GLOB_RECURSE SRC src/*.cpp)
-# file(GLOB_RECURSE SRC
-#   src/visualize.cpp
-#   src/utils.cpp
-#   src/pipeline.cpp
-#   src/image_conversions.cpp
-#   src/steam_extensions/*.cpp
-#   src/sensors/*.cpp
-#   src/outliers/sampler/*.cpp
-#   src/outliers/ransac/*.cpp
-#   src/modules/ransac/*.cpp
-#   src/modules/preprocessing/*.cpp
-#   src/modules/optimization/*.cpp
-#   src/modules/odometry/*.cpp
-#   src/modules/localization/*.cpp
-#   src/modules/bundle_adjustment/*.cpp
-#   src/messages/*.cpp
-#   src/geometry/*.cpp
-#   src/features/extractor/*.cpp
-#   src/features/matcher/*.cpp
-#)
-
 
 if(NOT DEFINED ITERATION_BUILD_VISION)
   set(ITERATION_BUILD_VISION 11)  # Default value
@@ -245,7 +222,7 @@ endif()
 
 add_library(${PROJECT_NAME} ${SRC})
 
-target_link_libraries(${PROJECT_NAME} ${TORCH_LIBRARIES})
+#target_link_libraries(${PROJECT_NAME} ${TORCH_LIBRARIES})
 #set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
 
 ament_target_dependencies(${PROJECT_NAME}
@@ -264,7 +241,6 @@ ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(
   cv_bridge gpusurf lgmath steam
   vtr_common vtr_logging vtr_vision_msgs vtr_storage vtr_tactic vtr_common_msgs
-  Torch
 )
 
 #ament_export_include_directories(${TORCH_INCLUDE_DIRS})

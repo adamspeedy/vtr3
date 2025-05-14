@@ -53,7 +53,7 @@ elseif(SelectedPipeline MATCHES "VISION")
   # other options, so do not disable (i.e. comment out) this flag
   add_definitions(-DVTR_ENABLE_GPUSURF)  # set the available flag
   add_definitions(-DVTR_ENABLE_VISION)
-  add_definitions(-DVTR_VISION_LEARNED)
+  #add_definitions(-DVTR_VISION_LEARNED)
   set(VTR_ENABLE_VISION true)
 else()
   add_definitions(-DVTR_ENABLE_RADAR)
@@ -62,7 +62,7 @@ else()
   set(VTR_ENABLE_LIDAR true)
   add_definitions(-DVTR_ENABLE_GPUSURF)  # set the available flag
   add_definitions(-DVTR_ENABLE_VISION)
-  add_definitions(-DVTR_VISION_LEARNED)
+  #add_definitions(-DVTR_VISION_LEARNED)
   set(VTR_ENABLE_VISION true)
   message(WARNING "VTR_PIPELINE not set! Compiling all! Save time by selecting VTR_PIPELINE=VISION, LIDAR, RADAR, or RADAR-LIDAR")
 endif()
