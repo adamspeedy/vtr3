@@ -122,8 +122,6 @@ def store_messages_to_file(messages, output_dir):
 
 
 
-
-
 def main():
     bag_directory = "/home/adam/Desktop/CurrentBranch/temp/vision/graph/data/odometry_result"
     extractor = ROS2BagExtractor(bag_directory)
@@ -139,7 +137,7 @@ def main():
         if len(messages) > 10:
             print(f"\n... and {len(messages) - 10} more messages")
 
-        store_messages_to_file(messages,"/home/adam/Desktop/CurrentBranch/src/main/src/vtr_db_extractor/odom_poses")
+        #store_messages_to_file(messages,"/home/adam/Desktop/CurrentBranch/src/main/src/vtr_db_extractor/odom_poses")
 
 
     finally:
