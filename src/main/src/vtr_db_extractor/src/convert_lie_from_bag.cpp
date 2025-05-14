@@ -169,7 +169,7 @@ void store_messages_to_file(const std::vector<lgmath::se3::TransformationWithCov
     
     // Iterate through the messages
     //size_t max_to_process = std::min(messages.size(), static_cast<size_t>(5));
-    for (size_t i = 0; i < max_messages; ++i) {
+    for (int i = 0; i < max_messages; ++i) {
         //const auto& data = messages[i].data;
         const auto& transform = messages[i];  //data.t_world_robot.xi;
         
