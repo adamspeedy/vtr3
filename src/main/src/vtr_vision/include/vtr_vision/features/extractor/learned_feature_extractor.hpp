@@ -4,7 +4,7 @@
 
 
 #include <vtr_vision/features/extractor/base_feature_extractor.hpp>
-
+#undef VTR_VISION_LEARNED
 #ifdef VTR_VISION_LEARNED
 #include <torch/script.h> 
 #include <torch/torch.h>
