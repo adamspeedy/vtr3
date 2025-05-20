@@ -5,7 +5,7 @@
     start_new_graph: true
     log_to_file: true
     log_debug: true
-    data_dir: /home/orin/code/vtr3/Debug
+    data_dir: /home/orin/code/vtr3/temp
     log_enabled: 
       [
         #"navigation",
@@ -24,11 +24,11 @@
         #"stereo.ransac",
         #"mission.state_machine",
         #"stereo.features",
-        "stereo.keyframe_optimization",
-        "stereo.optimization",
+        #"stereo.keyframe_optimization",
+        #"stereo.optimization",
       ]
 
-    robot_frame: base_link
+    robot_frame: base_link1
     camera_frame: camera #lidar3d_0_laser #camera
     camera_left_topic: /zed/zed_node/left/image_rect_color #/zed/zed_node/left_raw/image_raw_color   #/zed_multi/zedx/left/image_rect_color  /camera/bumblebee_left/image_color    
     camera_right_topic: /zed/zed_node/right/image_rect_color #/zed/zed_node/right_raw/image_raw_color #/zed_multi/zedx/right/image_rect_color /camera/bumblebee_right/image_color 
@@ -86,35 +86,35 @@
     preprocessing:
       # conversion+extraction module
       #Bumblebee
-      adapter:
-        type: stereo.adapter
-        distortion: [-0.355383, 0.162485, 0.000701, 0.000319, 0.000000]
-        intrinsic:
-        # bumblebee
-        - 528.83445
-        - 0.0
-        - 337.20848
-        - 0.0
-        - 529.18363
-        - 241.34312
-        - 0.0
-        - 0.0
-        - 1.0
-
-        #ZED
       # adapter:
       #   type: stereo.adapter
-      #   distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # [-0.049144, -0.070569, 0.000012, -0.000855, 0.000000]
+      #   distortion: [-0.355383, 0.162485, 0.000701, 0.000319, 0.000000]
       #   intrinsic:
-      #   - 635.501504
+      #   # bumblebee
+      #   - 528.83445
       #   - 0.0
-      #   - 491.290857
+      #   - 337.20848
       #   - 0.0
-      #   - 636.319082
-      #   - 304.354794
+      #   - 529.18363
+      #   - 241.34312
       #   - 0.0
       #   - 0.0
       #   - 1.0
+
+        #ZED
+      adapter:
+        type: stereo.adapter
+        distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # [-0.049144, -0.070569, 0.000012, -0.000855, 0.000000]
+        intrinsic:
+        - 635.501504
+        - 0.0
+        - 491.290857
+        - 0.0
+        - 636.319082
+        - 304.354794
+        - 0.0
+        - 0.0
+        - 1.0
           
         baseline: 0.12 #0.12
         target_width: 0 #640  #used for resizing
