@@ -11,12 +11,12 @@ CMD ["/bin/bash"]
 #   --build-arg CUDA_ARCH=${nvidia-smi --query-gpu=compute_cap --format=csv,noheader} .
 ARG GROUPID=0
 ARG USERID=0
-ARG USERNAME=root
-ARG HOMEDIR=/root
-ARG CUDA_ARCH="8.9"
+ARG USERNAME=docker_user
+ARG HOMEDIR=$HOME
+ARG CUDA_ARCH="87"
 
-RUN if [ ${GROUPID} -ne 0 ]; then addgroup --gid ${GROUPID} ${USERNAME}; fi \
-  && if [ ${USERID} -ne 0 ]; then adduser --disabled-password --gecos '' --uid ${USERID} --gid ${GROUPID} ${USERNAME}; fi
+# RUN if [ ${GROUPID} -ne 0 ]; then addgroup --gid ${GROUPID} ${USERNAME}; fi \
+#   && if [ ${USERID} -ne 0 ]; then adduser --disabled-password --gecos '' --uid ${USERID} --gid ${GROUPID} ${USERNAME}; fi
 
 # Default number of threads for make build
 ARG NUMPROC=12
@@ -26,7 +26,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ## Switch to specified user to create directories
 USER ${USERID}:${GROUPID}
 
-ENV VTRROOT=${HOMEDIR}/ASRL/vtr3
+ENV VTRROOT=~/vtr3
 ENV VTRSRC=${VTRROOT}/src \
   VTRDATA=${VTRROOT}/data \
   VTRTEMP=${VTRROOT}/temp \
