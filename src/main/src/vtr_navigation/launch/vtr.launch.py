@@ -24,12 +24,23 @@ def generate_launch_description():
         #"prefix": 'valgrind --tool=callgrind',
     }
 
-    camera_tf_publisher = Node(
+    camera_tf_publisher1 = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
         name='camera_tf_publisher',
         arguments=[
-            '0', '0', '0.25', '1.57', '-3.14', '1.57', 'default_mount', 'camera'
+            '0', '0', '0.25', '1.57', '-3.14', '1.57', 'default_mount1', 'camera'
+        ],
+        remappings=[
+            ('/tf_static', '/a200_0656/tf_static')
+        ]
+    )
+    camera_tf_publisher2 = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='camera_tf_publisher',
+        arguments=[
+            '0', '0', '0.25', '0', '0', '0', 'base_link1', 'default_mount1'
         ],
         remappings=[
             ('/tf_static', '/a200_0656/tf_static')
@@ -46,7 +57,8 @@ def generate_launch_description():
         DeclareLaunchArgument('override_params', default_value='', description='scenario specific parameter overrides'),
 
         # Added camera transform publisher
-        camera_tf_publisher,
+        camera_tf_publisher1,
+        camera_tf_publisher2,
         # Note how we choose which parameters to use based on whether we have entered a data_dir variable.
         Node(**commonNodeArgs,
             parameters=[
@@ -60,7 +72,7 @@ def generate_launch_description():
               },
                 PathJoinSubstitution((config_dir, LaunchConfiguration("override_params")))
             ],
-            remappings=[('/tf','/a200_0656/tf'),('/tf_static','/a200_0656/tf_static')],
+            remappings=[('/tf','/a200_0656/tf'),('/tf_static','/a200_0656/tf_static'), ('/a200_0656/vtr/command', '/a200_0656/platform/cmd_vel_unstamped')],
             condition=LaunchConfigurationNotEquals('data_dir', '')
         ),
         Node(**commonNodeArgs,
@@ -76,7 +88,7 @@ def generate_launch_description():
                 },
                 PathJoinSubstitution((config_dir, LaunchConfiguration("override_params")))
             ],
-            remappings=[('/tf','/a200_0656/tf'),('/tf_static','/a200_0656/tf_static')],
+            remappings=[('/tf','/a200_0656/tf'),('/tf_static','/a200_0656/tf_static'),  ('/a200_0656/vtr/command', '/a200_0656/platform/cmd_vel_unstamped')],
             condition=LaunchConfigurationEquals('data_dir', '')
         ),
     ])
