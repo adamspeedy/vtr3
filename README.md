@@ -1,6 +1,10 @@
 # Visual Teach & Repeat 
 This is my implementation of the vtr3 framework developed by ASRL.
 ## Installing the framework:
+clone this repository with recursive modules enabled:
+```
+git clone --recurse-submodules git@github.com:adamspeedy/vtr3.git
+```
 To build the ros2 packages navigate to the 'main' directory and build all of the packages using the below command:
 ```
 VTR_PIPELINE=VISION colcon build  --symlink-install 
@@ -15,6 +19,38 @@ Build the web application using npm, navigate to the directory with our package.
 ```
 npm install
 npm run build
+```
+## Some useful code to add to your bashrc file:
+```
+export VTRROOT= ~/CurrentBranch    # or wherever you have saved it
+export VTRSRC=${VTRROOT}/src       # source code (this repo)
+export VTRDATA=${VTRROOT}/data     # datasets
+export VTRTEMP=${VTRROOT}/temp     # default output directory
+export VTRMODELS=${VTRROOT}/models # .pt models for TorchScript
+export VTRDEPS=${VTRROOT}/deps       
+export VTRUI=${VTRSRC}/main/src/vtr_gui/vtr_gui/vtr-gui
+```
+We need to also create some directories to save data to:
+```
+cd ${VTRROOT}
+mkdir temp log Debug models
+```
+
+## Building with Docker:
+The main bits of code you will need are:
+```
+cd ${VTRSRC}
+docker build -t vtr3 --build-arg HOMEDIR=${HOME} .
+docker run -it --name vtr3 \
+  --privileged \
+  --network=host \
+  --ipc=host \
+  --runtime=nvidia \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v ${VTRROOT}:${VTRROOT}:rw \
+  -v /dev:/dev \
+  vtr3
 ```
 
 
@@ -33,6 +69,10 @@ You can then view this web server in your browser at:
 
 http://localhost:5200/index.html
 
+or through an ssh tunnel you can view it at:
+
+http://192.168.131.18:5200/index.html
+
 
 ### Launch the navigator
 We can run this using some bag files on our computer using the command below:
@@ -49,15 +89,7 @@ Another important part to note is the transform for our camera frame, this is ma
 ```
 ros2 run tf2_ros static_transform_publisher 0 0 0.25 1.57 -3.14 1.57 default_mount camera --ros-args -r /tf_static:=/a200_0656/tf_static 
 ```
-
-
-## Some useful code to add to your bashrc file:
-```
-export VTRROOT= ~/CurrentBranch    # or wherever you have saved it
-export VTRSRC=${VTRROOT}/src       # source code (this repo)
-export VTRDATA=${VTRROOT}/data     # datasets
-export VTRTEMP=${VTRROOT}/temp     # default output directory
-export VTRMODELS=${VTRROOT}/models # .pt models for TorchScript
-export VTRDEPS=${VTRROOT}/deps       
-export VTRUI=${VTRSRC}/main/src/vtr_gui/vtr_gui/vtr-gui
-```
+## Useful command for running ZED camera:
+'''
+RMW_IMPLEMENTATION=rmw_cyclonedds_cpp ros2 launch zed_wrapper zed_camera.launch.py camera_model:=zedx pos_tracking.enable:=true publish_odom:=true publish_odom_tf:=true
+'''
