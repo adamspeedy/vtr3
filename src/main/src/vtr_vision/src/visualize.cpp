@@ -19,6 +19,7 @@
  *
  * \author Autonomous Space Robotics Lab (ASRL)
  */
+
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
@@ -26,9 +27,24 @@
 #include <vtr_vision/messages/bridge.hpp>
 #include <vtr_vision/visualize.hpp>
 
+
 namespace vtr {
 namespace vision {
 namespace visualize {
+
+
+// Global image publisher instance
+static std::shared_ptr<ImagePublisher> g_image_publisher = nullptr;
+
+// Function to set the image publisher
+void setImagePublisher(std::shared_ptr<ImagePublisher> publisher) {
+  g_image_publisher = publisher;
+}
+
+// Function to get the current image publisher if we wanna use it again
+std::shared_ptr<ImagePublisher> getImagePublisher() {
+  return g_image_publisher;
+}
 
 cv::Mat setupDisplayImage(cv::Mat input_image) {
   // create a visualization image to draw on.
@@ -84,6 +100,7 @@ void showRGBImage(std::mutex &vis_mutex, CameraQueryCache &qdata,
     cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
     cv::imshow(title, display_image);
   }
+  g_image_publisher->publishImage(display_image, "/visualization/rgb_image");
 }
 
 void showStereoMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
@@ -181,6 +198,12 @@ void showStereoMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
           std::lock_guard<std::mutex> lock(vis_mtx);
           cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
           cv::imshow(title, display_image);
+        }
+        if (feature_channel_itr->name == "cc_0.430000"){
+          g_image_publisher->publishImage(display_image, "/visualization/"+feature_itr->name + "/cc"+suffix);
+        }
+        else{
+          g_image_publisher->publishImage(display_image, "/visualization/"+title);
         }
       }  // end for channel
     }    // end for rig
@@ -282,7 +305,12 @@ void showRawFeatures(std::mutex &vis_mtx, CameraQueryCache &qdata,
           cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
           cv::imshow(title2, display_image);
         }
-
+        if (feature_channel_itr->name == "cc_0.430000"){
+          g_image_publisher->publishImage(display_image, "/visualization/"+features_itr->name + "/cc/" + feature_camera_itr->name +suffix);
+        }
+        else{
+          g_image_publisher->publishImage(display_image, "/visualization/"+title2);
+        }
       }  // end for camera
     }    // end for channel
   }      // end for rig
@@ -361,6 +389,12 @@ void showFeatures(std::mutex &vis_mtx, CameraQueryCache &qdata,
           std::lock_guard<std::mutex> lock(vis_mtx);
           cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
           cv::imshow(title2, display_image);
+        }
+        if (feature_channel_itr->name == "cc_0.430000"){
+          g_image_publisher->publishImage(display_image, "/visualization/"+features_itr->name + "/cc/" + feature_camera_itr->name +suffix);
+        }
+        else{
+          g_image_publisher->publishImage(display_image, "/visualization/"+title2);
         }
 
       }  // end for camera
@@ -629,6 +663,12 @@ void showMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
         cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
         cv::imshow(title, display_image);
       }
+      if (feature_channel_itr->name == "cc_0.430000"){
+          g_image_publisher->publishImage(display_image, "/visualization/"+features_itr->name + "/cc/" + feature_camera_itr->name +suffix);
+        }
+      else{
+        g_image_publisher->publishImage(display_image, "/visualization/"+title);
+      }
     }  // end for channel
   }    // end for rig
   {
@@ -811,6 +851,12 @@ void showMelMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
         std::lock_guard<std::mutex> lock(vis_mtx);
         cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
         cv::imshow(title, display_image);
+      }
+      if (query_landmarks[0].observations.channels.back().name == "cc_0.430000"){
+          g_image_publisher->publishImage(display_image, "/visualization/"+query_landmarks[0].observations.name + "/cc/"+query_landmarks[0].observations.channels.back().cameras[0].name + suffix);
+      }
+      else{
+        g_image_publisher->publishImage(display_image, "/visualization/"+title);
       }
     }
   }

@@ -28,7 +28,7 @@
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
 #include "sensor_msgs/msg/image.hpp"
-
+#include "vtr_vision/visualize.hpp"
 
 #include "vtr_common/conversions/tf2_ros_eigen.hpp"
 
@@ -97,6 +97,7 @@ typedef message_filters::sync_policies::ApproximateTime<
   route_planning::RoutePlannerInterface::Ptr route_planner_;
   ROSMissionServer::Ptr mission_server_;
   mission_planning::StateMachine::Ptr state_machine_;
+  vision::visualize::ImagePublisher::Ptr publisher_;
 
   /// Threading
   bool stop_ = false;

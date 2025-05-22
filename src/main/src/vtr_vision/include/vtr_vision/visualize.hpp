@@ -25,10 +25,14 @@
 
 #include <vtr_vision/cache.hpp>
 #include <vtr_vision/types.hpp>
+#include <vtr_vision/image_publisher.hpp>
 
 namespace vtr {
 namespace vision {
 namespace visualize {
+
+void setImagePublisher(std::shared_ptr<ImagePublisher> publisher);
+std::shared_ptr<ImagePublisher> getImagePublisher();
 
 /**
  * \brief Sets up a map of RGB images used for visualization, based on all of

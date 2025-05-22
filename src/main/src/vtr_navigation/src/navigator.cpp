@@ -30,6 +30,8 @@
 #include "vtr_vision/pipeline.hpp"
 
 
+
+
 namespace vtr {
 namespace navigation {
 
@@ -37,6 +39,7 @@ using namespace vtr::tactic;
 using namespace vtr::path_planning;
 using namespace vtr::route_planning;
 using namespace vtr::mission_planning;
+using namespace vtr::vision::visualize;
 
 namespace {
 
@@ -115,6 +118,10 @@ Navigator::Navigator(const rclcpp::Node::SharedPtr& node) : node_(node) {
   /// mission server
   mission_server_ = std::make_shared<ROSMissionServer>();
 
+  /// image topic publisher 
+  publisher_ = std::make_shared<ImagePublisher>(node_);
+  vtr::vision::visualize::setImagePublisher(publisher_);
+
   /// state machine
   state_machine_ = std::make_shared<StateMachine>(
       tactic_, route_planner_, path_planner_, mission_server_);
@@ -183,6 +190,8 @@ Navigator::~Navigator() {
   /// explicitly destruct each building block in order to emplasize the order of
   /// destruction -> although it is not necessary since we declare them in the
   /// correct order in the class
+  publisher_.reset();
+  vtr::vision::visualize::getImagePublisher().reset();
   state_machine_.reset();
   mission_server_.reset();
   route_planner_.reset();
