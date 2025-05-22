@@ -158,9 +158,9 @@ void ImageTriangulationModule::run_(tactic::QueryCache &qdata0, tactic::OutputCa
   }
   if (config_->visualize){
     if (config_->visualize_features)
-      visualize::showFeatures(*qdata.vis_mutex, qdata, " features");
+      visualize::showFeatures(*qdata.vis_mutex, qdata, "_features");
     if (config_->visualize_stereo_features)
-      visualize::showStereoMatches(*qdata.vis_mutex, qdata, " stereo features");
+      visualize::showStereoMatches(*qdata.vis_mutex, qdata, "_stereo_features");
   }
 }
 

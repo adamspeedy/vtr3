@@ -86,7 +86,7 @@ void ASRLStereoMatcherModule::run_(tactic::QueryCache &qdata0, tactic::OutputCac
   if (config_->visualize_feature_matches &&
       qdata.raw_matches.valid())
     visualize::showMatches(*qdata.vis_mutex, qdata, *qdata.raw_matches,
-                           " raw matches", true);
+                           "_raw_matches", true);
                            // purple --> predictor
                            // light blue --> invalid
                            // yellow --> valid greyscale

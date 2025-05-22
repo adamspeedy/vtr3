@@ -356,7 +356,7 @@ void ConversionExtractionModule::run_(tactic::QueryCache &qdata0, tactic::Output
     visualize::showRGBImage(*qdata.vis_mutex, qdata, "left");
     if (config_->visualize_raw_features)  // check if visualization is enabled
       //CLOG(INFO, "stereo.matcher") << "Visualize raw features";
-      visualize::showRawFeatures(*qdata.vis_mutex, qdata, " raw features");
+      visualize::showRawFeatures(*qdata.vis_mutex, qdata, "_raw_features");
 
     if (config_->visualize_disparity)  // check if visualization is enabled
       //CLOG(INFO, "stereo.matcher") << "Visualize disparity";

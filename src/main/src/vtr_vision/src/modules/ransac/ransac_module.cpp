@@ -237,7 +237,7 @@ void RansacModule::run_(tactic::QueryCache &qdata0, tactic::OutputCache &output,
                                "multi-exp-loc");
     }  else if (qdata.ransac_matches.valid())
       visualize::showMatches(*qdata.vis_mutex, qdata, *qdata.ransac_matches,
-                             " RANSAC matches");
+                             "_RANSAC_matches");
   }
 
 }
