@@ -29,7 +29,7 @@ def generate_launch_description():
         executable='static_transform_publisher',
         name='camera_tf_publisher',
         arguments=[
-            '0', '0', '0.25', '1.57', '-3.14', '1.57', 'default_mount1', 'camera'
+            '0', '0', '0.25', '1.57', '-3.14', '1.57', 'default_mount', 'camera'
         ],
         remappings=[
             ('/tf_static', '/a200_0656/tf_static')
@@ -40,7 +40,7 @@ def generate_launch_description():
         executable='static_transform_publisher',
         name='camera_tf_publisher',
         arguments=[
-            '0', '0', '0.25', '0', '0', '0', 'base_link1', 'default_mount1'
+            '0', '0', '0.25', '0', '0', '0', 'base_link', 'default_mount'
         ],
         remappings=[
             ('/tf_static', '/a200_0656/tf_static')
@@ -72,7 +72,7 @@ def generate_launch_description():
               },
                 PathJoinSubstitution((config_dir, LaunchConfiguration("override_params")))
             ],
-            remappings=[('/tf','/a200_0656/tf'),('/tf_static','/a200_0656/tf_static'), ('/a200_0656/vtr/command', '/a200_0656/platform/cmd_vel_unstamped')],
+            remappings=[('/tf','/a200_0656/tf'),('/tf_static','/a200_0656/tf_static'), ('/a200_0656/vtr/command', '/a200_0656/joy_teleop/cmd_vel')],
             condition=LaunchConfigurationNotEquals('data_dir', '')
         ),
         Node(**commonNodeArgs,
@@ -88,7 +88,7 @@ def generate_launch_description():
                 },
                 PathJoinSubstitution((config_dir, LaunchConfiguration("override_params")))
             ],
-            remappings=[('/tf','/a200_0656/tf'),('/tf_static','/a200_0656/tf_static'),  ('/a200_0656/vtr/command', '/a200_0656/platform/cmd_vel_unstamped')],
+            remappings=[('/tf','/a200_0656/tf'),('/tf_static','/a200_0656/tf_static'),  ('/a200_0656/vtr/command', '/a200_0656/joy_teleop/cmd_vel')],
             condition=LaunchConfigurationEquals('data_dir', '')
         ),
     ])
