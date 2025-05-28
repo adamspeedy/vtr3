@@ -234,7 +234,7 @@ void RansacModule::run_(tactic::QueryCache &qdata0, tactic::OutputCache &output,
   if (config_->visualize_ransac_inliers) {
     if (config_->use_migrated_points){
       visualize::showMelMatches(*qdata.vis_mutex, qdata, graph,
-                               "multi-exp-loc");
+                               "multi_exp_loc");
     }  else if (qdata.ransac_matches.valid())
       visualize::showMatches(*qdata.vis_mutex, qdata, *qdata.ransac_matches,
                              "_RANSAC_matches");
