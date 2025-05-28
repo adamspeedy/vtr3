@@ -19,7 +19,7 @@ npm run build
 ```
 ### Some useful code to add to your bashrc file:
 ```
-export VTRROOT= ~/CurrentBranch    # or wherever you have saved it
+export VTRROOT= ~/vtr3    # or wherever you have saved it
 export VTRSRC=${VTRROOT}/src       # source code (this repo)
 export VTRTEMP=${VTRROOT}/temp     # default output directory
 export VTRMODELS=${VTRROOT}/models # .pt models for TorchScript  
@@ -35,17 +35,28 @@ mkdir temp log Debug models
 The main bits of code you will need are:
 ```
 cd ${VTRSRC}
-docker build -t vtr3 --build-arg HOMEDIR=${HOME} .
-docker run -it --name vtr3 \
+docker build -t vtr3\
+  --build-arg USERID=$(id -u) \
+  --build-arg GROUPID=$(id -g) \
+  --build-arg USERNAME=$(whoami) \
+  --build-arg HOMEDIR=${HOME}  .
+
+docker run -it --name vtr3_container \
   --privileged \
   --network=host \
   --ipc=host \
   --runtime=nvidia \
   -e DISPLAY=$DISPLAY \
+  -e NVIDIA_DRIVER_CAPABILITIES=all \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -v ${VTRROOT}:${VTRROOT}:rw \
+  -v /home/orin/code/vtr3_speedy_docker:/home/vtr:rw \
   -v /dev:/dev \
-  vtr3
+  -v /home/orin/code/zed_speedy_docker:/home/zed:rw \
+  -v /usr/local/zed/resources/:/usr/local/zed/resources/ \
+  -v /usr/local/zed/settings/:/usr/local/zed/settings/ \
+  -v /etc/systemd/system/zed_x_daemon.service:/etc/systemd/system/zed_x_daemon.service \
+  -v /var/nvidia/nvcam/settings/:/var/nvidia/nvcam/settings/ \
+  vtr3_image
 ```
 
 ## Running the framework
@@ -86,6 +97,18 @@ ros2 run tf2_ros static_transform_publisher 0 0 0.25 1.57 -3.14 1.57 default_mou
 
 
 ## Useful command for running ZED camera:
-'''
+This repo tries to make an attempt at launching the zed camera from within the docker container, this is not currently working, but to build the zed wrapper the following code must be used for the wrapper repo:
+The current wrapper is taken from: https://github.com/stereolabs/zed-ros2-wrapper/blob/humble-v4.2.5/docker/Dockerfile.l4t-humble
+
+```
+sudo apt-get install python-pip
+sudo pip install -U rosdep
+sudo rosdep init
+rosdep update
+rosdep install --from-paths src --ignore-src -r -y # install dependencies
+colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release
+```
+
+```
 RMW_IMPLEMENTATION=rmw_cyclonedds_cpp ros2 launch zed_wrapper zed_camera.launch.py camera_model:=zedx pos_tracking.enable:=true publish_odom:=true publish_odom_tf:=true
-'''
+```
