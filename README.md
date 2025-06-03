@@ -89,7 +89,3 @@ Another important part to note is the transform for our camera frame, this is ma
 ```
 ros2 run tf2_ros static_transform_publisher 0 0 0.25 1.57 -3.14 1.57 default_mount camera --ros-args -r /tf_static:=/a200_0656/tf_static 
 ```
-## Useful command for running ZED camera:
-'''
-RMW_IMPLEMENTATION=rmw_cyclonedds_cpp ros2 launch zed_wrapper zed_camera.launch.py camera_model:=zedx pos_tracking.enable:=true publish_odom:=true publish_odom_tf:=true
-'''
