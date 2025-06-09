@@ -19,7 +19,7 @@ add_compile_options(-march=native -O3 -pthread -Wall -Wextra)
 # add_compile_options(-fsanitize=address)
 # set(CMAKE_CXX_STANDARD_LIBRARIES -lasan)
 # add_compile_options(-g -Og)
-
+set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1 CACHE BOOL "Suppress developer warnings")
 
 ## Common packages setup
 # Boost requirement (by mission_planning but needed everywhere)
@@ -32,37 +32,13 @@ if (OpenMP_FOUND)
 endif()
 
 
-#Set to VTR_PIPELINE=VISION, LIDAR, RADAR, or RADAR-LIDAR
-set(SelectedPipeline "$ENV{VTR_PIPELINE}")
+## GPUSURF enable/disable flag (used by vision pipeline only)
+# Note: currently assume that gpusurf is always available, because we have no
+# other options, so do not disable (i.e. comment out) this flag
+add_definitions(-DVTR_ENABLE_GPUSURF)  # set the available flag
+add_definitions(-DVTR_ENABLE_VISION)
+#add_definitions(-DVTR_VISION_LEARNED)
+set(VTR_ENABLE_VISION true)
 
+#add_definitions(-DVTR_VISION_LEARNED)
 
-if(SelectedPipeline MATCHES "LIDAR")
-  add_definitions(-DVTR_ENABLE_LIDAR)
-  set(VTR_ENABLE_LIDAR true)
-elseif(SelectedPipeline MATCHES "RADAR")
-  add_definitions(-DVTR_ENABLE_RADAR)
-  set(VTR_ENABLE_RADAR true)
-elseif(SelectedPipeline MATCHES "RADAR-LIDAR")
-  add_definitions(-DVTR_ENABLE_RADAR)
-  set(VTR_ENABLE_RADAR true)
-  add_definitions(-DVTR_ENABLE_LIDAR)
-  set(VTR_ENABLE_LIDAR true)
-elseif(SelectedPipeline MATCHES "VISION")
-  ## GPUSURF enable/disable flag (used by vision pipeline only)
-  # Note: currently assume that gpusurf is always available, because we have no
-  # other options, so do not disable (i.e. comment out) this flag
-  add_definitions(-DVTR_ENABLE_GPUSURF)  # set the available flag
-  add_definitions(-DVTR_ENABLE_VISION)
-  #add_definitions(-DVTR_VISION_LEARNED)
-  set(VTR_ENABLE_VISION true)
-else()
-  add_definitions(-DVTR_ENABLE_RADAR)
-  set(VTR_ENABLE_RADAR true)
-  add_definitions(-DVTR_ENABLE_LIDAR)
-  set(VTR_ENABLE_LIDAR true)
-  add_definitions(-DVTR_ENABLE_GPUSURF)  # set the available flag
-  add_definitions(-DVTR_ENABLE_VISION)
-  #add_definitions(-DVTR_VISION_LEARNED)
-  set(VTR_ENABLE_VISION true)
-  message(WARNING "VTR_PIPELINE not set! Compiling all! Save time by selecting VTR_PIPELINE=VISION, LIDAR, RADAR, or RADAR-LIDAR")
-endif()

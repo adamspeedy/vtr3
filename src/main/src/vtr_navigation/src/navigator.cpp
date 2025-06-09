@@ -134,7 +134,6 @@ Navigator::Navigator(const rclcpp::Node::SharedPtr& node) : node_(node) {
   max_queue_size_ = node->declare_parameter<int>("queue_size", max_queue_size_);
 
 
-//#ifdef VTR_ENABLE_VISION
 if (pipeline->name() == "stereo") {
   using namespace std::placeholders;
 
@@ -159,7 +158,7 @@ if (pipeline->name() == "stereo") {
   sync_ = std::make_shared<message_filters::Synchronizer<ApproximateImageSync>>(ApproximateImageSync(10), right_camera_sub_, left_camera_sub_);
   sync_->registerCallback(&Navigator::cameraCallback, this);
 }
-//#endif
+
   // clang-format on
 
 

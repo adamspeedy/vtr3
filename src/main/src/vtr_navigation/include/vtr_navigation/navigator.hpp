@@ -61,7 +61,6 @@ class Navigator {
   void envInfoCallback(const tactic::EnvInfo::SharedPtr msg);
   rclcpp::Subscription<tactic::EnvInfo>::SharedPtr env_info_sub_;
 
-#ifdef VTR_ENABLE_VISION
 typedef message_filters::sync_policies::ApproximateTime<
     sensor_msgs::msg::Image, sensor_msgs::msg::Image
   > ApproximateImageSync;
@@ -75,7 +74,6 @@ typedef message_filters::sync_policies::ApproximateTime<
   std::shared_ptr<message_filters::Synchronizer<ApproximateImageSync>> sync_;
   std::string camera_frame_;
   tactic::EdgeTransform T_camera_robot_;
-#endif
 
  private:
   /** \brief protects: event_, goals_, stop_, trigger_success_ */

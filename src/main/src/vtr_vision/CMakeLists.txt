@@ -32,9 +32,8 @@ find_package(vtr_common_msgs REQUIRED)
 find_package(vtr_storage REQUIRED)
 find_package(vtr_tactic REQUIRED)
 
-if(DEFINED VTR_ENABLE_VISION)
 
-find_package(gpusurf REQUIRED) # currently assuming this is required
+find_package(gpusurf REQUIRED) 
 
 if(NOT DEFINED ITERATION_BUILD_VISION)
   set(ITERATION_BUILD_VISION 11)  # Default value
@@ -274,5 +273,4 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-endif() #VTR_ENABLE_VISION
 ament_package()
