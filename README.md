@@ -7,7 +7,7 @@ git clone --recurse-submodules git@github.com:adamspeedy/vtr3.git
 ```
 To build the ros2 packages navigate to the 'main' directory and build all of the packages using the below command:
 ```
-VTR_PIPELINE=VISION colcon build  --symlink-install 
+VTR_PIPELINE=VISION colcon build  --symlink-install --executor sequential
 ```
 It is important to use symlink install otherwise we will need to manually set some directories, especially for our web application in the vtr_gui package.
 
@@ -82,10 +82,11 @@ ros2 launch vtr_navigation vtr.launch.py base_params:=config.yaml data_dir:=${VT
 
 Or if we really back ourselves we can use the below command, that would be done on the robot itself:
 ```
-ros2 launch vtr_navigation vtr.launch.py base_params:=bumblebee_grizzly_default.yaml start_new_graph:=false use_sim_time:=false planner:="cbit" model_dir:=${VTRROOT}/models
+ros2 launch vtr_navigation vtr.launch.py base_params:=config.yaml start_new_graph:=false use_sim_time:=false planner:="cbit" model_dir:=${VTRROOT}/models
 ```
 
 Another important part to note is the transform for our camera frame, this is manually run using:
 ```
 ros2 run tf2_ros static_transform_publisher 0 0 0.25 1.57 -3.14 1.57 default_mount camera --ros-args -r /tf_static:=/a200_0656/tf_static 
+
 ```
