@@ -5,7 +5,7 @@
     start_new_graph: true
     log_to_file: true
     log_debug: true
-    data_dir: /home/adam/Desktop/CurrentBranch/Debug
+    data_dir: /home/adam/Desktop/CurrentBranch
     log_enabled: 
       [
         # "navigation",

@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 
   /// Setup logging
   const auto data_dir_str =
-      node->declare_parameter<std::string>("data_dir", "/tmp");
+      node->declare_parameter<std::string>("data_dir", "/home");
   fs::path data_dir{utils::expand_user(utils::expand_env(data_dir_str))};
 
   const auto log_to_file = node->declare_parameter<bool>("log_to_file", false);
@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
   std::string log_filename;
   if (log_to_file) {
     // Log into a subfolder of the data directory (if requested to log)
-    auto log_name = "vtr-" + timing::toIsoFilename(timing::clock::now());
+    auto log_name = "Debug/vtr-" + timing::toIsoFilename(timing::clock::now());
     log_filename = data_dir / (log_name + ".log");
   }
   configureLogging(log_filename, log_debug, log_enabled);
