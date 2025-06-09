@@ -26,16 +26,14 @@ export VTRROOT= ~/CurrentBranch    # or wherever you have saved it
 export VTRSRC=${VTRROOT}/src       # source code (this repo)
 export VTRDATA=${VTRROOT}/data     # datasets
 export VTRTEMP=${VTRROOT}/temp     # default output directory
-export VTRMODELS=${VTRROOT}/models # .pt models for TorchScript
 export VTRDEPS=${VTRROOT}/deps       
 export VTRUI=${VTRSRC}/main/src/vtr_gui/vtr_gui/vtr-gui
 ```
 We need to also create some directories to save data to:
 ```
 cd ${VTRROOT}
-mkdir temp log Debug models
+mkdir temp log Debug 
 ```
-
 ## Building with Docker:
 The main bits of code you will need are:
 ```
@@ -52,7 +50,6 @@ docker run -it --name vtr3 \
   -v /dev:/dev \
   vtr3
 ```
-
 
 ## Running the framework
 ### Launch the webserver:
@@ -73,6 +70,9 @@ or through an ssh tunnel you can view it at:
 
 http://192.168.131.18:5200/index.html
 
+or through an ssh tunnel you can view it at:
+
+http://192.168.131.18:5200/index.html
 
 ### Launch the navigator
 We can run this using some bag files on our computer using the command below:
@@ -82,11 +82,14 @@ ros2 launch vtr_navigation vtr.launch.py base_params:=config.yaml data_dir:=${VT
 
 Or if we really back ourselves we can use the below command, that would be done on the robot itself:
 ```
-ros2 launch vtr_navigation vtr.launch.py base_params:=config.yaml start_new_graph:=false use_sim_time:=false planner:="cbit" model_dir:=${VTRROOT}/models
+ros2 launch vtr_navigation vtr.launch.py base_params:=config.yaml start_new_graph:=false use_sim_time:=false planner:="cbit" 
 ```
 
-Another important part to note is the transform for our camera frame, this is manually run using:
+### Viewing in RVIZ2
+You can launch the rviz2 viewer using the default config file using the following commond:
 ```
-ros2 run tf2_ros static_transform_publisher 0 0 0.25 1.57 -3.14 1.57 default_mount camera --ros-args -r /tf_static:=/a200_0656/tf_static 
+rviz2 -d viewer.rviz --ros-args -r __ns:=/vtr -r /tf:=/vtr/tf -r /tf_static:=/vtr/tf_static
+```
+### ROS2 middleware
+An important part of this framework is the use of the CycloneDDS as the ros2 middleware. The main setup can be done using stereo labs suggested parameters: https://www.stereolabs.com/docs/ros2/dds_and_network_tuning
 
-```
