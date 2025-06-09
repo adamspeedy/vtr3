@@ -16,7 +16,7 @@ def generate_launch_description():
 
     commonNodeArgs = {
         "package": 'vtr_navigation',
-        "namespace": 'a200_0656/vtr',
+        "namespace": 'vtr',
         "executable": 'vtr_navigation',
         "output": 'screen',
         #"prefix": ["gdbserver localhost:3000"]
@@ -24,7 +24,7 @@ def generate_launch_description():
         #"prefix": 'valgrind --tool=callgrind',
     }
 
-    camera_tf_publisher = Node(
+    camera_tf_publisher1 = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
         name='camera_tf_publisher',
@@ -32,7 +32,29 @@ def generate_launch_description():
             '0', '0', '0.25', '1.57', '-3.14', '1.57', 'default_mount', 'camera'
         ],
         remappings=[
-            ('/tf_static', '/a200_0656/tf_static')
+            ('/tf_static', '/vtr/tf_static')
+        ]
+    )
+    camera_tf_publisher2 = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='camera_tf_publisher',
+        arguments=[
+            '0', '0', '0.25', '0', '0', '0', 'base_link', 'default_mount'
+        ],
+        remappings=[
+            ('/tf_static', '/vtr/tf_static')
+        ]
+    )
+    camera_tf_publisher3 = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='camera_tf_publisher',
+        arguments=[
+            '0', '0', '0', '0', '0', '0', 'robot','base_link'
+        ],
+        remappings=[
+            ('/tf_static', '/vtr/tf_static')
         ]
     )
 
@@ -42,11 +64,13 @@ def generate_launch_description():
         DeclareLaunchArgument('start_new_graph', default_value='false', description='whether to start a new pose graph'),
         DeclareLaunchArgument('use_sim_time', default_value='false', description='use simulated time for playback'),
         DeclareLaunchArgument('planner', default_value='cbit', description='use no planner. Publish zero'),
-        DeclareLaunchArgument('base_params', description='base parameter file (sensor, robot specific)'),
+        DeclareLaunchArgument('base_params', default_value="config.yaml", description='base parameter file (sensor, robot specific)'),
         DeclareLaunchArgument('override_params', default_value='', description='scenario specific parameter overrides'),
 
         # Added camera transform publisher
-        camera_tf_publisher,
+        camera_tf_publisher1,
+        camera_tf_publisher2,
+        camera_tf_publisher3,
         # Note how we choose which parameters to use based on whether we have entered a data_dir variable.
         Node(**commonNodeArgs,
             parameters=[
@@ -60,7 +84,7 @@ def generate_launch_description():
               },
                 PathJoinSubstitution((config_dir, LaunchConfiguration("override_params")))
             ],
-            remappings=[('/tf','/a200_0656/tf'),('/tf_static','/a200_0656/tf_static')],
+            remappings=[('/tf','/vtr/tf'),('/tf_static','/vtr/tf_static'), ('/vtr/command', '/a200_0656/joy_teleop/cmd_vel')],
             condition=LaunchConfigurationNotEquals('data_dir', '')
         ),
         Node(**commonNodeArgs,
@@ -76,7 +100,7 @@ def generate_launch_description():
                 },
                 PathJoinSubstitution((config_dir, LaunchConfiguration("override_params")))
             ],
-            remappings=[('/tf','/a200_0656/tf'),('/tf_static','/a200_0656/tf_static')],
+            remappings=[('/tf','/vtr/tf'),('/tf_static','/vtr/tf_static'), ('/vtr/command', '/a200_0656/joy_teleop/cmd_vel')],
             condition=LaunchConfigurationEquals('data_dir', '')
         ),
     ])
