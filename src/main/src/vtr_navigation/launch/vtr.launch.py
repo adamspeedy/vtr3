@@ -60,7 +60,6 @@ def generate_launch_description():
 
     return LaunchDescription([
         DeclareLaunchArgument('data_dir', default_value='', description='directory to store graph, if blank use setup UI'),
-        DeclareLaunchArgument('model_dir', default_value="", description='model directory (folder for PyTorch .pt models)'),
         DeclareLaunchArgument('start_new_graph', default_value='false', description='whether to start a new pose graph'),
         DeclareLaunchArgument('use_sim_time', default_value='false', description='use simulated time for playback'),
         DeclareLaunchArgument('planner', default_value='cbit', description='use no planner. Publish zero'),
@@ -77,7 +76,6 @@ def generate_launch_description():
                 PathJoinSubstitution((config_dir, LaunchConfiguration("base_params"))),
               {
                     "data_dir": LaunchConfiguration("data_dir"),
-                    "model_dir": LaunchConfiguration("model_dir"),
                     "start_new_graph": LaunchConfiguration("start_new_graph"),
                     "use_sim_time": LaunchConfiguration("use_sim_time"),
                     "path_planning.type": LaunchConfiguration("planner"),
@@ -92,7 +90,6 @@ def generate_launch_description():
                 PathJoinSubstitution((config_dir, LaunchConfiguration("base_params"))),
                 PathJoinSubstitution((temp_dir, "setup_params.yaml")),
                 {
-                    "model_dir": LaunchConfiguration("model_dir"),
                     "start_new_graph": LaunchConfiguration("start_new_graph"),
                     "use_sim_time": LaunchConfiguration("use_sim_time"),
                     "path_planning.type": LaunchConfiguration("planner"),
