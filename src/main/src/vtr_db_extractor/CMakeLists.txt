@@ -26,6 +26,7 @@ find_package(rosbag2_cpp REQUIRED)
 add_executable(lie_converter src/convert_lie_from_file.cpp)
 add_executable(bag_extractor src/convert_lie_from_bag.cpp)
 add_executable(vertex_extractor src/extract_vertex_from_bag.cpp)
+add_executable(localization_extractor src/extract_localization_result.cpp)
 
 ament_target_dependencies(lie_converter
   rclcpp
@@ -54,6 +55,16 @@ ament_target_dependencies(vertex_extractor
   yaml-cpp
 )
 
+ament_target_dependencies(localization_extractor
+  rclcpp
+  vtr_common
+  vtr_tactic_msgs
+  Eigen3
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
+)
+
 target_include_directories(lie_converter PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
@@ -65,6 +76,11 @@ target_include_directories(bag_extractor PUBLIC
 )
 
 target_include_directories(vertex_extractor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(localization_extractor PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
@@ -82,7 +98,7 @@ install(
 )
 
 install(
-  TARGETS lie_converter bag_extractor vertex_extractor
+  TARGETS lie_converter bag_extractor vertex_extractor localization_extractor
   EXPORT export_${PROJECT_NAME}
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
