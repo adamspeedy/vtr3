@@ -16,6 +16,7 @@ find_package(vtr_common REQUIRED)
 
 find_package(vtr_common_msgs REQUIRED)
 find_package(vtr_tactic_msgs REQUIRED)
+find_package(vtr_pose_graph_msgs REQUIRED)
 find_package(SQLite3 REQUIRED)
 find_package(yaml-cpp REQUIRED)
 find_package(rosbag2_cpp REQUIRED)
@@ -24,6 +25,7 @@ find_package(rosbag2_cpp REQUIRED)
 #message(STATUS "vtr_common include dirs: ${vtr_common_INCLUDE_DIRS}")
 add_executable(lie_converter src/convert_lie_from_file.cpp)
 add_executable(bag_extractor src/convert_lie_from_bag.cpp)
+add_executable(vertex_extractor src/extract_vertex_from_bag.cpp)
 
 ament_target_dependencies(lie_converter
   rclcpp
@@ -42,12 +44,27 @@ ament_target_dependencies(bag_extractor
   yaml-cpp
 )
 
+ament_target_dependencies(vertex_extractor
+  rclcpp
+  vtr_common
+  vtr_pose_graph_msgs
+  Eigen3
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
+)
+
 target_include_directories(lie_converter PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
 
 target_include_directories(bag_extractor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(vertex_extractor PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
@@ -65,7 +82,7 @@ install(
 )
 
 install(
-  TARGETS lie_converter bag_extractor
+  TARGETS lie_converter bag_extractor vertex_extractor
   EXPORT export_${PROJECT_NAME}
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
