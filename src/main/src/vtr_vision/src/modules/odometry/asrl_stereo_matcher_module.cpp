@@ -123,6 +123,10 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
       sqrt(qdata.T_r_m_prior->cov()(0, 0)) < config_->tight_matching_x_sigma &&
       sqrt(qdata.T_r_m_prior->cov()(1, 1)) < config_->tight_matching_y_sigma &&
       sqrt(qdata.T_r_m_prior->cov()(5, 5)) < config_->tight_matching_theta_sigma;
+  CLOG(INFO, "stereo.testing") << "cov x: " << qdata.T_r_m_prior->cov()(0, 0)
+                               << " cov y: " << qdata.T_r_m_prior->cov()(1, 1)
+                               << " cov theta: " << qdata.T_r_m_prior->cov()(5, 5)
+                               << " use_tight_pixel_thresh: " << use_tight_pixel_thresh;
   // force the loose pixel thresh
   if (force_loose_pixel_thresh) {
     use_tight_pixel_thresh = false;
@@ -354,12 +358,13 @@ bool ASRLStereoMatcherModule::checkConditions(
   float window_scale = config_->use_pixel_variance
                            ? std::sqrt(1.0 / lm_info_qry.precision)
                            : 1.0;
+  CLOG(INFO, "stereo.testing") << "window scale: " << window_scale;
 
   // scale it by the desired window size
   float window_size = window_scale * (use_tight_pixel_thresh
                                           ? config_->tight_matching_pixel_thresh
                                           : config_->matching_pixel_thresh);
-
+  CLOG(INFO, "stereo.testing") << "window size: " << window_size;
   // now check that the keypoints meet the minimum position error metrics (given
   // the transformed point and the window if the window size is 0 or below, that
   // indicates we don't care about it

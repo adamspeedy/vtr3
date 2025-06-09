@@ -55,7 +55,7 @@ void SimpleVertexTestModule::run_(tactic::QueryCache &qdata0, tactic::OutputCach
   /// \todo yuchen check first frame, is this appropriate? what if we do not
   /// have enough features here?
   if (*qdata.first_frame) {
-    CLOG(DEBUG, "First frame encountered, make it a keyframe.");
+    CLOG(DEBUG,"stereo.vertex_test") << "First frame encountered, make it a keyframe.";
     *qdata.vertex_test_result = VertexTestResult::CREATE_VERTEX;
     return;
   }

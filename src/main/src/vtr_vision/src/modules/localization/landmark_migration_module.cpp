@@ -273,7 +273,7 @@ void LandmarkMigrationModule::migrate(
         Eigen::Vector3d point(point_msg.x, point_msg.y, point_msg.z);
         migrated_point = T_root_curr * point.homogeneous();
       } else {
-        CLOG(WARNING, "stereo.migration") << "Point: " << lm_idx << " in " << channel_landmarks.name << " is invalid.";
+        // CLOG(WARNING, "stereo.migration") << "Point: " << lm_idx << " in " << channel_landmarks.name << " is invalid.";
       }
 
       // insert the migrated point

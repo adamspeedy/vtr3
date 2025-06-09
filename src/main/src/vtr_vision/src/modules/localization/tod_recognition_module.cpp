@@ -59,7 +59,11 @@ void TodRecognitionModule::run_(tactic::QueryCache &qdata0, tactic::OutputCache 
   auto status_msg = vtr_vision_msgs::msg::ExpRecogStatus();
 
   // We only do work if there are more runs needed to be recommended
-  if ((int)recommended.size() >= config_->num_exp) return;
+  if ((int)recommended.size() >= config_->num_exp)
+  {
+    return;
+    CLOG_IF(config_->verbose, DEBUG, "stereo.tod") << "no recommendation needed";
+  }
 
   // Start the timer
   common::timing::Stopwatch timer;
@@ -70,6 +74,7 @@ void TodRecognitionModule::run_(tactic::QueryCache &qdata0, tactic::OutputCache 
 
   // Get the time of day
   time_point time_of_day = common::timing::toChrono(live_vtx->vertexTime());
+  CLOG_IF(config_->verbose, DEBUG, "stereo.tod") << " Current time of day: " << common::timing::toIsoString(time_of_day);
 
   // Calculate the temporal difference to map times, score by increasing
   // distance
@@ -139,6 +144,7 @@ ScoredRids scoreExperiences(const TodRecognitionModule::time_point &query_tp,
     TodRecognitionModule::time_point map_tp =
         common::timing::toChrono(v->vertexTime());
     tod_duration map_tod = time2tod(map_tp);
+    CLOG(DEBUG, "stereo.tod") << "Map time of day: " << common::timing::toIsoString(map_tp);
 
     // Get time and time-of-day difference
     typedef std::chrono::duration<float, std::chrono::hours::period> f_hours;

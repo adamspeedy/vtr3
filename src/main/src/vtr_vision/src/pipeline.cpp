@@ -74,15 +74,16 @@ void StereoPipeline::runOdometry_(const tactic::QueryCache::Ptr &qdata0, const t
  
   qdata.T_r_m.emplace(*qdata.T_r_v_odo);
   qdata.T_r_m_prior.emplace(*qdata.T_r_v_odo);
-  CLOG(WARNING, "stereo.pipeline") << "T_r_v_odo set";
+  // CLOG(INFO, "stereo.pipeline") << "T_r_v_odo set" << *qdata.T_r_v_odo;
+  // CLOG(INFO, "stereo.pipeline") << "First frame flag: " << *qdata.first_frame ; // this is set at the start of the run
 
-  CLOG(WARNING, "stereo.pipeline") << "First frame: " << *qdata.first_frame ;
+  
 
   if (!(*qdata.first_frame)){
     qdata.timestamp_odo.emplace(timestamp_odo_);
     setOdometryPrior(qdata, graph);
   }
-  CLOG(WARNING, "stereo.pipeline") << "Finished setting odometry prior, running modules";
+  // CLOG(WARNING, "stereo.pipeline") << "Finished setting odometry prior, running modules";
   for (auto module : odometry_) module->run(*qdata0, *output0, graph, executor);
 
   // If VO failed, revert T_r_m to the initial prior estimate

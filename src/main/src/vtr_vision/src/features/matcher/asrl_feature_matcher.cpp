@@ -114,7 +114,7 @@ SimpleMatches ASRLFeatureMatcher::matchFeatures(
     
     // now check if we need to precache anything depending on the match type
     if (type == CheckType::HOMOGRAPHY) {    // <--this check runs
-      // CLOG(DEBUG, "stereo.matching") << "Checking Homography" ;
+      CLOG(DEBUG, "stereo.matching") << "Checking Homography" << G ;
       // transform the keypoint through the homography matrix
       kp1.pt = transformKeypoint(kp1.pt, G);
 
@@ -191,7 +191,7 @@ SimpleMatches ASRLFeatureMatcher::matchFeatures(
       matches.push_back(match);
     }
   }
-  CLOG(DEBUG, "stereo.matcher") << " Stereo Matches: " << matches.size();
+  CLOG(INFO, "stereo.matcher") << " Stereo Matches: " << matches.size();
   return matches;
 }
 
