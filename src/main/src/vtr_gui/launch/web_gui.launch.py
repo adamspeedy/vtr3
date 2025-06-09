@@ -6,6 +6,7 @@ def generate_launch_description():
    # Define your three nodes
     node1 = Node(
         package='vtr_gui',
+        namespace='vtr',
         executable='web_server',
         name='web_server',
         output='screen'
@@ -13,7 +14,7 @@ def generate_launch_description():
     
     node2 = Node(
         package='vtr_gui',
-        namespace='a200_0656/vtr',
+        namespace='vtr',
         executable='socket_server',
         name='socket_server',
         output='screen'
@@ -21,7 +22,7 @@ def generate_launch_description():
     
     node3 = Node(
         package='vtr_gui',
-        namespace='a200_0656/vtr',
+        namespace='vtr',
         executable='socket_client',
         name='socket_client',
         output='screen'
