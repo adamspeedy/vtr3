@@ -16,7 +16,7 @@ def generate_launch_description():
 
     commonNodeArgs = {
         "package": 'vtr_navigation',
-        "namespace": 'a200_0656/vtr',
+        "namespace": 'vtr',   #a200_0656/vtr
         "executable": 'vtr_navigation',
         "output": 'screen',
         #"prefix": ["gdbserver localhost:3000"]
@@ -32,7 +32,7 @@ def generate_launch_description():
             '0', '0', '0.25', '1.57', '-3.14', '1.57', 'default_mount', 'camera'
         ],
         remappings=[
-            ('/tf_static', '/a200_0656/tf_static')
+            ('/tf_static', '/vtr/tf_static')
         ]
     )
     camera_tf_publisher2 = Node(
@@ -43,7 +43,7 @@ def generate_launch_description():
             '0', '0', '0.25', '0', '0', '0', 'base_link', 'default_mount'
         ],
         remappings=[
-            ('/tf_static', '/a200_0656/tf_static')
+            ('/tf_static', '/vtr/tf_static')
         ]
     )
 
@@ -72,7 +72,7 @@ def generate_launch_description():
               },
                 PathJoinSubstitution((config_dir, LaunchConfiguration("override_params")))
             ],
-            remappings=[('/tf','/a200_0656/tf'),('/tf_static','/a200_0656/tf_static'), ('/a200_0656/vtr/command', '/a200_0656/joy_teleop/cmd_vel')],
+            remappings=[('/tf','/vtr/tf'),('/tf_static','/vtr/tf_static'), ('/a200_0656/vtr/command', '/a200_0656/joy_teleop/cmd_vel')],
             condition=LaunchConfigurationNotEquals('data_dir', '')
         ),
         Node(**commonNodeArgs,
@@ -88,7 +88,7 @@ def generate_launch_description():
                 },
                 PathJoinSubstitution((config_dir, LaunchConfiguration("override_params")))
             ],
-            remappings=[('/tf','/a200_0656/tf'),('/tf_static','/a200_0656/tf_static'),  ('/a200_0656/vtr/command', '/a200_0656/joy_teleop/cmd_vel')],
+            remappings=[('/tf','/vtr/tf'),('/tf_static','/vtr/tf_static'),  ('/a200_0656/vtr/command', '/a200_0656/joy_teleop/cmd_vel')],
             condition=LaunchConfigurationEquals('data_dir', '')
         ),
     ])
