@@ -176,6 +176,7 @@ auto ConversionExtractionModule::Config::fromROS(
   config->feature_type = node->declare_parameter<std::string>(param_prefix + ".extractor.type", config->feature_type);
   config->visualize_disparity = node->declare_parameter<bool>(param_prefix + ".extractor.visualize_disparity", config->visualize_disparity);
   config->visualize = node->declare_parameter<bool>(param_prefix + ".visualize", config->visualize);
+  config->visualize_topic = node->declare_parameter<bool>(param_prefix + ".visualize_topic", config->visualize_topic);
 
   #ifdef VTR_VISION_LEARNED 
   config->use_learned = node->declare_parameter<bool>(param_prefix + ".extractor.use_learned", config->use_learned);
@@ -353,14 +354,13 @@ void ConversionExtractionModule::run_(tactic::QueryCache &qdata0, tactic::Output
 
   if (config_->visualize){
     //CLOG(INFO, "stereo.matcher") << "Visualize";
-    visualize::showRGBImage(*qdata.vis_mutex, qdata, "left");
+    visualize::showRGBImage(*qdata.vis_mutex, qdata, "left", config_->visualize_topic);
     if (config_->visualize_raw_features)  // check if visualization is enabled
       //CLOG(INFO, "stereo.matcher") << "Visualize raw features";
-      visualize::showRawFeatures(*qdata.vis_mutex, qdata, " raw features");
-
+      visualize::showRawFeatures(*qdata.vis_mutex, qdata, "_raw_features", config_->visualize_topic);
     if (config_->visualize_disparity)  // check if visualization is enabled
       //CLOG(INFO, "stereo.matcher") << "Visualize disparity";
-      visualize::showDisparity(*qdata.vis_mutex, qdata, " disparity");
+      visualize::showDisparity(*qdata.vis_mutex, qdata, "disparity");
   }
 }
 

@@ -53,6 +53,7 @@ class ImageTriangulationModule : public tactic::BaseModule {
     bool visualize_features = true;
     bool visualize_stereo_features = true;
     bool visualize = false;
+    bool visualize_topic = false;
     float min_triangulation_depth = 0.01;
     float max_triangulation_depth = 500.0;
 

@@ -216,6 +216,7 @@ if(${ITERATION_BUILD_VISION} EQUAL 11)
   src/geometry/*.cpp
   src/features/extractor/*.cpp
   src/features/matcher/*.cpp
+  src/image_publisher.cpp
   )
 endif() 
 

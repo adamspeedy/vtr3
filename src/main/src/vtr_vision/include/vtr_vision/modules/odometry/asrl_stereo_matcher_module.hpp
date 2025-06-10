@@ -110,6 +110,9 @@ class ASRLStereoMatcherModule : public tactic::BaseModule {
     /** \brief Whether or not to visualise the matches */
     bool visualize_feature_matches = false;
 
+    /** \brief Whether or not to use cv2 window or ros2 topic */
+    bool visualize_topic = false;
+
     /** \brief How many features are found to constitute a success */
     unsigned int min_matches = 1;
 

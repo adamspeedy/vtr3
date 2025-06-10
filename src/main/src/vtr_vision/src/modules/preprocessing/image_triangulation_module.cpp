@@ -37,6 +37,7 @@ auto ImageTriangulationModule::Config::fromROS(
   config->visualize_features = node->declare_parameter<bool>(param_prefix + ".visualize_features", config->visualize_features);
   config->visualize_stereo_features = node->declare_parameter<bool>(param_prefix + ".visualize_stereo_features", config->visualize_stereo_features);
   config->visualize = node->declare_parameter<bool>(param_prefix + ".visualize", config->visualize);
+  config->visualize_topic = node->declare_parameter<bool>(param_prefix + ".visualize_topic", config->visualize_topic);
   config->min_triangulation_depth = node->declare_parameter<float>(param_prefix + ".min_triangulation_depth", config->min_triangulation_depth);
   config->max_triangulation_depth = node->declare_parameter<float>(param_prefix + ".max_triangulation_depth", config->max_triangulation_depth);
   // clang-format on
@@ -158,9 +159,9 @@ void ImageTriangulationModule::run_(tactic::QueryCache &qdata0, tactic::OutputCa
   }
   if (config_->visualize){
     if (config_->visualize_features)
-      visualize::showFeatures(*qdata.vis_mutex, qdata, " features");
+      visualize::showFeatures(*qdata.vis_mutex, qdata, "_features", config_->visualize_topic);
     if (config_->visualize_stereo_features)
-      visualize::showStereoMatches(*qdata.vis_mutex, qdata, " stereo features");
+      visualize::showStereoMatches(*qdata.vis_mutex, qdata, "_stereo_features", config_->visualize_topic);
   }
 }
 

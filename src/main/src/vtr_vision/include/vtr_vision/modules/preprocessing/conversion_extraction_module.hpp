@@ -94,6 +94,9 @@ class ConversionExtractionModule : public tactic::BaseModule {
 
     /** \brief Flag to determine whether feature matches should be displayed*/
     bool visualize = false;
+
+    /** \brief Flag to determine whether to print out image in topic or as cv2 window */
+    bool visualize_topic = false;
   };
 
 

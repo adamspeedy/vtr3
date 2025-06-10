@@ -39,6 +39,7 @@ auto RansacModule::Config::fromROS(
   config->early_stop_ratio = node->declare_parameter<double>(param_prefix + ".early_stop_ratio", config->early_stop_ratio);
   config->early_stop_min_inliers = node->declare_parameter<int>(param_prefix + ".early_stop_min_inliers", config->early_stop_min_inliers);
   config->visualize_ransac_inliers = node->declare_parameter<bool>(param_prefix + ".visualize_ransac_inliers", config->visualize_ransac_inliers);
+  config->visualize_topic = node->declare_parameter<bool>(param_prefix + ".visualize_topic", config->visualize_topic);
   config->use_migrated_points = node->declare_parameter<bool>(param_prefix + ".use_migrated_points", config->use_migrated_points);
   config->min_inliers = node->declare_parameter<int>(param_prefix + ".min_inliers", config->min_inliers);
   config->enable_local_opt = node->declare_parameter<bool>(param_prefix + ".enable_local_opt", config->enable_local_opt);
@@ -234,10 +235,10 @@ void RansacModule::run_(tactic::QueryCache &qdata0, tactic::OutputCache &output,
   if (config_->visualize_ransac_inliers) {
     if (config_->use_migrated_points){
       visualize::showMelMatches(*qdata.vis_mutex, qdata, graph,
-                               "multi-exp-loc");
+                               "multi_exp_loc", config_->visualize_topic);
     }  else if (qdata.ransac_matches.valid())
       visualize::showMatches(*qdata.vis_mutex, qdata, *qdata.ransac_matches,
-                             " RANSAC matches");
+                             "_RANSAC_matches", false,  config_->visualize_topic);
   }
 
 }

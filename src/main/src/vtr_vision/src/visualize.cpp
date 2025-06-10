@@ -30,6 +30,21 @@ namespace vtr {
 namespace vision {
 namespace visualize {
 
+
+// Global image publisher instance
+static std::shared_ptr<ImagePublisher> g_image_publisher = nullptr;
+
+// Function to set the image publisher
+void setImagePublisher(std::shared_ptr<ImagePublisher> publisher) {
+  g_image_publisher = publisher;
+}
+
+// Function to get the current image publisher if we wanna use it again
+std::shared_ptr<ImagePublisher> getImagePublisher() {
+  return g_image_publisher;
+}
+
+
 cv::Mat setupDisplayImage(cv::Mat input_image) {
   // create a visualization image to draw on.
   cv::Mat display_image;
@@ -65,7 +80,7 @@ std::map<std::string, cv::Mat> setupDisplayImages(CameraQueryCache &qdata,
 }
 
 void showRGBImage(std::mutex &vis_mutex, CameraQueryCache &qdata,
-                       std::string suffix) {
+                       std::string suffix, bool use_topic) {
   if (!qdata.rig_images.valid()) {
     return;
   }
@@ -81,13 +96,19 @@ void showRGBImage(std::mutex &vis_mutex, CameraQueryCache &qdata,
   // show the images
   {
     std::lock_guard<std::mutex> lock(vis_mutex);
-    cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
-    cv::imshow(title, display_image);
+    if(!use_topic)
+    { 
+      cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
+      cv::imshow(title, display_image);
+    }
+    else{
+      g_image_publisher->publishImage(display_image, "/visualization/rgb_image");
+    }
   }
 }
 
 void showStereoMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
-                       std::string suffix) {
+                       std::string suffix, bool use_topic) {
   // check if the required data is in the cache
   if (!qdata.rig_images.valid() || !qdata.rig_features.valid() ||
       !qdata.candidate_landmarks.valid()) {
@@ -179,8 +200,20 @@ void showStereoMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
         // show the images
         {
           std::lock_guard<std::mutex> lock(vis_mtx);
-          cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
-          cv::imshow(title, display_image);
+          if(!use_topic)
+          {
+            cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
+            cv::imshow(title, display_image);
+          }
+          else
+          {
+            if (feature_channel_itr->name == "cc_0.430000"){
+              g_image_publisher->publishImage(display_image, "/visualization/"+feature_itr->name + "/cc"+suffix);
+            }
+            else{
+              g_image_publisher->publishImage(display_image, "/visualization/"+title);
+            }
+          }
         }
       }  // end for channel
     }    // end for rig
@@ -224,7 +257,7 @@ void showDisparity(std::mutex &vis_mtx, CameraQueryCache &qdata, std::string suf
 }
 
 void showRawFeatures(std::mutex &vis_mtx, CameraQueryCache &qdata,
-                     std::string suffix) {
+                     std::string suffix, bool use_topic) {
   // check if the required data is in the cache
   if (!qdata.rig_images.valid() || !qdata.rig_features.valid()) return;
 
@@ -279,8 +312,19 @@ void showRawFeatures(std::mutex &vis_mtx, CameraQueryCache &qdata,
         // show the images
         {
           std::lock_guard<std::mutex> lock(vis_mtx);
-          cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
-          cv::imshow(title2, display_image);
+          if (!use_topic){
+            cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
+            cv::imshow(title2, display_image);
+          }
+          else{
+            if (feature_channel_itr->name == "cc_0.430000")
+            {
+              g_image_publisher->publishImage(display_image, "/visualization/"+features_itr->name + "/cc/" + feature_camera_itr->name +suffix);
+            }
+            else{
+              g_image_publisher->publishImage(display_image, "/visualization/"+title2);
+            }
+          } 
         }
 
       }  // end for camera
@@ -293,7 +337,7 @@ void showRawFeatures(std::mutex &vis_mtx, CameraQueryCache &qdata,
 }
 
 void showFeatures(std::mutex &vis_mtx, CameraQueryCache &qdata,
-                  std::string suffix) {
+                  std::string suffix, bool use_topic) {
   // check if the required data is in the cache
   if (!qdata.rig_images.valid() || !qdata.rig_features.valid() ||
       !qdata.candidate_landmarks.valid()) {
@@ -359,10 +403,20 @@ void showFeatures(std::mutex &vis_mtx, CameraQueryCache &qdata,
         // show the images
         {
           std::lock_guard<std::mutex> lock(vis_mtx);
-          cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
-          cv::imshow(title2, display_image);
+          if (!use_topic)
+          {
+            cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
+            cv::imshow(title2, display_image);
+          }
+          else{
+            if (feature_channel_itr->name == "cc_0.430000"){
+              g_image_publisher->publishImage(display_image, "/visualization/"+features_itr->name + "/cc/" + feature_camera_itr->name +suffix);
+            }
+            else{
+              g_image_publisher->publishImage(display_image, "/visualization/"+title2);
+            }
+          }
         }
-
       }  // end for camera
     }    // end for channel
   }      // end for rig
@@ -374,14 +428,14 @@ void showFeatures(std::mutex &vis_mtx, CameraQueryCache &qdata,
 
 void showMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
                  std::vector<vtr::vision::RigMatches> &matches,
-                 std::string suffix, bool plot_prediction) {
+                 std::string suffix, bool plot_prediction, bool use_topic) {
   // check if the required data is in the cache
   if (!qdata.rig_images.valid() || !qdata.rig_features.valid() ||
       !qdata.candidate_landmarks.valid() ||
       !qdata.map_landmarks.valid()) {
     return;
   }
-
+  CLOG(INFO, "stereo.visualization") << "showing topic: " << use_topic;
   // make a track color for valid grayscale
   cv::Scalar validTrackColor(203, 201, 40);
 
@@ -626,8 +680,20 @@ void showMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
       // show the images
       {
         std::lock_guard<std::mutex> lock(vis_mtx);
-        cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
-        cv::imshow(title, display_image);
+        if(!use_topic)
+        {
+          cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
+          cv::imshow(title, display_image);
+        }
+        else
+        {
+          if (feature_channel_itr->name == "cc_0.430000"){
+            g_image_publisher->publishImage(display_image, "/visualization/"+features_itr->name + "/cc/" + feature_camera_itr->name +suffix);
+          }
+          else{
+            g_image_publisher->publishImage(display_image, "/visualization/"+title);
+          } 
+        }
       }
     }  // end for channel
   }    // end for rig
@@ -695,7 +761,7 @@ cv::Scalar getChannelColor(std::string channel_name) {
 
 void showMelMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
                     const pose_graph::RCGraph::ConstPtr &graph,
-                    std::string suffix) {
+                    std::string suffix, bool use_topic) {
   // check if the required data is in the cache
   if (!qdata.rig_names.valid() || !qdata.map_landmarks.valid() ||
       !qdata.ransac_matches.valid() ||
@@ -808,9 +874,21 @@ void showMelMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
 
       // show the images
       {
+        
         std::lock_guard<std::mutex> lock(vis_mtx);
-        cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
-        cv::imshow(title, display_image);
+        if (!use_topic)
+        {
+          cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
+          cv::imshow(title, display_image);
+        }
+        else{
+          if (query_landmarks[0].observations.channels.back().name == "cc_0.430000"){
+            g_image_publisher->publishImage(display_image, "/visualization/"+query_landmarks[0].observations.name + "/cc/"+query_landmarks[0].observations.channels.back().cameras[0].name + suffix);
+          }
+          else{
+            g_image_publisher->publishImage(display_image, "/visualization/"+title);
+          }
+        }
       }
     }
   }

@@ -79,6 +79,8 @@ class RansacModule : public tactic::BaseModule {
     /** \brief Visualize the inliers */
     bool visualize_ransac_inliers = true;
 
+    /** \brief Whether to use ros2 topic or cv2 window */
+    bool visualize_topic =false;
     /**
      * \brief Use points migrated from other views into the current view (only
      * for localization)

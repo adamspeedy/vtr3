@@ -58,6 +58,7 @@ auto ASRLStereoMatcherModule::Config::fromROS(
   config->parallel_threads = 1;
 #endif
   config->visualize_feature_matches = node->declare_parameter<bool>(param_prefix + ".visualize_feature_matches", config->visualize_feature_matches);
+  config->visualize_topic = node->declare_parameter<bool>(param_prefix + ".visualize_topic", config->visualize_topic);
   // clang-format on
 
   return config;
@@ -86,7 +87,7 @@ void ASRLStereoMatcherModule::run_(tactic::QueryCache &qdata0, tactic::OutputCac
   if (config_->visualize_feature_matches &&
       qdata.raw_matches.valid())
     visualize::showMatches(*qdata.vis_mutex, qdata, *qdata.raw_matches,
-                           " raw matches", true);
+                           "_raw_matches", true, config_->visualize_topic);
                            // purple --> predictor
                            // light blue --> invalid
                            // yellow --> valid greyscale

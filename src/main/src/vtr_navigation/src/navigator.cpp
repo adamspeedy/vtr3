@@ -37,6 +37,7 @@ using namespace vtr::tactic;
 using namespace vtr::path_planning;
 using namespace vtr::route_planning;
 using namespace vtr::mission_planning;
+using namespace vtr::vision::visualize;
 
 namespace {
 
@@ -120,6 +121,10 @@ Navigator::Navigator(const rclcpp::Node::SharedPtr& node) : node_(node) {
       tactic_, route_planner_, path_planner_, mission_server_);
   mission_server_->start(node_, state_machine_);
 
+  /// image topic publisher Add commentMore actions
+  publisher_ = std::make_shared<ImagePublisher>(node_);
+  vtr::vision::visualize::setImagePublisher(publisher_);
+  
   /// robot and sensor transformation, subscription
   // clang-format off
   callback_group_ = node_->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
@@ -182,6 +187,8 @@ Navigator::~Navigator() {
   /// explicitly destruct each building block in order to emplasize the order of
   /// destruction -> although it is not necessary since we declare them in the
   /// correct order in the class
+  publisher_.reset();
+  vtr::vision::visualize::getImagePublisher().reset();
   state_machine_.reset();
   mission_server_.reset();
   route_planner_.reset();

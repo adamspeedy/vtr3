@@ -25,10 +25,14 @@
 
 #include <vtr_vision/cache.hpp>
 #include <vtr_vision/types.hpp>
+#include <vtr_vision/image_publisher.hpp>
 
 namespace vtr {
 namespace vision {
 namespace visualize {
+
+void setImagePublisher(std::shared_ptr<ImagePublisher> publisher);
+std::shared_ptr<ImagePublisher> getImagePublisher();
 
 /**
  * \brief Sets up a map of RGB images used for visualization, based on all of
@@ -38,30 +42,30 @@ std::map<std::string, cv::Mat> setupDisplayImages(CameraQueryCache &qdata,
                                                   std::string suffix = "");
 
 void showRGBImage(std::mutex &vis_mtx, CameraQueryCache &qdata,
-                       std::string suffix = "");
+                       std::string suffix = "", bool use_topic = false);
 
 /** \brief */
 void showStereoMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
-                       std::string suffix = "");
+                       std::string suffix = "", bool use_topic =false);
 
 /** \brief Adds visual features with depth coloring to the display images. */
 void showRawFeatures(std::mutex &vis_mtx, CameraQueryCache &qdata,
-                     std::string suffix = "");
+                     std::string suffix = "", bool use_topic = false);
 
 /** \brief Adds visual features with depth coloring to the display images. */
 void showFeatures(std::mutex &vis_mtx, CameraQueryCache &qdata,
-                  std::string suffix = "");
+                  std::string suffix = "", bool use_topic = false);
 
 /** \brief */
 
 void showMelMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
                     const pose_graph::RCGraph::ConstPtr &graph,
-                    std::string suffix = "");
+                    std::string suffix = "", bool use_topic = false);
 
 /** \brief Adds visual features with depth coloring to the display images. */
 void showMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
                  std::vector<vision::RigMatches> &matches,
-                 std::string suffix = "", bool plot_prediction = false);
+                 std::string suffix = "", bool plot_prediction = false, bool use_topic = false);
 
 /** \brief Adds disparity images for display. */
 void showDisparity(std::mutex &vis_mtx, CameraQueryCache &qdata, 
