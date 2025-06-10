@@ -36,8 +36,8 @@
 
     robot_frame: base_link
     camera_frame: camera #lidar3d_0_laser #camera
-    camera_left_topic: /zed/zed_node/left/image_rect_color #/zed/zed_node/left_raw/image_raw_color   #/zed_multi/zedx/left/image_rect_color  /camera/bumblebee_left/image_color    
-    camera_right_topic: /zed/zed_node/right/image_rect_color #/zed/zed_node/right_raw/image_raw_color #/zed_multi/zedx/right/image_rect_color /camera/bumblebee_right/image_color 
+    camera_left_topic: /zed/zed_node/left_gray/image_rect_gray    
+    camera_right_topic: /zed/zed_node/right_gray/image_rect_gray
 
     ############ map projection configuration ############
     graph_projection:
@@ -123,17 +123,17 @@
         - 1.0
           
         baseline: 0.12 #0.12
-        target_width: 0 #640  #used for resizing
+        target_width: 640  #used for resizing
         rig_name: "stereo"
 
       extraction:
         type: stereo.conversion_extraction
-        visualize: true
+        visualize: false
         visualize_raw_features: true
 
         # specify which conversions to do between different image formats from:
         # RGB_TO_GRAYSCALE, RGB_TO_COLOR_CONSTANT
-        conversions: ["RGB_TO_GRAYSCALE"] #, "RGB_TO_COLOR_CONSTANT"
+        conversions: ["RGB_TO_GRAYSCALE"] #
         color_constant:
           weights: [0.43]
           histogram_equalization: false
@@ -200,7 +200,7 @@
             regions_target: 1000 #8192 #1000 
             stereoDisparityMinimum: 0.0
             stereoDisparityMaximum: 200.0
-            stereoCorrelationThreshold: 0.4
+            stereoCorrelationThreshold: 0.5
             stereoYTolerance: 0.9
             stereoScaleTolerance: 0.1
 
@@ -262,7 +262,7 @@
         min_inliers: 10
         mask_depth: 200.0
         mask_depth_inlier_count: 0
-        use_covariance: true
+        use_covariance: false
         is_odometry: true
         enable_local_opt: true
         num_threads: 1
@@ -284,7 +284,7 @@
         growCoeff: 3.0
         maxShrinkSteps: 50
 
-        perform_planarity_check: false
+        perform_planarity_check: true
         plane_distance: 20.0
 
         min_point_depth: 0.0
@@ -294,7 +294,7 @@
 
         disable_solver: true # Set true to do everything but run optimise()
 
-        use_T_q_m_prior: false
+        use_T_q_m_prior: true
 
         ## sample and save trajectory results to disk
         save_trajectory: true
@@ -487,7 +487,7 @@
         parallel_threads: 8
         match_on_gpu: false
         match_gpu_knn_match_num: 8
-        visualize: true
+        visualize: false
 
       ransac:
         # the module type (don't change this param)
@@ -500,7 +500,7 @@
         threshold: 10.0
         early_stop_ratio: 1.0
         early_stop_min_inliers: 400
-        visualize_ransac_inliers: true
+        visualize_ransac_inliers: false
         use_migrated_points: true
         min_inliers: 6
 
