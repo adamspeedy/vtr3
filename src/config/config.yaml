@@ -5,7 +5,7 @@
     start_new_graph: true
     log_to_file: true
     log_debug: true
-    data_dir: /home/adam/Desktop/CurrentBranch
+    data_dir: /home/vtr
     log_enabled: 
       [
         # "navigation",
@@ -21,10 +21,10 @@
         # "tactic.module",
         # "odometry",
         # "stereo.recall",
-        # "stereo.matcher",
+        "stereo.matcher",
         # "stereo.triangulation",
         # "stereo.vertex_test",
-        # "stereo.ransac",
+        "stereo.ransac",
         # "mission.state_machine",
         # "stereo.features",
         # "stereo.keyframe_optimization",
@@ -42,8 +42,8 @@
 
     robot_frame: base_link
     camera_frame: camera 
-    camera_left_topic: /zed/zed_node/left/image_rect_color #/zed/zed_node/left_gray/image_rect_gray
-    camera_right_topic: /zed/zed_node/right/image_rect_color #/zed/zed_node/right_gray/image_rect_gray
+    camera_left_topic: /camera/bumblebee_left/image_color  #/zed/zed_node/left_gray/image_rect_gray
+    camera_right_topic: /camera/bumblebee_right/image_color #/zed/zed_node/right_gray/image_rect_gray
 
     ############ map projection configuration ############
     graph_projection:
@@ -116,8 +116,9 @@
 
       extraction:
         type: stereo.conversion_extraction
-        visualize: false
+        visualize: true
         visualize_raw_features: true
+        visualize_topic: true
 
         # specify which conversions to do between different image formats from:
         # RGB_TO_GRAYSCALE, RGB_TO_COLOR_CONSTANT
@@ -194,11 +195,12 @@
 
       triangulation:
         type: image_triangulation
-        visualize: false  # shows the depth
+        visualize: true  # shows the depth
         min_triangulation_depth: 0.01
         max_triangulation_depth: 500.0
-        visualize_features: false # shows match
-        visualize_stereo_features: true  # shows the matches between stereo pair
+        visualize_features: true # shows match
+        visualize_stereo_features: false  # shows the matches between stereo pair
+        visualize_topic: true
 
     odometry:
       recall:
@@ -232,6 +234,7 @@
         descriptor_thresh: 0.2   
         parallel_threads: 8
         visualize_feature_matches: true
+        visualize_topic: true
         min_matches: 10
 
       ransac:
@@ -246,6 +249,7 @@
         early_stop_ratio: 0.8
         early_stop_min_inliers: 200
         visualize_ransac_inliers: true
+        visualize_topic: true
         use_migrated_points: false
         min_inliers: 5
         mask_depth: 200.0
@@ -485,6 +489,7 @@
         early_stop_ratio: 1.0
         early_stop_min_inliers: 400
         visualize_ransac_inliers: true
+        visualize_topic: true
         use_migrated_points: true
         min_inliers: 6
 
