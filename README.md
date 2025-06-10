@@ -7,7 +7,7 @@ git clone --recurse-submodules git@github.com:adamspeedy/vtr3.git
 ```
 To build the ros2 packages navigate to the 'main' directory and build all of the packages using the below command:
 ```
-VTR_PIPELINE=VISION colcon build  --symlink-install --executor sequential
+colcon build  --symlink-install --executor sequential
 ```
 It is important to use symlink install otherwise we will need to manually set some directories, especially for our web application in the vtr_gui package.
 
