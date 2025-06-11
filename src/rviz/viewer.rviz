@@ -4,11 +4,13 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /TF1/Frames1
+        - /TF1/Tree1/robot1/base_link1/default_mount1
         - /Teach Path1/Topic1
         - /Image1
         - /Image2
-      Splitter Ratio: 0.4507042169570923
-    Tree Height: 361
+      Splitter Ratio: 0.4529411792755127
+    Tree Height: 892
   - Class: rviz_common/Selection
     Name: Selection
   - Class: rviz_common/Tool Properties
@@ -34,7 +36,7 @@ Visualization Manager:
       Cell Size: 1
       Class: rviz_default_plugins/Grid
       Color: 160; 160; 164
-      Enabled: false
+      Enabled: true
       Line Style:
         Line Width: 0.029999999329447746
         Value: Lines
@@ -47,7 +49,7 @@ Visualization Manager:
       Plane: XY
       Plane Cell Count: 10
       Reference Frame: robot
-      Value: false
+      Value: true
     - Class: rviz_default_plugins/Axes
       Enabled: false
       Length: 1
@@ -59,7 +61,7 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 99999
       Frames:
-        All Enabled: false
+        All Enabled: true
         base_link:
           Value: true
         camera:
@@ -71,22 +73,23 @@ Visualization Manager:
         robot:
           Value: true
         world:
-          Value: false
+          Value: true
         world (offset):
-          Value: false
+          Value: true
       Marker Scale: 4
       Name: TF
       Show Arrows: false
       Show Axes: true
       Show Names: true
       Tree:
+        robot:
+          base_link:
+            default_mount:
+              camera:
+                {}
         world:
           odo vertex frame:
-            robot:
-              base_link:
-                default_mount:
-                  camera:
-                    {}
+            {}
           world (offset):
             {}
       Update Interval: 0
@@ -263,7 +266,7 @@ Visualization Manager:
       Class: rviz_default_plugins/Map
       Color Scheme: costmap
       Draw Behind: false
-      Enabled: true
+      Enabled: false
       Name: Obstacle Detections
       Topic:
         Depth: 5
@@ -279,7 +282,7 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /vtr/change_detection_costmap_updates
       Use Timestamp: false
-      Value: true
+      Value: false
     - Alpha: 0.699999988079071
       Class: rviz_default_plugins/Map
       Color Scheme: raw
@@ -307,7 +310,7 @@ Visualization Manager:
       Axes Radius: 0.009999999776482582
       Class: rviz_default_plugins/PoseArray
       Color: 0; 0; 0
-      Enabled: false
+      Enabled: true
       Head Length: 0.15000000596046448
       Head Radius: 0.05000000074505806
       Name: MPC Tracking Reference Poses
@@ -321,14 +324,14 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /vtr/mpc_ref_pose_array_tracking
-      Value: false
+      Value: true
     - Alpha: 1
       Arrow Length: 0.30000001192092896
       Axes Length: 0.30000001192092896
       Axes Radius: 0.009999999776482582
       Class: rviz_default_plugins/PoseArray
       Color: 255; 255; 255
-      Enabled: false
+      Enabled: true
       Head Length: 0.15000000596046448
       Head Radius: 0.10000000149011612
       Name: MPC Homotopy Reference Poses
@@ -342,9 +345,9 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /vtr/mpc_ref_pose_array_homotopy
-      Value: false
+      Value: true
     - Class: rviz_default_plugins/Image
-      Enabled: false
+      Enabled: true
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -355,8 +358,8 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /visualization/rgb_image
-      Value: false
+        Value: /visualization/stereo/grayscale/left_features
+      Value: true
     - Class: rviz_default_plugins/Image
       Enabled: true
       Max Value: 1
@@ -374,7 +377,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 189; 189; 189
-    Fixed Frame: world
+    Fixed Frame: base_link
     Frame Rate: 30
   Name: root
   Tools:
@@ -416,7 +419,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: 0.3250000476837158
+      Angle: 7.301568984985352e-07
       Class: rviz_default_plugins/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
@@ -426,11 +429,11 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 10
+      Scale: 47.48372268676758
       Target Frame: robot
       Value: TopDownOrtho (rviz_default_plugins)
-      X: 12.343294143676758
-      Y: -3.8882362842559814
+      X: 0.5225845575332642
+      Y: -0.37542253732681274
     Saved:
       - Class: rviz_default_plugins/Orbit
         Distance: 111.39698028564453
@@ -637,10 +640,10 @@ Window Geometry:
     collapsed: false
   Height: 1043
   Hide Left Dock: false
-  Hide Right Dock: true
+  Hide Right Dock: false
   Image:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd000000040000000000000281000003bdfc0200000009fc0000003d000001a20000000000fffffffaffffffff0100000002fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730000000000ffffffff0000008c00fffffffb0000001200530065006c0065006300740069006f006e0000000000000002530000006c00fffffffb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afc0000003b000001a4000000c700fffffffa000000010100000002fb0000000a0049006d0061006700650000000000ffffffff0000000000000000fb000000100044006900730070006c0061007900730100000000000002810000015600fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d00610067006500000001da000000d40000002800fffffffb0000000a0049006d00610067006501000001e5000002130000002800ffffff00000001000001c0000003bdfc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003b000003bd000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000005000000006efc0100000002fb0000000800540069006d00650000000000000005000000025300fffffffb0000000800540069006d00650100000000000004500000000000000000000004b3000003bd00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd000000040000000000000156000003b9fc0200000007fc0000003d000001a20000000000fffffffaffffffff0100000002fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730000000000ffffffff0000009d00fffffffb0000001200530065006c0065006300740069006f006e0000000000000002530000007400fffffffb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afc0000003d000003b9000000c900fffffffa000000010100000002fb0000000a0049006d0061006700650000000000ffffffff0000000000000000fb000000100044006900730070006c0061007900730100000000000002810000015600fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c0000026100000001000002e2000003b9fc0200000006fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a0049006d006100670065010000003d000001dd0000000000000000fb0000000a0049006d006100670065010000003d000001e50000002800fffffffb0000000a0049006d0061006700650100000228000001ce0000002800fffffffc0000021a000001dc0000000000fffffffa000000000100000002fb0000000a0049006d0061006700650100000000ffffffff0000000000000000fb0000000a0056006900650077007300000005eb0000014f0000010000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000005000000006efc0100000002fb0000000800540069006d0065000000000000000500000002fb00fffffffb0000000800540069006d00650100000000000004500000000000000000000002f6000003b900000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -648,7 +651,7 @@ Window Geometry:
   Tool Properties:
     collapsed: false
   Views:
-    collapsed: true
+    collapsed: false
   Width: 1850
-  X: 70
+  X: 1990
   Y: 0
