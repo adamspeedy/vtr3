@@ -118,19 +118,12 @@ void RansacModule::run_(tactic::QueryCache &qdata0, tactic::OutputCache &output,
   bool &success = (config_->is_odometry)? *qdata.odo_success : *qdata.loc_success;
 
 
-  CLOG(DEBUG, "stereo.ransac") << "Now processing second frame!";
-
   // make sure the offsets are not holding any old info
   map_channel_offsets_.clear();
   query_channel_offsets_.clear();
 
-  CLOG(DEBUG, "stereo.ransac") << "Generating RANSAC sampler!";
-
   // Set up the ransac implementation
   auto sampler = generateRANSACSampler(qdata);
-
-
-  CLOG(DEBUG, "stereo.ransac") << "Generating Filter Matches!";
 
   // filter the raw matches as necessary
   auto filtered_matches = generateFilteredMatches(qdata);
@@ -142,15 +135,12 @@ void RansacModule::run_(tactic::QueryCache &qdata0, tactic::OutputCache &output,
   auto &rig_matches = filtered_matches[rig_idx];
 
 
-  CLOG(DEBUG, "stereo.ransac") << "Setting up Vanila RANSAC!";
-
   // \todo (Old) Set up config.
   vision::VanillaRansac<Eigen::Matrix4d> ransac(
       sampler, config_->sigma, config_->threshold, config_->iterations,
       config_->early_stop_ratio, config_->early_stop_min_inliers,
       config_->enable_local_opt, config_->num_threads);
 
-  CLOG(DEBUG, "stereo.ransac") << "Generate RANSAC model!";
 
   // Problem specific
   auto ransac_model = generateRANSACModel(qdata);
