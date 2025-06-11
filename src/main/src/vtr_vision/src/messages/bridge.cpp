@@ -303,6 +303,8 @@ cv::Mat wrapImage(const vtr_vision_msgs::msg::Image &asrl_image) {
     return cv::Mat(cv::Size(width, height), CV_8UC1, (void *)data.data());
   } else if (encoding == "bgr8") {
     return cv::Mat(cv::Size(width, height), CV_8UC3, (void *)data.data());
+  } else if (encoding == "bgra8") {
+    return cv::Mat(cv::Size(width, height), CV_8UC4, (void *)data.data()); 
   } else {
     return cv::Mat();
   }
