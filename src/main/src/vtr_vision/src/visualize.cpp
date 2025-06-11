@@ -303,7 +303,7 @@ void showRawFeatures(std::mutex &vis_mtx, CameraQueryCache &qdata,
         tostr << feature_camera_itr->keypoints.size();
         cv::putText(display_image,
                     std::string("Features: " + tostr.str()).c_str(),
-                    cv::Point(25, 25), cv::FONT_HERSHEY_SIMPLEX, 0.5,
+                    cv::Point(25, 25), cv::FONT_HERSHEY_DUPLEX, 1,
                     cv::Scalar(0, 255, 0), 1);
 
         auto title2 = features_itr->name + "/" + feature_channel_itr->name +
@@ -394,7 +394,7 @@ void showFeatures(std::mutex &vis_mtx, CameraQueryCache &qdata,
         tostr << feature_camera_itr->keypoints.size();
         cv::putText(display_image,
                     std::string("Features: " + tostr.str()).c_str(),
-                    cv::Point(25, 25), cv::FONT_HERSHEY_SIMPLEX, 0.5,
+                    cv::Point(25, 25), cv::FONT_HERSHEY_DUPLEX, 1,
                     cv::Scalar(0, 255, 0), 1);
 
         auto title2 = features_itr->name + "/" + feature_channel_itr->name +
@@ -674,7 +674,7 @@ void showMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
       std::ostringstream tostr;
       tostr << match_channel_itr->matches.size();
       cv::putText(display_image, std::string("Matches: " + tostr.str()).c_str(),
-                  cv::Point(25, 25), cv::FONT_HERSHEY_SIMPLEX, 0.5,
+                  cv::Point(25, 25), cv::FONT_HERSHEY_DUPLEX, 1,
                   cv::Scalar(0, 255, 0), 1);
 
       // show the images
@@ -869,7 +869,7 @@ void showMelMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
                    << sqrt(T_q_m.cov()(1, 1)) * 100 << "cm,"
                    << sqrt(T_q_m.cov()(5, 5)) * 57.29577 << "deg)";
       cv::putText(display_image, display_text.str().c_str(), cv::Point(25, 370),
-                  cv::FONT_HERSHEY_TRIPLEX, 1.0, cv::Scalar(255, 255, 255, 125),
+                  cv::FONT_HERSHEY_DUPLEX, 1.0, cv::Scalar(255, 255, 255, 125),
                   3);
 
       // show the images
