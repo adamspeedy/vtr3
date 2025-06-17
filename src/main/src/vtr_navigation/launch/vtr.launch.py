@@ -82,7 +82,7 @@ def generate_launch_description():
               },
                 PathJoinSubstitution((config_dir, LaunchConfiguration("override_params")))
             ],
-            remappings=[('/tf','/vtr/tf'),('/tf_static','/vtr/tf_static'), ('/vtr/command', '/a200_0656/joy_teleop/cmd_vel')],
+            remappings=[('/tf','/vtr/tf'),('/tf_static','/vtr/tf_static')], #, ('/vtr/command', '/a200_0656/joy_teleop/cmd_vel')
             condition=LaunchConfigurationNotEquals('data_dir', '')
         ),
         Node(**commonNodeArgs,
@@ -97,7 +97,7 @@ def generate_launch_description():
                 },
                 PathJoinSubstitution((config_dir, LaunchConfiguration("override_params")))
             ],
-            remappings=[('/tf','/vtr/tf'),('/tf_static','/vtr/tf_static'), ('/vtr/command', '/a200_0656/joy_teleop/cmd_vel')],
+            remappings=[('/tf','/vtr/tf'),('/tf_static','/vtr/tf_static')], #, ('/vtr/command', '/a200_0656/joy_teleop/cmd_vel')
             condition=LaunchConfigurationEquals('data_dir', '')
         ),
     ])
