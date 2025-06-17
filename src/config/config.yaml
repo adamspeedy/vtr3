@@ -42,8 +42,8 @@
 
     robot_frame: base_link
     camera_frame: camera 
-    camera_left_topic: /camera/bumblebee_left/image_color  #/zed/zed_node/left_gray/image_rect_gray
-    camera_right_topic: /camera/bumblebee_right/image_color #/zed/zed_node/right_gray/image_rect_gray
+    camera_left_topic: /zed/zed_node/left_gray/image_rect_gray #/camera/bumblebee_left/image_color  
+    camera_right_topic: /zed/zed_node/right_gray/image_rect_gray #/camera/bumblebee_right/image_color 
 
     ############ map projection configuration ############
     graph_projection:
@@ -100,15 +100,28 @@
         type: stereo.adapter
         distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # rather ue rect images
         intrinsic:
-        - 635.501504
+        - 317.4360046386719
         - 0.0
-        - 491.290857
+        - 244.25711059570312
         - 0.0
-        - 636.319082
-        - 304.354794
+        - 317.4360046386719
+        - 154.8754425048828
         - 0.0
         - 0.0
         - 1.0
+      # adapter:
+      #   type: stereo.adapter
+      #   distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # rather ue rect images
+      #   intrinsic:
+      #   - 635.501504
+      #   - 0.0
+      #   - 491.290857
+      #   - 0.0
+      #   - 636.319082
+      #   - 304.354794
+      #   - 0.0
+      #   - 0.0
+      #   - 1.0
           
         baseline: 0.12 #0.12
         target_width: 0 #  #used for resizing but doesn't look very good
@@ -199,7 +212,7 @@
         min_triangulation_depth: 0.01
         max_triangulation_depth: 500.0
         visualize_features: true # shows match
-        visualize_stereo_features: false  # shows the matches between stereo pair
+        visualize_stereo_features: true  # shows the matches between stereo pair
         visualize_topic: true
 
     odometry:
