@@ -17,9 +17,12 @@ find_package(vtr_common REQUIRED)
 find_package(vtr_common_msgs REQUIRED)
 find_package(vtr_tactic_msgs REQUIRED)
 find_package(vtr_pose_graph_msgs REQUIRED)
+find_package(vtr_vision_msgs)
 find_package(SQLite3 REQUIRED)
 find_package(yaml-cpp REQUIRED)
 find_package(rosbag2_cpp REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(cv_bridge REQUIRED)
 
 
 #message(STATUS "vtr_common include dirs: ${vtr_common_INCLUDE_DIRS}")
@@ -27,6 +30,7 @@ add_executable(lie_converter src/convert_lie_from_file.cpp)
 add_executable(bag_extractor src/convert_lie_from_bag.cpp)
 add_executable(vertex_extractor src/extract_vertex_from_bag.cpp)
 add_executable(localization_extractor src/extract_localization_result.cpp)
+add_executable(image_extractor src/extract_image_from_bag.cpp)
 
 ament_target_dependencies(lie_converter
   rclcpp
@@ -65,6 +69,17 @@ ament_target_dependencies(localization_extractor
   yaml-cpp
 )
 
+ament_target_dependencies(image_extractor
+  rclcpp
+  vtr_common
+  vtr_vision_msgs
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
+  OpenCV
+  cv_bridge
+)
+
 target_include_directories(lie_converter PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
@@ -85,6 +100,11 @@ target_include_directories(localization_extractor PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
+target_include_directories(image_extractor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
 
 # target_link_libraries(lie_converter  vtr_common vtr_common_msgs lgmath)
 # target_include_directories(lie_converter  PUBLIC  ${vtr_common_INCLUDE_DIRS}
@@ -98,7 +118,7 @@ install(
 )
 
 install(
-  TARGETS lie_converter bag_extractor vertex_extractor localization_extractor
+  TARGETS lie_converter bag_extractor vertex_extractor localization_extractor image_extractor
   EXPORT export_${PROJECT_NAME}
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib

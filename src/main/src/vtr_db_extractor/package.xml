@@ -14,6 +14,7 @@
   <depend>vtr_pose_graph_msgs</depend>
   <depend>vtr_common_msgs</depend>
   <depend>vtr_tactic_msgs</depend>
+  <depend>vtr_vision_msgs</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
