@@ -5,15 +5,15 @@
     start_new_graph: true
     log_to_file: true
     log_debug: true
-    data_dir: /home/vtr
+    data_dir: ${VTRROOT}
     log_enabled: 
       [
         # "navigation",
         "navigator",
         # "tactic",
-        "tactic.pipeline",
+        # "tactic.pipeline",
         # "stereo.pipeline",
-        # "tactic.module",
+        "tactic.module",
         # "tactic.module.live_mem_manager",
         # "tactic.module.graph_mem_manager",
         # "stereo.preprocessing",
@@ -21,10 +21,10 @@
         # "tactic.module",
         # "odometry",
         # "stereo.recall",
-        "stereo.matcher",
+        # "stereo.matcher",
         # "stereo.triangulation",
         # "stereo.vertex_test",
-        "stereo.ransac",
+        # "stereo.ransac",
         # "mission.state_machine",
         # "stereo.features",
         # "stereo.keyframe_optimization",
@@ -38,12 +38,13 @@
         # "mpc.solver",
         # "mpc.speed_scheduler",
         # "stereo.migration"
+        # stereo.matcher1
       ]
 
     robot_frame: base_link
     camera_frame: camera 
-    camera_left_topic: /zed/zed_node/left_gray/image_rect_gray #/camera/bumblebee_left/image_color  
-    camera_right_topic: /zed/zed_node/right_gray/image_rect_gray #/camera/bumblebee_right/image_color 
+    camera_left_topic: /camera/bumblebee_left/image_color   #/zed/zed_node/left_gray/image_rect_gray #
+    camera_right_topic: /camera/bumblebee_right/image_color  #/zed/zed_node/right_gray/image_rect_gray 
 
     ############ map projection configuration ############
     graph_projection:
@@ -57,7 +58,7 @@
       enable_parallelization: true
       preprocessing_skippable: false
       odometry_mapping_skippable: false
-      extrapolate_odometry: true # path tracker
+      extrapolate_odometry: false # path tracker
       localization_only_keyframe: true # not used?
       localization_skippable: false # false
       route_completion_translation_threshold: 0.5
@@ -96,23 +97,11 @@
       localization: ["recall", "sub_map_extraction", "tod_recognition", "experience_triage", "migration", "matcher", "ransac", "steam"] 
     
     preprocessing:
-      adapter:
-        type: stereo.adapter
-        distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # rather ue rect images
-        intrinsic:
-        - 317.4360046386719
-        - 0.0
-        - 244.25711059570312
-        - 0.0
-        - 317.4360046386719
-        - 154.8754425048828
-        - 0.0
-        - 0.0
-        - 1.0
       # adapter:
       #   type: stereo.adapter
       #   distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # rather ue rect images
       #   intrinsic:
+      # # zed AUTO
       #   - 635.501504
       #   - 0.0
       #   - 491.290857
@@ -122,7 +111,40 @@
       #   - 0.0
       #   - 0.0
       #   - 1.0
-          
+
+      adapter:
+        type: stereo.adapter
+        distortion: [-0.355383, 0.162485, 0.000701, 0.000319, 0.000000]
+        intrinsic:
+        # bumblebee
+        - 528.83445
+        - 0.0
+        - 337.20848
+        - 0.0
+        - 529.18363
+        - 241.34312
+        - 0.0
+        - 0.0
+        - 1.0
+
+      # adapter:
+      #   type: stereo.adapter
+      #   distortion: [-0.355383, 0.162485, 0.000701, 0.000319, 0.000000]
+      #   intrinsic:
+      # # zed SVGA
+      #   - 318.55499267578125
+      #   - 0.0
+      #   - 242.48599243164062
+      #   - -38.175655364990234
+      #   - 0.0
+      #   - 318.614990234375
+      #   - 154.8937530517578
+      #   - 0.0
+      #   - 0.0
+      #   - 0.0
+      #   - 1.0
+      #   - 0.0
+                  
         baseline: 0.12 #0.12
         target_width: 0 #  #used for resizing but doesn't look very good
         rig_name: "stereo"
@@ -141,7 +163,7 @@
           histogram_equalization: false
 
         extractor:
-          type: OPENCV_ORB #
+          type: OPENCV_ORB #ASRL_GPU_SURF 
           channels: ["grayscale"] #, "cc_0.430000"
           visualize_disparity: false # looks like it needs a disparity channel
 
@@ -153,32 +175,31 @@
             STAR_lineThresholdProjected: 30
             STAR_lineThresholdBinarized: 30
             STAR_suppressNonmaxSize: 3
-            num_detector_features: 3000
+            num_detector_features: 4000
             num_binned_features: 2000
             scaleFactor: 2.0
-            nlevels: 8
-            edgeThreshold: 64
+            nlevels: 4
+            edgeThreshold: 48
             firstLevel: 0
             WTA_K: 2
-            upright_flag: true
+            upright_flag:  true
             orb.num_threads: 8
             scoreType: HARRIS #FAST 
-            patchSize: 32 #64
+            patchSize: 48 #64
             fastThreshold: 5
-            orb.x_bins: 16 #6
-            orb.y_bins: 16 #4
+            orb.x_bins: 8 #6
+            orb.y_bins: 8 #4
             matcher:
-              descriptor_match_thresh: 0.2
+              descriptor_match_thresh: 0.3
               stereo_descriptor_match_thresh: 0.3
               stereo_y_tolerance: 5.0
               stereo_x_tolerance_min: 0.0
               stereo_x_tolerance_max: 64.0
               check_octave: true
               check_response: true
-              min_response_ratio: 0.2
+              min_response_ratio: 0.15
               scale_x_tolerance_by_y: true
-              x_tolerance_scale: 400.0
-
+              x_tolerance_scale: 720.0
 
           surf:
             threshold: 0.000001
@@ -209,7 +230,7 @@
       triangulation:
         type: image_triangulation
         visualize: true  # shows the depth
-        min_triangulation_depth: 0.01
+        min_triangulation_depth: 0.1
         max_triangulation_depth: 500.0
         visualize_features: true # shows match
         visualize_stereo_features: true  # shows the matches between stereo pair
@@ -222,12 +243,12 @@
 
       matcher:
         type: asrl_stereo_matcher
-        check_laplacian_bit: true
+        check_laplacian_bit: false
         check_octave: true
         check_response: true
-        min_response_ratio: 0.2
-        matching_pixel_thresh: 80
-        tight_matching_pixel_thresh: 50
+        min_response_ratio: 0.15
+        matching_pixel_thresh: 70
+        tight_matching_pixel_thresh: 60
 
         # !!! The covariance is currently set to identity * dt*dt,
         # So the sigma will be dt, where dt is the time difference
@@ -248,7 +269,7 @@
         parallel_threads: 8
         visualize_feature_matches: true
         visualize_topic: true
-        min_matches: 10
+        min_matches: 6
 
       ransac:
         type: stereo_ransac
@@ -258,7 +279,7 @@
         iterations: 2000
         flavor: Vanilla
         sigma: 3.5
-        threshold: 5.0
+        threshold: 4.0
         early_stop_ratio: 0.8
         early_stop_min_inliers: 200
         visualize_ransac_inliers: true
