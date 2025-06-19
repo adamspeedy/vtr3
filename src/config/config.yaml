@@ -43,8 +43,8 @@
 
     robot_frame: base_link
     camera_frame: camera 
-    camera_left_topic: /camera/bumblebee_left/image_color   #/zed/zed_node/left_gray/image_rect_gray #
-    camera_right_topic: /camera/bumblebee_right/image_color  #/zed/zed_node/right_gray/image_rect_gray 
+    camera_left_topic: /zed/zed_node/left_gray/image_rect_gray #/camera/bumblebee_left/image_color   
+    camera_right_topic: /zed/zed_node/right_gray/image_rect_gray #/camera/bumblebee_right/image_color  
 
     ############ map projection configuration ############
     graph_projection:
@@ -97,53 +97,49 @@
       localization: ["recall", "sub_map_extraction", "tod_recognition", "experience_triage", "migration", "matcher", "ransac", "steam"] 
     
     preprocessing:
-      # adapter:
-      #   type: stereo.adapter
-      #   distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # rather ue rect images
-      #   intrinsic:
-      # # zed AUTO
-      #   - 635.501504
-      #   - 0.0
-      #   - 491.290857
-      #   - 0.0
-      #   - 636.319082
-      #   - 304.354794
-      #   - 0.0
-      #   - 0.0
-      #   - 1.0
-
       adapter:
         type: stereo.adapter
-        distortion: [-0.355383, 0.162485, 0.000701, 0.000319, 0.000000]
+        # # bumblebee
+        # distortion: [-0.349537, 0.143124, 0.000515, 0.000561, 0.0] #[0.0, 0.0, 0.0, 0.0, 0.0] 
+        # intrinsic:
+        # - 527.1638
+        # - 0.0
+        # - 338.73506
+        # - 0.0
+        # - 526.92709
+        # - 241.73964
+        # - 0.0
+        # - 0.0
+        # - 1.0
+
+
+        # # zed 960/AUTO
+        # distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # rather use rect images
+        # intrinsic:
+        # - 635.501504
+        # - 0.0
+        # - 491.290857
+        # - 0.0
+        # - 636.319082
+        # - 304.354794
+        # - 0.0
+        # - 0.0
+        # - 1.0
+        
+
+      # zed SVGA
+        distortion: [0.0, 0.0, 0.0, 0.0, 0.0]
         intrinsic:
-        # bumblebee
-        - 528.83445
+        - 317.3507995605469
         - 0.0
-        - 337.20848
+        - 244.25711059570312
         - 0.0
-        - 529.18363
-        - 241.34312
+        - 317.3507995605469
+        - 154.87538146972656
         - 0.0
         - 0.0
         - 1.0
 
-      # adapter:
-      #   type: stereo.adapter
-      #   distortion: [-0.355383, 0.162485, 0.000701, 0.000319, 0.000000]
-      #   intrinsic:
-      # # zed SVGA
-      #   - 318.55499267578125
-      #   - 0.0
-      #   - 242.48599243164062
-      #   - -38.175655364990234
-      #   - 0.0
-      #   - 318.614990234375
-      #   - 154.8937530517578
-      #   - 0.0
-      #   - 0.0
-      #   - 0.0
-      #   - 1.0
-      #   - 0.0
                   
         baseline: 0.12 #0.12
         target_width: 0 #  #used for resizing but doesn't look very good

@@ -5,7 +5,7 @@
     start_new_graph: true
     log_to_file: true
     log_debug: true
-    data_dir: /home/vtr #${VTRROOT} 
+    data_dir: ${VTRROOT} 
     log_enabled: 
       [
         # "navigation",
@@ -96,10 +96,23 @@
       localization: ["recall", "sub_map_extraction", "tod_recognition", "experience_triage", "migration", "matcher", "ransac", "steam"] 
     
     preprocessing:
-    #zed 960
       adapter:
         type: stereo.adapter
-        distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # rather ue rect images
+        # bumblebee
+        distortion: [0.0, 0.0, 0.0, 0.0, 0.0]  #[-0.355383, 0.162485, 0.000701, 0.000319, 0.000000]
+        intrinsic:
+        - 528.83445
+        - 0.0
+        - 337.20848
+        - 0.0
+        - 529.18363
+        - 241.34312
+        - 0.0
+        - 0.0
+        - 1.0
+
+        # zed 960/AUTO
+        distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # rather use rect images
         intrinsic:
         - 635.501504
         - 0.0
@@ -110,51 +123,21 @@
         - 0.0
         - 0.0
         - 1.0
-    #Bumblebee
-      adapter:
-        # type: stereo.adapter
-        # distortion: [0.0, 0.0, 0.0, 0.0, 0.0]  #[-0.355383, 0.162485, 0.000701, 0.000319, 0.000000]
-        # intrinsic:
-        # # bumblebee
-        # - 528.83445
-        # - 0.0
-        # - 337.20848
-        # - 0.0
-        # - 529.18363
-        # - 241.34312
-        # - 0.0
-        # - 0.0
-        # - 1.0
-      # adapter:
-      #   type: stereo.adapter
-      #   distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # rather ue rect images
-      #   intrinsic:
-      #   - 634.938232421875
-      #   - 0.0
-      #   - 488.3592529296875
-      #   - 0.0
-      #   - 634.938232421875
-      #   - 309.6714172363281
-      #   - 0.0
-      #   - 0.0
-      #   - 1.0
-      # adapter:
-      #   type: stereo.adapter
-      #   distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # rather ue rect images
-      #   intrinsic:
-      #   # bumblebee
-      #   - 528.83445
-      #   - 0.0
-      #   - 337.20848
-      #   - 0.0
-      #   - 529.18363
-      #   - 241.34312
-      #   - 0.0
-      #   - 0.0
-      #   - 1.0
-      
+        
 
-      
+      # zed SVGA
+        distortion: [-0.355383, 0.162485, 0.000701, 0.000319, 0.000000]
+        intrinsic:
+        - 317.3507995605469
+        - 0.0
+        - 244.25711059570312
+        - 0.0
+        - 317.3507995605469
+        - 154.87538146972656
+        - 0.0
+        - 0.0
+        - 1.0
+
           
         baseline: 0.12 #0.12
         target_width: 0 #  #used for resizing but doesn't look very good
