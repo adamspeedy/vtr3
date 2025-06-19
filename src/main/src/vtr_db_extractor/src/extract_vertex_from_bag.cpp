@@ -173,8 +173,7 @@ int main(int argc, char** argv) {
     VertexBagExtractor extractor(bag_directory);
     auto messages = extractor.extract_messages(-1, "vertices");
     std::cout << "Found " << messages.size() << " messages" << std::endl;
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    std::vector<lgmath::se3::TransformationWithCovariance> transformed_messages;
+
     for (size_t i = 0; i < messages.size(); ++i) {
         std::cout << "\nMessage " << i+1 << ":" << std::endl;
         int temp = messages[i].data.vertex_time.nanoseconds_since_epoch;
