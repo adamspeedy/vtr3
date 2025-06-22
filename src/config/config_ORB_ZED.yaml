@@ -43,8 +43,8 @@
 
     robot_frame: base_link
     camera_frame: camera 
-    camera_left_topic: /zed/zed_node/left_gray/image_rect_gray #/camera/bumblebee_left/image_color   
-    camera_right_topic: /zed/zed_node/right_gray/image_rect_gray #/camera/bumblebee_right/image_color  
+    camera_left_topic: /zed/zed_node/left_gray/image_rect_gray    
+    camera_right_topic: /zed/zed_node/right_gray/image_rect_gray  
 
     ############ map projection configuration ############
     graph_projection:
@@ -99,20 +99,6 @@
     preprocessing:
       adapter:
         type: stereo.adapter
-        # # bumblebee
-        # distortion: [-0.349537, 0.143124, 0.000515, 0.000561, 0.0] #[0.0, 0.0, 0.0, 0.0, 0.0] 
-        # intrinsic:
-        # - 527.1638
-        # - 0.0
-        # - 338.73506
-        # - 0.0
-        # - 526.92709
-        # - 241.73964
-        # - 0.0
-        # - 0.0
-        # - 1.0
-
-
         # # zed 960/AUTO
         # distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # rather use rect images
         # intrinsic:

@@ -42,8 +42,8 @@
 
     robot_frame: base_link
     camera_frame: camera 
-    camera_left_topic: /camera/bumblebee_left/image_color #/zed/zed_node/left_gray/image_rect_gray    
-    camera_right_topic: /camera/bumblebee_right/image_color  #/zed/zed_node/right_gray/image_rect_gray    
+    camera_left_topic: /camera/bumblebee_left/image_color     
+    camera_right_topic: /camera/bumblebee_right/image_color     
 
     ############ map projection configuration ############
     graph_projection:
@@ -107,33 +107,6 @@
         - 0.0
         - 529.18363
         - 241.34312
-        - 0.0
-        - 0.0
-        - 1.0
-
-        # zed 960/AUTO
-        distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # rather use rect images
-        intrinsic:
-        - 635.501504
-        - 0.0
-        - 491.290857
-        - 0.0
-        - 636.319082
-        - 304.354794
-        - 0.0
-        - 0.0
-        - 1.0
-        
-
-      # zed SVGA
-        distortion: [-0.355383, 0.162485, 0.000701, 0.000319, 0.000000]
-        intrinsic:
-        - 317.3507995605469
-        - 0.0
-        - 244.25711059570312
-        - 0.0
-        - 317.3507995605469
-        - 154.87538146972656
         - 0.0
         - 0.0
         - 1.0
