@@ -21,7 +21,7 @@
         # "tactic.module",
         # "odometry",
         # "stereo.recall",
-        # "stereo.matcher",
+        "stereo.matcher",
         # "stereo.triangulation",
         # "stereo.vertex_test",
         # "stereo.ransac",
@@ -39,6 +39,7 @@
         # "mpc.speed_scheduler",
         # "stereo.migration"
         # stereo.matcher1
+        "stereo.mel_matcher",
       ]
 
     robot_frame: base_link
@@ -78,7 +79,7 @@
       live_mem:
         enable: true
         lookahead_distance: 100
-        window_size: 20
+        window_size: 15
       map_mem:
         enable: true
         lookahead_distance: 15
@@ -273,17 +274,17 @@
         ## smoothing factor
         ## zero mean white noise on acceleration
         ## one-sigma standard deviation for linear acceleration (m/s/s)
-        lin_acc_std_dev_x: 0.4 ## lifted from max acceleration in grizzly launch
-        lin_acc_std_dev_y: 0.4 ## grizzly does not strafe very fast
-        lin_acc_std_dev_z: 0.4 ## neither does it jump quickly, except for going over bumps
+        lin_acc_std_dev_x: 1.0 ## lifted from max acceleration in grizzly launch
+        lin_acc_std_dev_y: 1.0 ## grizzly does not strafe very fast
+        lin_acc_std_dev_z: 1.0 ## neither does it jump quickly, except for going over bumps
         ## one-sigma standard devitation for angular acceleration (rad/s/s0)
-        ang_acc_std_dev_x: 0.3 # roll rate, should be low
-        ang_acc_std_dev_y: 0.3 # pitch rate,
-        ang_acc_std_dev_z: 0.3 # yaw rate, approx 2 deg
+        ang_acc_std_dev_x: 1.0 # roll rate, should be low
+        ang_acc_std_dev_y: 1.0 # pitch rate,
+        ang_acc_std_dev_z: 1.0 # yaw rate, approx 2 deg
 
         # Mean for the velocity prior (0 mean is probably what you want)
         velocity_prior: false
-        lin_vel_mean_x: 0.5
+        lin_vel_mean_x: 0.4
         lin_vel_mean_y: 0.0
         lin_vel_mean_z: 0.0
         ang_vel_mean_x: 0.0
@@ -292,15 +293,15 @@
 
         ## standard deviation for velocity prior
         ## linear velocity m/s
-        lin_vel_std_dev_x: 0.2 ## the grizzly is usually within +- 3.0 m/s
+        lin_vel_std_dev_x: 0.3 ## the grizzly is usually within +- 3.0 m/s
         lin_vel_std_dev_y: 0.2
-        lin_vel_std_dev_z: 0.2
+        lin_vel_std_dev_z: 0.01
         ## angular velocity rad/s
-        ang_vel_std_dev_x: 0.2
-        ang_vel_std_dev_y: 0.2
-        ang_vel_std_dev_z: 0.2
+        ang_vel_std_dev_x: 0.1
+        ang_vel_std_dev_y: 0.1
+        ang_vel_std_dev_z: 0.1
 
-        pose_prior_enable: true
+        pose_prior_enable: false
         use_migrated_points: false
         is_odometry: true
         min_inliers: 6 #seems this wasnt here before 
@@ -309,10 +310,10 @@
         type: simple_vertex_creation_test
 
         min_distance: 0.05
-        min_creation_distance: 0.15 #0.3
+        min_creation_distance: 0.1 #0.3
         max_creation_distance: 2.0 #2.0
-        rotation_threshold_min: 1.5 # 3.0
-        rotation_threshold_max: 20.0 # 20.0
+        rotation_threshold_min: 1.2 # 3.0
+        rotation_threshold_max: 10.0 # 20.0
         match_threshold_min_count: 30
         match_threshold_fail_count: 15
 
@@ -377,7 +378,7 @@
 
         ## standard deviation for velocity prior
         ## linear velocity m/s
-        lin_vel_std_dev_x: 1.0 ## the grizzly is usually within +- 3.0 m/s
+        lin_vel_std_dev_x: 0.2 ## the grizzly is usually within +- 3.0 m/s
         lin_vel_std_dev_y: 0.02
         lin_vel_std_dev_z: 0.02
         ## angular velocity rad/s
@@ -448,7 +449,7 @@
         screen_matched_landmarks: true
         max_depth_diff: 5.0
         parallel_threads: 8
-        match_on_gpu: true
+        match_on_gpu: false # true
         match_gpu_knn_match_num: 8
         visualize: true
 
@@ -530,19 +531,19 @@
         iter_max: 10000000
         eta: 1.0
         rad_m_exhange: 1.00
-        initial_exp_rad: 1.25
+        initial_exp_rad: 1.00
         extrapolation: false
         incremental_plotting: false
         plotting: true
       costmap:
         costmap_filter_value: 0.01
-        costmap_history: 30
+        costmap_history: 15
       
       speed_scheduler:
         planar_curv_weight: 2.50
         profile_curv_weight: 0.5 
         eop_weight: 1.0
-        min_vel: 0.5
+        min_vel: 0.4
 
       mpc:
         # Controller Params
@@ -551,10 +552,10 @@
         homotopy_guided_mpc: false
         horizon_steps: 20
         horizon_step_size: 0.3
-        forward_vel: 0.3
-        max_lin_vel: 0.4
+        forward_vel: 0.4
+        max_lin_vel: 0.5
         max_ang_vel: 0.4
-        robot_linear_velocity_scale: 1.1 # Used to scale the output twist linear velocity messages by some constant factor to compensate internal low level control miscalibration
+        robot_linear_velocity_scale: 1.0 # Used to scale the output twist linear velocity messages by some constant factor to compensate internal low level control miscalibration
         robot_angular_velocity_scale: 1.0 # Used to scale the output twist angular velocity messages by some constant factor to compensate internal low level control miscalibration
 
         vehicle_model: "unicycle"
