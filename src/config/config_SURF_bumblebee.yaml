@@ -56,9 +56,9 @@
     tactic:
       enable_parallelization: true
       preprocessing_skippable: false
-      odometry_mapping_skippable: false
+      odometry_mapping_skippable: true
       extrapolate_odometry: false # path tracker
-      localization_only_keyframe: true # not used?
+      localization_only_keyframe: false # not used?
       localization_skippable: false # false
       route_completion_translation_threshold: 0.5
       route_completion_angle_threshold: 0.26
@@ -180,8 +180,8 @@
         check_octave: true
         check_response: true
         min_response_ratio: 0.15
-        matching_pixel_thresh: 70
-        tight_matching_pixel_thresh: 40
+        matching_pixel_thresh: 100
+        tight_matching_pixel_thresh: 50
 
         # !!! The covariance is currently set to identity * dt*dt,
         # So the sigma will be dt, where dt is the time difference
@@ -202,7 +202,7 @@
         parallel_threads: 12
         visualize_feature_matches: true
         visualize_topic: true
-        min_matches: 10
+        min_matches: 1
 
       ransac:
         type: stereo_ransac
@@ -301,11 +301,11 @@
         type: simple_vertex_creation_test
 
         min_distance: 0.05
-        min_creation_distance: 0.3
-        max_creation_distance: 2.0
-        rotation_threshold_min: 3.0
-        rotation_threshold_max: 20.0
-        match_threshold_min_count: 50
+        min_creation_distance: 0.1 #0.3
+        max_creation_distance: 2.0 #2.0
+        rotation_threshold_min: 1.2 # 3.0
+        rotation_threshold_max: 10.0 # 20.0
+        match_threshold_min_count: 30
         match_threshold_fail_count: 15
 
     bundle_adjustment:
