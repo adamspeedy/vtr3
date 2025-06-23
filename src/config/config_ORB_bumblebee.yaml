@@ -274,11 +274,11 @@
         ## smoothing factor
         ## zero mean white noise on acceleration
         ## one-sigma standard deviation for linear acceleration (m/s/s)
-        lin_acc_std_dev_x: 1.0 ## lifted from max acceleration in grizzly launch
+        lin_acc_std_dev_x: 1.0 ## lifted from max acceleration in grizzly launch  Husky is 3m/s/s
         lin_acc_std_dev_y: 1.0 ## grizzly does not strafe very fast
         lin_acc_std_dev_z: 1.0 ## neither does it jump quickly, except for going over bumps
         ## one-sigma standard devitation for angular acceleration (rad/s/s0)
-        ang_acc_std_dev_x: 1.0 # roll rate, should be low
+        ang_acc_std_dev_x: 1.0 # roll rate, should be low   /Husky is 6rad/s/s
         ang_acc_std_dev_y: 1.0 # pitch rate,
         ang_acc_std_dev_z: 1.0 # yaw rate, approx 2 deg
 
