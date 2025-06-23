@@ -194,7 +194,7 @@ void store_messages_to_file(const std::vector<lgmath::se3::TransformationWithCov
 int main(int argc, char** argv) {
     rclcpp::init(argc, argv);
     
-    std::string bag_directory = "/home/adam/Desktop/CurrentBranch/temp/vision/graph/data/odometry_result";
+    std::string bag_directory = "/home/adam/Desktop/CurrentBranch/graph/data/odometry_result";
     ROS2BagExtractor extractor(bag_directory);
     auto messages = extractor.extract_messages(-1, "odometry_result");
     std::cout << "Found " << messages.size() << " messages" << std::endl;
