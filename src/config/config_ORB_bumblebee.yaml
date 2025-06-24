@@ -190,7 +190,7 @@
         check_response: true
         min_response_ratio: 0.25 #0.15
         matching_pixel_thresh: 100 # 70
-        tight_matching_pixel_thresh: 50
+        tight_matching_pixel_thresh: 40
 
         # !!! The covariance is currently set to identity * dt*dt,
         # So the sigma will be dt, where dt is the time difference
@@ -221,7 +221,7 @@
         iterations: 2000
         flavor: Vanilla
         sigma: 3.5
-        threshold: 7.0 #5.0
+        threshold: 6.0 #5.0
         early_stop_ratio: 0.8
         early_stop_min_inliers: 200
         visualize_ransac_inliers: true
