@@ -56,10 +56,10 @@
     tactic:
       enable_parallelization: true
       preprocessing_skippable: false
-      odometry_mapping_skippable: true
+      odometry_mapping_skippable: false
       extrapolate_odometry: false # path tracker
       localization_only_keyframe: true # not used?
-      localization_skippable: true # false
+      localization_skippable: false # false
       route_completion_translation_threshold: 0.5
       route_completion_angle_threshold: 0.26
       save_odometry_result: true
@@ -150,10 +150,10 @@
           surf:
             threshold: 0.000001
             upright_flag: true
-            nOctaves: 4
+            nOctaves: 8
             nIntervals: 4
-            initialScale: 1.5  #1.5 #2.0
-            edgeScale: 1.5 #5.0 #0.81 #1.5
+            initialScale: 2.0  #1.5 #2.0
+            edgeScale: 0.81 #5.0 #0.81 #1.5
             l1: 2.0 # 3.f/1.5f
             l2: 3.333333 # 5.f/1.5f
             l3: 2.0 # 3.f/1.5f
@@ -164,12 +164,12 @@
             detector_threads_y: 16
             nonmax_threads_x: 16
             nonmax_threads_y: 16
-            regions_horizontal: 16 #4
-            regions_vertical: 16 #6
+            regions_horizontal: 1 #4
+            regions_vertical: 1 #6
             regions_target: 1000 #8192 #1000 
             stereoDisparityMinimum: 0.0
-            stereoDisparityMaximum: 64.0
-            stereoCorrelationThreshold: 0.6
+            stereoDisparityMaximum: 500.0
+            stereoCorrelationThreshold: 0.3
             stereoYTolerance: 0.9
             stereoScaleTolerance: 0.1
 
@@ -193,7 +193,7 @@
         check_octave: true
         check_response: true
         min_response_ratio: 0.15
-        matching_pixel_thresh: 100
+        matching_pixel_thresh: 70
         tight_matching_pixel_thresh: 40
 
         # !!! The covariance is currently set to identity * dt*dt,
@@ -212,7 +212,7 @@
         prediction_method: se3
         max_point_depth: 500.0   # not used
         descriptor_thresh: 0.1   
-        parallel_threads: 16
+        parallel_threads: 12
         visualize_feature_matches: true
         visualize_topic: true
         min_matches: 10
@@ -225,7 +225,7 @@
         iterations: 2000
         flavor: Vanilla
         sigma: 3.5
-        threshold: 5.0
+        threshold: 6.0
         early_stop_ratio: 0.8
         early_stop_min_inliers: 200
         visualize_ransac_inliers: true
@@ -237,7 +237,7 @@
         use_covariance: false
         is_odometry: true
         enable_local_opt: true
-        num_threads: 1
+        num_threads: 2
 
       keyframe_optimize:
         type: keyframe_optimization
@@ -288,7 +288,7 @@
 
         # Mean for the velocity prior (0 mean is probably what you want)
         velocity_prior: false
-        lin_vel_mean_x: 0.5
+        lin_vel_mean_x: 1.0
         lin_vel_mean_y: 0.0
         lin_vel_mean_z: 0.0
         ang_vel_mean_x: 0.0
@@ -556,11 +556,11 @@
         homotopy_guided_mpc: false
         horizon_steps: 20
         horizon_step_size: 0.3
-        forward_vel: 0.9  # 0.5
-        max_lin_vel: 1.0  # 0.5
-        max_ang_vel: 0.8  # 0.5
-        robot_linear_velocity_scale: 1.1 # Used to scale the output twist linear velocity messages by some constant factor to compensate internal low level control miscalibration
-        robot_angular_velocity_scale: 1.0 # Used to scale the output twist angular velocity messages by some constant factor to compensate internal low level control miscalibration
+        forward_vel: 0.3
+        max_lin_vel: 0.4
+        max_ang_vel: 0.4
+        robot_linear_velocity_scale: 1.0 # Used to scale the output twist linear velocity messages by some constant factor to compensate internal low level control miscalibration
+        robot_angular_velocity_scale: 0.7 # Used to scale the output twist angular velocity messages by some constant factor to compensate internal low level control miscalibration
 
         vehicle_model: "unicycle"
 
