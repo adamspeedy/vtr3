@@ -29,8 +29,8 @@ find_package(cv_bridge REQUIRED)
 add_executable(lie_converter src/convert_lie_from_file.cpp)
 add_executable(bag_extractor src/convert_lie_from_bag.cpp)
 add_executable(vertex_extractor src/extract_vertex_from_bag.cpp)
-add_executable(localization_extractor src/extract_localization_result.cpp)
 add_executable(image_extractor src/extract_image_from_bag.cpp)
+add_executable(loc_result src/extract_loc_result_from_bag.cpp)
 
 ament_target_dependencies(lie_converter
   rclcpp
@@ -59,15 +59,6 @@ ament_target_dependencies(vertex_extractor
   yaml-cpp
 )
 
-ament_target_dependencies(localization_extractor
-  rclcpp
-  vtr_common
-  vtr_tactic_msgs
-  Eigen3
-  rosbag2_cpp
-  SQLite3
-  yaml-cpp
-)
 
 ament_target_dependencies(image_extractor
   rclcpp
@@ -78,6 +69,16 @@ ament_target_dependencies(image_extractor
   yaml-cpp
   OpenCV
   cv_bridge
+)
+
+ament_target_dependencies(loc_result
+  rclcpp
+  vtr_common
+  vtr_tactic_msgs
+  Eigen3
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
 )
 
 target_include_directories(lie_converter PUBLIC
@@ -95,16 +96,16 @@ target_include_directories(vertex_extractor PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
-target_include_directories(localization_extractor PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
 
 target_include_directories(image_extractor PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
 
+target_include_directories(loc_result PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
 
 # target_link_libraries(lie_converter  vtr_common vtr_common_msgs lgmath)
 # target_include_directories(lie_converter  PUBLIC  ${vtr_common_INCLUDE_DIRS}
@@ -118,7 +119,7 @@ install(
 )
 
 install(
-  TARGETS lie_converter bag_extractor vertex_extractor localization_extractor image_extractor
+  TARGETS lie_converter bag_extractor vertex_extractor image_extractor loc_result
   EXPORT export_${PROJECT_NAME}
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib

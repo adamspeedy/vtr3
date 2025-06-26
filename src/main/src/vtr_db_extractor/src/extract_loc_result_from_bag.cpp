@@ -162,7 +162,7 @@ public:
         std::map<int, TopicInfo> topics_;
 };
 
-void store_messages_to_file(const std::vector<lgmath::se3::TransformationWithCovariance>& messages, const std::string& output_dir, int max_messages = 5) {
+void store_messages_to_file(const std::vector<lgmath::se3::TransformationWithCovariance>& messages, std::vector<int> vertex_ids, std::vector<int> vertex_timestamps,std::vector<int> timestamps, const std::string& output_dir, int max_messages = 5) {
     // Create output directory if it doesn't exist
     fs::create_directories(output_dir);
     std::cout << "-----" << std::endl;
@@ -172,18 +172,24 @@ void store_messages_to_file(const std::vector<lgmath::se3::TransformationWithCov
     for (int i = 0; i < max_messages; ++i) {
         //const auto& data = messages[i].data;
         const auto& transform = messages[i];  //data.t_world_robot.xi;
+        const auto& vertex_id = vertex_ids[i];
+        const auto& vertex_timestamp = vertex_timestamps[i];
+        const auto& timestamp = timestamps[i];
         
         // Create filename with index
-        std::string filename = output_dir + "/odom__" + std::to_string(i).insert(0, 4 - std::to_string(i).length(), '0') + ".txt";
+        std::string filename = output_dir + "/T_r_vertex_" + std::to_string(i).insert(0, 4 - std::to_string(i).length(), '0') + ".txt";
         
         // Save the matrix
         std::ofstream file(filename);
         if (file.is_open()) {
             //for (const auto& val : transform) {
             file << transform << std::endl;
+            file << "vertex_id: " << vertex_id << std::endl;
+            file << "vertex_timestamp: " << vertex_timestamp << std::endl;
+            file << "timestamp: " << timestamp << std::endl;
             //}
             file.close();
-            std::cout << "Saved matrix " << i << " to " << filename << std::endl;
+            // std::cout << "Saved matrix " << i << " to " << filename << std::endl;
         } else {
             std::cerr << "Failed to open file: " << filename << std::endl;
         }
@@ -200,9 +206,16 @@ int main(int argc, char** argv) {
     std::cout << "Found " << messages.size() << " messages" << std::endl;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     std::vector<lgmath::se3::TransformationWithCovariance> transformed_messages;
+    std::vector<int> timestamps;
+    std::vector<int> vertex_timestamps;
+    std::vector<int> vertex_ids;
     for (size_t i = 0; i < messages.size(); ++i) {
         std::cout << "\nMessage " << i+1 << ":" << std::endl;
-        std::cout << "Timestamp: " << messages[i].timestamp << std::endl;
+        std::cout << "Timestamp: " << messages[i].data.vertex_timestamp << std::endl;
+        vertex_timestamps.push_back(messages[i].data.vertex_timestamp);
+        timestamps.push_back(messages[i].data.timestamp);
+        std::cout << "Vertex ID: " << messages[i].data.vertex_id << std::endl;
+        vertex_ids.push_back(messages[i].data.vertex_id);
         std::vector<double> temp = messages[i].data.t_robot_vertex.xi;
         std::cout << "Elements of temp: ";
         Eigen::Matrix<double, 6, 1> eigen_vec;
@@ -218,13 +231,17 @@ int main(int argc, char** argv) {
         //std::cout << "message" << temp  << std::endl;
         std::cout << "Fin" << std::endl;
     }
+    
+    // Store messages to file
+    std::cout << "Storing messages to file..." << std::endl;
+    store_messages_to_file(transformed_messages, vertex_ids, vertex_timestamps, timestamps, "/home/adam/Desktop/CurrentBranch/src/main/src/vtr_db_extractor/loc_result", messages.size());
+
+    
+    
     if (messages.size() > 10) {
         std::cout << "\n... and " << (messages.size() - 10) << " more messages" << std::endl;
+        std::cout << "stored images" << std::endl;
     }
-    // Store messages to file
-    // std::cout << "Storing messages to file..." << std::endl;
-    // store_messages_to_file(transformed_messages, "/home/adam/Desktop/CurrentBranch/src/main/src/vtr_db_extractor/odom_poses", messages.size());
-
     rclcpp::shutdown();
     return 0;
 }
