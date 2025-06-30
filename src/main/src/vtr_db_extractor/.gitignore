@@ -1,4 +1,5 @@
 /build
 /odom_poses
 /images
-/loc_result
+/loc_results
+/edge_results
