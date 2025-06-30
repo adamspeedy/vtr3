@@ -50,7 +50,7 @@
       origin_lat: -33.9577 #43.78220
       origin_lng: 18.4612 #-79.4661
       origin_theta: 1.3 # positive == clockwise
-      scale: 2.0
+      scale: 1.0
 
     ############ tactic configuration ############
     tactic:
