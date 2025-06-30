@@ -162,6 +162,12 @@ public:
         std::map<int, TopicInfo> topics_;
 };
 
+void clearOutputFolder(const std::string& folderPath) {
+    for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
+        std::filesystem::remove(entry.path());
+    }
+}
+
 void store_messages_to_file(const std::vector<lgmath::se3::TransformationWithCovariance>& messages, std::vector<int> vertex_ids, std::vector<int> vertex_timestamps,std::vector<int> timestamps, const std::string& output_dir, int max_messages = 5) {
     // Create output directory if it doesn't exist
     fs::create_directories(output_dir);
@@ -201,6 +207,7 @@ int main(int argc, char** argv) {
     rclcpp::init(argc, argv);
     
     std::string bag_directory = "/home/adam/Desktop/CurrentBranch/graph/data/localization_result";
+    std::string output_directory = "/home/adam/Desktop/CurrentBranch/src/main/src/vtr_db_extractor/loc_results";
     ROS2BagExtractor extractor(bag_directory);
     auto messages = extractor.extract_messages(-1, "localization_result");
     std::cout << "Found " << messages.size() << " messages" << std::endl;
@@ -217,6 +224,10 @@ int main(int argc, char** argv) {
         std::cout << "Vertex ID: " << messages[i].data.vertex_id << std::endl;
         vertex_ids.push_back(messages[i].data.vertex_id);
         std::vector<double> temp = messages[i].data.t_robot_vertex.xi;
+
+        bool tempbool = messages[i].data.t_robot_vertex.cov_set;
+        std::cout << "Covariance set: " << (tempbool ? "true" : "false") << std::endl;
+
         std::cout << "Elements of temp: ";
         Eigen::Matrix<double, 6, 1> eigen_vec;
         for (int j=0;j<6; j++) {
@@ -233,8 +244,9 @@ int main(int argc, char** argv) {
     }
     
     // Store messages to file
+    clearOutputFolder(output_directory); 
     std::cout << "Storing messages to file..." << std::endl;
-    store_messages_to_file(transformed_messages, vertex_ids, vertex_timestamps, timestamps, "/home/adam/Desktop/CurrentBranch/src/main/src/vtr_db_extractor/loc_result", messages.size());
+    store_messages_to_file(transformed_messages, vertex_ids, vertex_timestamps, timestamps, output_directory, messages.size());
 
     
     
