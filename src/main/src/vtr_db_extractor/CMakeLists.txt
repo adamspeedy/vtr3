@@ -30,7 +30,8 @@ add_executable(lie_converter src/convert_lie_from_file.cpp)
 add_executable(bag_extractor src/convert_lie_from_bag.cpp)
 add_executable(vertex_extractor src/extract_vertex_from_bag.cpp)
 add_executable(image_extractor src/extract_image_from_bag.cpp)
-add_executable(loc_result src/extract_loc_result_from_bag.cpp)
+add_executable(loc_offset_extractor src/extract_loc_result_from_bag.cpp)
+add_executable(graph_odom_extractor src/extract_graph_edge_odom.cpp)
 
 ament_target_dependencies(lie_converter
   rclcpp
@@ -71,7 +72,7 @@ ament_target_dependencies(image_extractor
   cv_bridge
 )
 
-ament_target_dependencies(loc_result
+ament_target_dependencies(loc_offset_extractor
   rclcpp
   vtr_common
   vtr_tactic_msgs
@@ -79,6 +80,17 @@ ament_target_dependencies(loc_result
   rosbag2_cpp
   SQLite3
   yaml-cpp
+)
+
+ament_target_dependencies(graph_odom_extractor
+  rclcpp
+  vtr_common
+  vtr_tactic_msgs
+  Eigen3
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
+  vtr_pose_graph_msgs
 )
 
 target_include_directories(lie_converter PUBLIC
@@ -102,7 +114,12 @@ target_include_directories(image_extractor PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
-target_include_directories(loc_result PUBLIC
+target_include_directories(loc_offset_extractor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(graph_odom_extractor PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
@@ -119,7 +136,7 @@ install(
 )
 
 install(
-  TARGETS lie_converter bag_extractor vertex_extractor image_extractor loc_result
+  TARGETS lie_converter bag_extractor vertex_extractor image_extractor loc_offset_extractor graph_odom_extractor
   EXPORT export_${PROJECT_NAME}
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
