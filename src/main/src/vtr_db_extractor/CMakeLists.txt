@@ -23,63 +23,25 @@ find_package(yaml-cpp REQUIRED)
 find_package(rosbag2_cpp REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(cv_bridge REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
 
 #message(STATUS "vtr_common include dirs: ${vtr_common_INCLUDE_DIRS}")
 add_executable(lie_converter src/convert_lie_from_file.cpp)
-add_executable(bag_extractor src/convert_lie_from_bag.cpp)
-add_executable(vertex_extractor src/extract_vertex_from_bag.cpp)
-add_executable(image_extractor src/extract_image_from_bag.cpp)
-add_executable(loc_offset_extractor src/extract_loc_result_from_bag.cpp)
-add_executable(graph_odom_extractor src/extract_graph_edge_odom.cpp)
+add_executable(graph_odom_extractor src/extract_odom_from_bag.cpp)
+add_executable(graph_vertex_extractor src/extract_vertex_from_bag.cpp)
+add_executable(graph_image_extractor src/extract_image_from_bag.cpp)
+add_executable(graph_loc_offset_extractor src/extract_loc_result_from_bag.cpp)
+add_executable(graph_edge_extractor src/extract_edge_from_bag.cpp)
+add_executable(graph_landmark_extractor src/extract_landmarks_from_bag.cpp)
+add_executable(graph_keypoint_extractor src/extract_keypoints_from_bag.cpp)
+add_library(utils src/utils.cpp)
 
 ament_target_dependencies(lie_converter
   rclcpp
   vtr_common
   vtr_tactic_msgs
   Eigen3
-)
-
-ament_target_dependencies(bag_extractor
-  rclcpp
-  vtr_common
-  vtr_tactic_msgs
-  Eigen3
-  rosbag2_cpp
-  SQLite3
-  yaml-cpp
-)
-
-ament_target_dependencies(vertex_extractor
-  rclcpp
-  vtr_common
-  vtr_pose_graph_msgs
-  Eigen3
-  rosbag2_cpp
-  SQLite3
-  yaml-cpp
-)
-
-
-ament_target_dependencies(image_extractor
-  rclcpp
-  vtr_common
-  vtr_vision_msgs
-  rosbag2_cpp
-  SQLite3
-  yaml-cpp
-  OpenCV
-  cv_bridge
-)
-
-ament_target_dependencies(loc_offset_extractor
-  rclcpp
-  vtr_common
-  vtr_tactic_msgs
-  Eigen3
-  rosbag2_cpp
-  SQLite3
-  yaml-cpp
 )
 
 ament_target_dependencies(graph_odom_extractor
@@ -90,31 +52,87 @@ ament_target_dependencies(graph_odom_extractor
   rosbag2_cpp
   SQLite3
   yaml-cpp
+)
+
+ament_target_dependencies(graph_vertex_extractor
+  rclcpp
+  vtr_common
+  vtr_pose_graph_msgs
+  Eigen3
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
+)
+
+
+ament_target_dependencies(graph_image_extractor
+  rclcpp
+  vtr_common
+  vtr_vision_msgs
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
+  OpenCV
+  cv_bridge
+)
+
+ament_target_dependencies(graph_loc_offset_extractor
+  rclcpp
+  vtr_common
+  vtr_tactic_msgs
+  Eigen3
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
+)
+
+ament_target_dependencies(graph_edge_extractor
+  rclcpp
+  vtr_common
+  vtr_tactic_msgs
+  Eigen3
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
   vtr_pose_graph_msgs
 )
 
+ament_target_dependencies(graph_landmark_extractor
+  rclcpp
+  vtr_common
+  vtr_vision_msgs
+  Eigen3
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
+)
+
+ament_target_dependencies(graph_keypoint_extractor
+  rclcpp
+  vtr_common
+  vtr_vision_msgs
+  Eigen3
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
+  geometry_msgs
+)
+
+ament_target_dependencies(utils
+  rclcpp
+  vtr_common
+  vtr_vision_msgs
+  vtr_tactic_msgs
+  vtr_pose_graph_msgs
+  Eigen3
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
+  OpenCV
+  cv_bridge
+)
+
 target_include_directories(lie_converter PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-
-target_include_directories(bag_extractor PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-
-target_include_directories(vertex_extractor PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-
-
-target_include_directories(image_extractor PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-
-target_include_directories(loc_offset_extractor PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
@@ -124,6 +142,49 @@ target_include_directories(graph_odom_extractor PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
+target_include_directories(graph_vertex_extractor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(graph_image_extractor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(graph_loc_offset_extractor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(graph_edge_extractor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(graph_landmark_extractor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(graph_keypoint_extractor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(utils PUBLIC
+  include/
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(graph_landmark_extractor  utils)
+target_link_libraries(graph_keypoint_extractor  utils)
+target_link_libraries(graph_edge_extractor  utils)
+target_link_libraries(graph_odom_extractor  utils)
+target_link_libraries(graph_vertex_extractor  utils)
+target_link_libraries(graph_loc_offset_extractor  utils)
+target_link_libraries(graph_image_extractor  utils)
 # target_link_libraries(lie_converter  vtr_common vtr_common_msgs lgmath)
 # target_include_directories(lie_converter  PUBLIC  ${vtr_common_INCLUDE_DIRS}
 #   ${vtr_common_msgs_INCLUDE_DIRS}
@@ -136,7 +197,7 @@ install(
 )
 
 install(
-  TARGETS lie_converter bag_extractor vertex_extractor image_extractor loc_offset_extractor graph_odom_extractor
+  TARGETS utils lie_converter graph_odom_extractor graph_vertex_extractor graph_image_extractor graph_loc_offset_extractor graph_edge_extractor graph_landmark_extractor graph_keypoint_extractor
   EXPORT export_${PROJECT_NAME}
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
