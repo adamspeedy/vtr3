@@ -50,12 +50,12 @@
       origin_lat: -33.9577 #43.78220
       origin_lng: 18.4612 #-79.4661
       origin_theta: 1.3 # positive == clockwise
-      scale: 2.0
+      scale: 1.0
 
     ############ tactic configuration ############
     tactic:
       enable_parallelization: true
-      preprocessing_skippable: false
+      preprocessing_skippable: true
       odometry_mapping_skippable: true
       extrapolate_odometry: false # path tracker
       localization_only_keyframe: true # not used?
@@ -168,8 +168,8 @@
             regions_vertical: 16 #6
             regions_target: 1000 #8192 #1000 
             stereoDisparityMinimum: 0.0
-            stereoDisparityMaximum: 64.0
-            stereoCorrelationThreshold: 0.6
+            stereoDisparityMaximum: 240.0
+            stereoCorrelationThreshold: 0.7
             stereoYTolerance: 0.9
             stereoScaleTolerance: 0.1
 
@@ -192,7 +192,7 @@
         check_laplacian_bit: true
         check_octave: true
         check_response: true
-        min_response_ratio: 0.15
+        min_response_ratio: 0.1
         matching_pixel_thresh: 100
         tight_matching_pixel_thresh: 40
 
@@ -232,7 +232,7 @@
         visualize_topic: true
         use_migrated_points: false
         min_inliers: 5
-        mask_depth: 200.0
+        mask_depth: 500.0
         mask_depth_inlier_count: 0
         use_covariance: false
         is_odometry: true
@@ -256,11 +256,11 @@
         growCoeff: 3.0
         maxShrinkSteps: 50
 
-        perform_planarity_check: false
+        perform_planarity_check: true
         plane_distance: 20.0
 
         min_point_depth: 0.0
-        max_point_depth: 200.0
+        max_point_depth: 500.0
         backtrackMultiplier: 0.5
         maxBacktrackSteps: 10
 
@@ -278,17 +278,17 @@
         ## smoothing factor
         ## zero mean white noise on acceleration
         ## one-sigma standard deviation for linear acceleration (m/s/s)
-        lin_acc_std_dev_x: 0.4 ## lifted from max acceleration in grizzly launch
-        lin_acc_std_dev_y: 0.4 ## grizzly does not strafe very fast
-        lin_acc_std_dev_z: 0.4 ## neither does it jump quickly, except for going over bumps
+        lin_acc_std_dev_x: 0.7 ## lifted from max acceleration in grizzly launch
+        lin_acc_std_dev_y: 0.7 ## grizzly does not strafe very fast
+        lin_acc_std_dev_z: 0.7 ## neither does it jump quickly, except for going over bumps
         ## one-sigma standard devitation for angular acceleration (rad/s/s0)
-        ang_acc_std_dev_x: 0.3 # roll rate, should be low
-        ang_acc_std_dev_y: 0.3 # pitch rate,
-        ang_acc_std_dev_z: 0.3 # yaw rate, approx 2 deg
+        ang_acc_std_dev_x: 0.7 # roll rate, should be low
+        ang_acc_std_dev_y: 0.7 # pitch rate,
+        ang_acc_std_dev_z: 0.7 # yaw rate, approx 2 deg
 
         # Mean for the velocity prior (0 mean is probably what you want)
         velocity_prior: false
-        lin_vel_mean_x: 0.5
+        lin_vel_mean_x: 1.0
         lin_vel_mean_y: 0.0
         lin_vel_mean_z: 0.0
         ang_vel_mean_x: 0.0
@@ -297,12 +297,12 @@
 
         ## standard deviation for velocity prior
         ## linear velocity m/s
-        lin_vel_std_dev_x: 0.2 ## the grizzly is usually within +- 3.0 m/s
-        lin_vel_std_dev_y: 0.2
-        lin_vel_std_dev_z: 0.2
+        lin_vel_std_dev_x: 1.0 ## the grizzly is usually within +- 3.0 m/s
+        lin_vel_std_dev_y: 0.5
+        lin_vel_std_dev_z: 0.5
         ## angular velocity rad/s
-        ang_vel_std_dev_x: 0.2
-        ang_vel_std_dev_y: 0.2
+        ang_vel_std_dev_x: 0.5
+        ang_vel_std_dev_y: 0.5
         ang_vel_std_dev_z: 0.2
 
         pose_prior_enable: true
@@ -314,12 +314,14 @@
         type: simple_vertex_creation_test
 
         min_distance: 0.05
-        min_creation_distance: 0.3
-        max_creation_distance: 2.0
-        rotation_threshold_min: 3.0
-        rotation_threshold_max: 20.0
+        min_creation_distance: 0.5
+        max_creation_distance: 5.0
+        rotation_threshold_min: 5.0
+        rotation_threshold_max: 50.0
         match_threshold_min_count: 50
         match_threshold_fail_count: 15
+
+
 
     bundle_adjustment:
       recall:
@@ -556,9 +558,9 @@
         homotopy_guided_mpc: false
         horizon_steps: 20
         horizon_step_size: 0.3
-        forward_vel: 0.9  # 0.5
-        max_lin_vel: 1.0  # 0.5
-        max_ang_vel: 0.8  # 0.5
+        forward_vel: 0.7  # 0.5
+        max_lin_vel: 0.7  # 0.5
+        max_ang_vel: 0.6  # 0.5
         robot_linear_velocity_scale: 1.1 # Used to scale the output twist linear velocity messages by some constant factor to compensate internal low level control miscalibration
         robot_angular_velocity_scale: 1.0 # Used to scale the output twist angular velocity messages by some constant factor to compensate internal low level control miscalibration
 

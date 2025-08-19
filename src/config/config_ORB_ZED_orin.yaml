@@ -43,8 +43,8 @@
 
     robot_frame: base_link
     camera_frame: camera 
-    camera_left_topic: /zed/zed_node/left_gray/image_rect_gray    
-    camera_right_topic: /zed/zed_node/right_gray/image_rect_gray  
+    camera_left_topic: /zed/zed_node/left/image_rect_color   #/zed/zed_node/left_gray/image_rect_gray    
+    camera_right_topic: /zed/zed_node/right/image_rect_color  #/zed/zed_node/right_gray/image_rect_gray  
 
     ############ map projection configuration ############
     graph_projection:
@@ -84,7 +84,7 @@
         lookahead_distance: 15
         vertex_life_span: 10
 
-      visualize: true  #for rviz visualization
+      visualize: false  #for rviz visualization
       vis_loc_path_offset: [0., 0., 0.]
 
     ############ pipeline configuration ############
@@ -171,11 +171,11 @@
         type: stereo.conversion_extraction
         visualize: true
         visualize_raw_features: true
-        visualize_topic: true
+        visualize_topic: false
 
         # specify which conversions to do between different image formats from:
         # RGB_TO_GRAYSCALE, RGB_TO_COLOR_CONSTANT
-        conversions: ["RGB_TO_GRAYSCALE"] #, "RGB_TO_COLOR_CONSTANT"
+        conversions: ["RGB_TO_GRAYSCALE"] #, "RGB_TO_COLOR_CONSTANT" , "RGB_TO_GRAYSCALE"
         color_constant:
           weights: [0.43]
           histogram_equalization: false
@@ -225,9 +225,9 @@
         visualize: true  # shows the depth
         min_triangulation_depth: 0.01
         max_triangulation_depth: 500.0
-        visualize_features: true # shows match
-        visualize_stereo_features: true  # shows the matches between stereo pair
-        visualize_topic: true
+        visualize_features: false # shows match
+        visualize_stereo_features: false  # shows the matches between stereo pair
+        visualize_topic: false
 
     odometry:
       recall:
@@ -261,7 +261,7 @@
         descriptor_thresh: 0.15   
         parallel_threads: 16
         visualize_feature_matches: true
-        visualize_topic: true
+        visualize_topic: false
         min_matches: 6
 
       ransac:
@@ -276,7 +276,7 @@
         early_stop_ratio: 0.8
         early_stop_min_inliers: 200
         visualize_ransac_inliers: true
-        visualize_topic: true
+        visualize_topic: false
         use_migrated_points: false
         min_inliers: 5
         mask_depth: 200.0
@@ -361,11 +361,11 @@
         type: simple_vertex_creation_test
 
         min_distance: 0.05
-        min_creation_distance: 0.3
-        max_creation_distance: 2.0
-        rotation_threshold_min: 3.0
-        rotation_threshold_max: 20.0
-        match_threshold_min_count: 50
+        min_creation_distance: 0.2
+        max_creation_distance: 5.0
+        rotation_threshold_min: 5.0
+        rotation_threshold_max: 50.0
+        match_threshold_min_count: 40
         match_threshold_fail_count: 15
 
     bundle_adjustment:
@@ -516,7 +516,7 @@
         early_stop_ratio: 1.0
         early_stop_min_inliers: 400
         visualize_ransac_inliers: true
-        visualize_topic: true
+        visualize_topic: false
         use_migrated_points: true
         min_inliers: 6
 
