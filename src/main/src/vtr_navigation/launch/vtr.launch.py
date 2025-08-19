@@ -29,7 +29,7 @@ def generate_launch_description():
         executable='static_transform_publisher',
         name='camera_tf_publisher',
         arguments=[
-            '0', '0', '0.25', '1.57', '-3.14', '1.57', 'default_mount', 'camera'
+            '0.3', '0', '0', '1.57', '-3.14', '1.57', 'default_mount', 'camera'   # '0', '0', '0.25', '1.57', '-3.14', '1.57', 'default_mount', 'camera'
         ],
         remappings=[
             ('/tf_static', '/vtr/tf_static')
