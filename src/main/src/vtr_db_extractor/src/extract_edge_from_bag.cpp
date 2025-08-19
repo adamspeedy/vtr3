@@ -1,7 +1,7 @@
 #include "vtr_db_extractor/utils.hpp"
 
 
-void store_messages_to_file(const std::vector<lgmath::se3::TransformationWithCovariance>& messages, std::vector<int> from_vertex_ids, std::vector<int> to_vertex_ids, const std::string& output_dir, int max_messages = 5) {
+void store_messages_to_file(const std::vector<lgmath::se3::TransformationWithCovariance>& messages, std::vector<uint64_t> from_vertex_ids, std::vector<uint64_t> to_vertex_ids, std::vector<uint32_t> edge_types, const std::string& output_dir, int max_messages = 5) {
     // Create output directory if it doesn't exist
     fs::create_directories(output_dir);
     std::cout << "-----" << std::endl;
@@ -13,6 +13,7 @@ void store_messages_to_file(const std::vector<lgmath::se3::TransformationWithCov
         const auto& transform = messages[i];  //data.t_world_robot.xi;
         const auto& from_vertex_id = from_vertex_ids[i];
         const auto& to_vertex_id = to_vertex_ids[i];
+        const auto& edge_type = edge_types[i];
         
         // Create filename with index
         std::string filename = output_dir + "/edge_" + std::to_string(i).insert(0, 4 - std::to_string(i).length(), '0') + ".txt";
@@ -24,6 +25,7 @@ void store_messages_to_file(const std::vector<lgmath::se3::TransformationWithCov
             file << transform << std::endl;
             file << "from_vertex_id: " << from_vertex_id << std::endl;
             file << "to_vertex_id: " << to_vertex_id << std::endl;
+            file << "edge_type: " << edge_type << std::endl;
             //}
             file.close();
             // std::cout << "Saved matrix " << i << " to " << filename << std::endl;
@@ -49,15 +51,19 @@ int main(int argc, char** argv) {
 
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     std::vector<lgmath::se3::TransformationWithCovariance> transformed_messages;
-    std::vector<int> from_vertex_ids;
-    std::vector<int> to_vertex_ids;
+    std::vector<uint64_t> from_vertex_ids;
+    std::vector<uint64_t> to_vertex_ids;
+    std::vector<uint32_t> edge_types;
     for (size_t i = 0; i < messages.size(); ++i) {
         std::cout << "\nMessage " << i+1 << ":" << std::endl;
         std::cout << "From ID: " << messages[i].data.from_id << std::endl;
         from_vertex_ids.push_back(messages[i].data.from_id);
         std::cout << "To ID: " << messages[i].data.to_id << std::endl;
         to_vertex_ids.push_back(messages[i].data.to_id);
-
+        edge_types.push_back(messages[i].data.type.type);
+        // uint32_t test_edge = messages[i].data.type.type;
+        std::cout << "edge_type: " << messages[i].data.type.type << std::endl;
+        // std::cout << "Edge Type: " << std::string(messages[i].data.type.type) << std::endl;
 
         std::vector<double> temp = messages[i].data.t_to_from.xi;
         bool tempbool = messages[i].data.t_to_from.cov_set;
@@ -78,7 +84,7 @@ int main(int argc, char** argv) {
     
     clearOutputFolder(output_directory); 
     std::cout << "Storing messages to file..." << std::endl;
-    store_messages_to_file(transformed_messages, from_vertex_ids, to_vertex_ids, output_directory, messages.size());
+    store_messages_to_file(transformed_messages, from_vertex_ids, to_vertex_ids, edge_types, output_directory, messages.size());
 
     
     
