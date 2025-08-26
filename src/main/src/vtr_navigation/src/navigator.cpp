@@ -159,8 +159,9 @@ if (pipeline->name() == "stereo") {
 
   right_camera_sub_.subscribe(node_, right_image_topic, camera_qos.get_rmw_qos_profile());
   left_camera_sub_.subscribe(node_, left_image_topic, camera_qos.get_rmw_qos_profile());
+  zed_odom_sub_.subscribe(node_, "/zed/zed_node/odom", camera_qos.get_rmw_qos_profile());
 
-  sync_ = std::make_shared<message_filters::Synchronizer<ApproximateImageSync>>(ApproximateImageSync(10), right_camera_sub_, left_camera_sub_);
+  sync_ = std::make_shared<message_filters::Synchronizer<ApproximateImageSync>>(ApproximateImageSync(10), right_camera_sub_, left_camera_sub_, zed_odom_sub_);
   sync_->registerCallback(&Navigator::cameraCallback, this);
 }
 
@@ -238,7 +239,7 @@ void Navigator::envInfoCallback(const tactic::EnvInfo::SharedPtr msg) {
 
 
 void Navigator::cameraCallback(
-    const sensor_msgs::msg::Image::SharedPtr msg_r, const sensor_msgs::msg::Image::SharedPtr msg_l) {
+    const sensor_msgs::msg::Image::SharedPtr msg_r, const sensor_msgs::msg::Image::SharedPtr msg_l, const nav_msgs::msg::Odometry::SharedPtr msg_zed_odom) {
   LockGuard lock(mutex_);
   CLOG(DEBUG, "navigation") << "Received an image.";
 
@@ -258,6 +259,23 @@ void Navigator::cameraCallback(
   query_data->left_image = msg_l;
   query_data->right_image = msg_r;
 
+//_____________________________________________________________
+  const auto& q_msg = msg_zed_odom->pose.pose.orientation;
+  Eigen::Quaterniond q(q_msg.w, q_msg.x, q_msg.y, q_msg.z);
+  Eigen::Matrix3d R = q.toRotationMatrix();
+
+  const auto& p_msg = msg_zed_odom->pose.pose.position;
+  Eigen::Vector3d t(p_msg.x, p_msg.y, p_msg.z);
+
+  Eigen::Matrix4d T = Eigen::Matrix4d::Identity();
+  T.block<3,3>(0,0) = R;
+  T.block<3,1>(0,3) = t;
+
+  // Eigen::Matrix4d T_rel = T.inverse() * T_prev;
+  // T_prev = T;
+
+  query_data->T_r_v_zed = T; //lgmath::se3::TransformationWithCovariance(T_rel);
+//_____________________________________________________________
   // set the timestamp
   Timestamp timestamp = msg_r->header.stamp.sec * 1e9 + msg_r->header.stamp.nanosec;
   query_data->stamp.emplace(timestamp);

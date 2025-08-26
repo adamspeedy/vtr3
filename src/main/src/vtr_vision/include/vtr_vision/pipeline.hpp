@@ -249,6 +249,7 @@ tactic::EdgeTransform estimateTransformFromKeyframe(
    * for the pipeline.
    */
   Eigen::Matrix<double, 6, 1> w_v_r_in_r_odo_;
+  Eigen::Matrix4d T_prev_zed;
 
   /** \brief Mutex to ensure thread safety with OpenCV HighGui calls */
   std::shared_ptr<std::mutex> vis_mutex_ptr_ = std::make_shared<std::mutex>();

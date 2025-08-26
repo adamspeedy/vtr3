@@ -12,6 +12,7 @@
         "navigator",
         # "tactic",
         "tactic.pipeline",
+        # "odom_debugging",
         # "stereo.pipeline",
         # "tactic.module",
         # "tactic.module.live_mem_manager",

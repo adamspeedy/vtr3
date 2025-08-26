@@ -49,6 +49,10 @@ struct CameraQueryCache : public tactic::QueryCache {
   tactic::Cache<std::vector<vision::RigExtra>> rig_extra;
   tactic::Cache<sensor_msgs::msg::Image> left_image;
   tactic::Cache<sensor_msgs::msg::Image> right_image;
+
+  /// Adding zed odometry
+  tactic::Cache<Eigen::Matrix4d> T_r_v_zed;
+  tactic::Cache<Eigen::Matrix4d> T_prev_zed;
   
 
   /// extra image related stuff to be cleaned up

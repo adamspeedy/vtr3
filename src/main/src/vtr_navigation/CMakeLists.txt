@@ -12,6 +12,7 @@ find_package(PROJ REQUIRED)
 
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(tf2 REQUIRED)  # load frames
 find_package(tf2_ros REQUIRED)
 
@@ -75,6 +76,7 @@ add_library(${PROJECT_NAME}_navigator ${SRC})
 ament_target_dependencies(${PROJECT_NAME}_navigator
   rclcpp tf2 tf2_ros
   sensor_msgs  # for visualization only
+  nav_msgs
   vtr_common vtr_logging vtr_pose_graph vtr_tactic vtr_mission_planning
   #vtr_radar_lidar vtr_radar vtr_lidar
    vtr_vision
@@ -105,7 +107,7 @@ ament_export_dependencies(
 # main
 add_executable(${PROJECT_NAME} src/main.cpp)
 ament_target_dependencies(${PROJECT_NAME}
-  rclcpp sensor_msgs
+  rclcpp sensor_msgs nav_msgs
 )
 target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_navigator)
 target_include_directories(${PROJECT_NAME}

@@ -501,6 +501,7 @@ void KeyframeOptimizationModule::computeTrajectory(
 void KeyframeOptimizationModule::updateCaches(CameraQueryCache &qdata) {
   // update our estimate for the transform
   *qdata.T_r_m = query_pose_->value();
+  CLOG(DEBUG, "odom_debugging") << query_pose_->value();
 
   if (config_->is_odometry)
     *qdata.w_v_r_in_r_odo = trajectory_->getVelocityInterpolator(*qdata.timestamp_odo)->value();

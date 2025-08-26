@@ -82,9 +82,17 @@ void StereoPipeline::runOdometry_(const tactic::QueryCache::Ptr &qdata0, const t
   if (!(*qdata.first_frame)){
     qdata.timestamp_odo.emplace(timestamp_odo_);
     setOdometryPrior(qdata, graph);
+
+  }
+  else
+  {
+    T_prev_zed = *qdata.T_r_v_zed;
   }
   // CLOG(WARNING, "stereo.pipeline") << "Finished setting odometry prior, running modules";
   for (auto module : odometry_) module->run(*qdata0, *output0, graph, executor);
+  // for (auto module : odometry_) {
+  //   std::cout << "Running module: " << module->name() << std::endl;
+  // }
 
   // If VO failed, revert T_r_m to the initial prior estimate
   if (*qdata.odo_success == false) {
@@ -116,11 +124,19 @@ void StereoPipeline::runOdometry_(const tactic::QueryCache::Ptr &qdata0, const t
   if (*qdata.vertex_test_result == VertexTestResult::CREATE_VERTEX) {
     timestamp_odo_ = *qdata.stamp;
     w_v_r_in_r_odo_ = *qdata.w_v_r_in_r_odo;
+    // T_prev_zed = qdata.T_r_v_zed;
   }
 
 
   // set result
-  qdata.T_r_v_odo = *qdata.T_r_m;
+  // qdata.T_r_v_odo = *qdata.T_r_m;
+  // qdata.T_r_v_odo = *qdata.T_r_v_zed;
+  Eigen::Matrix4d temp4 = ((*qdata.T_r_v_zed).inverse()) ;
+  Eigen::Matrix4d temp3 = (T_prev_zed);
+  Eigen::Matrix4d temp2 = temp4 * temp3;
+  auto temp = lgmath::se3::TransformationWithCovariance(temp2);
+  qdata.T_r_v_odo = temp ;
+  
 }
 
 void StereoPipeline::setOdometryPrior(CameraQueryCache &qdata,
@@ -182,6 +198,7 @@ void StereoPipeline::onVertexCreation_(const QueryCache::Ptr &qdata0,
   auto live_id = *qdata->vid_odo;
 
   saveLandmarks(*qdata, graph, live_id);
+  T_prev_zed = qdata.T_r_v_zed;
 
   if (*qdata->first_frame) return;
 
@@ -237,7 +254,6 @@ void StereoPipeline::runLocalization_(const tactic::QueryCache::Ptr &qdata0, con
     *qdata->T_r_v_loc = *qdata->T_r_m;
   }
   
-    
 }
 
 void StereoPipeline::runBundleAdjustment(const tactic::QueryCache::Ptr &qdata0, const tactic::OutputCache::Ptr &output0,

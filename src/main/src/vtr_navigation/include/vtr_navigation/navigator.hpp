@@ -28,6 +28,7 @@
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
 #include "sensor_msgs/msg/image.hpp"
+#include "nav_msgs/msg/odometry.hpp"
 #include "vtr_vision/visualize.hpp"
 
 #include "vtr_common/conversions/tf2_ros_eigen.hpp"
@@ -57,20 +58,22 @@ class Navigator {
   // robot
   const std::string &robot_frame() const { return robot_frame_; }
   std::string robot_frame_;
+  Eigen::Matrix4d T_prev = Eigen::Matrix4d::Identity();
   // environment info
   void envInfoCallback(const tactic::EnvInfo::SharedPtr msg);
   rclcpp::Subscription<tactic::EnvInfo>::SharedPtr env_info_sub_;
 
 typedef message_filters::sync_policies::ApproximateTime<
-    sensor_msgs::msg::Image, sensor_msgs::msg::Image
+    sensor_msgs::msg::Image, sensor_msgs::msg::Image, nav_msgs::msg::Odometry
   > ApproximateImageSync;
 
 
   const std::string &camera_frame() const { return camera_frame_;}
   const tactic::EdgeTransform &T_camera_robot() const { return T_camera_robot_; }
-  void cameraCallback(const sensor_msgs::msg::Image::SharedPtr msg_r, const sensor_msgs::msg::Image::SharedPtr msg_l);
+  void cameraCallback(const sensor_msgs::msg::Image::SharedPtr msg_r, const sensor_msgs::msg::Image::SharedPtr msg_l, const nav_msgs::msg::Odometry::SharedPtr msg_zed_odom);
   message_filters::Subscriber<sensor_msgs::msg::Image> right_camera_sub_;
   message_filters::Subscriber<sensor_msgs::msg::Image> left_camera_sub_;
+  message_filters::Subscriber<nav_msgs::msg::Odometry> zed_odom_sub_;
   std::shared_ptr<message_filters::Synchronizer<ApproximateImageSync>> sync_;
   std::string camera_frame_;
   tactic::EdgeTransform T_camera_robot_;
