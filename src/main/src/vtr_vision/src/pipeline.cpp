@@ -198,7 +198,8 @@ void StereoPipeline::onVertexCreation_(const QueryCache::Ptr &qdata0,
   auto live_id = *qdata->vid_odo;
 
   saveLandmarks(*qdata, graph, live_id);
-  T_prev_zed = qdata.T_r_v_zed;
+  Eigen::Matrix4d temp = *qdata->T_r_v_zed;
+  T_prev_zed = temp;
 
   if (*qdata->first_frame) return;
 
