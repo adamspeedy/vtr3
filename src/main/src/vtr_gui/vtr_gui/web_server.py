@@ -37,7 +37,7 @@ hd = logging.StreamHandler()
 fm = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 hd.setFormatter(fm)
 logger.addHandler(hd)
-# Ros is a bastard here and may not find the correct files, easiest way is to set them manually
+# Ros is a bastard here and may not find the correct files, easiest way is to set them manually if you dont do simlink installS
 #current_dir = osp.dirname(osp.abspath(os.path.abspath(__file__)))
 #print(current_dir+"/vtr-gui/build")
 #app = flask.Flask(__name__, static_folder=current_dir+"/vtr-gui/build", template_folder=current_dir+"/vtr-gui/build", static_url_path="")
