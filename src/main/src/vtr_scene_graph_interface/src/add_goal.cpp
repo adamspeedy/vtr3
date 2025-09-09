@@ -3,6 +3,8 @@
 #include "vtr_navigation_msgs/msg/mission_command.hpp"
 #include "vtr_navigation_msgs/msg/goal_handle.hpp"
 #include "vtr_scene_graph_interface/utils.hpp"
+// #include <matplot/matplot.h>
+
 
 using MissionCommandMsg = vtr_navigation_msgs::msg::MissionCommand;
 
@@ -14,21 +16,32 @@ public:
     {
 
         this->declare_parameter("vertex", 0);
-        this->declare_parameter("goal", std::vector<double>{0.0, 0.0, 0.0});
+        this->declare_parameter("goal3d", std::vector<double>{0.0, 0.0, 0.0});
+        this->declare_parameter("goal2d", std::vector<double>{0.0, 0.0});
 
         vertex_ = this->get_parameter("vertex").as_int();
-        goal_ = this->get_parameter("goal").as_double_array();
+        goal3_ = this->get_parameter("goal3d").as_double_array();
+        goal2_ = this->get_parameter("goal2d").as_double_array();
 
         if (vertex_!=0)
         {
-            RCLCPP_INFO(this->get_logger(), "Vertex %d recieved", vertex_);
+            RCLCPP_INFO(this->get_logger(), "Vertex %ld recieved", vertex_);
         }
-        else if (goal_!=std::vector<double>{0.0, 0.0, 0.0})
+        else if (goal3_!=std::vector<double>{0.0, 0.0, 0.0})
         {
             RCLCPP_INFO(this->get_logger(), "looking for best location");
             // get_closest_vertex();
             std::vector<Eigen::Matrix4d> positions_ = get_vertices();
-            vertex_ = getClosestVertex(positions_, goal_);
+            vertex_ = getClosestVertex3d(positions_, goal3_);
+            // visualize(positions_, goal3_);
+        }
+        else if (goal2_!=std::vector<double>{0.0, 0.0})
+        {
+            RCLCPP_INFO(this->get_logger(), "looking for best location");
+            // get_closest_vertex();
+            std::vector<Eigen::Matrix4d> positions_ = get_vertices();
+            vertex_ = getClosestVertex2d(positions_, goal2_);
+            // visualize(positions_, goal2_);
         }
 
         auto qos = rclcpp::QoS(rclcpp::KeepLast(10));
@@ -71,7 +84,7 @@ private:
         rclcpp::shutdown();
     }
 
-    void publish_goal(int vertex_id)
+    void publish_goal(uint64_t vertex_id)
     {
         MissionCommandMsg msg;
         msg.type = MissionCommandMsg::ADD_GOAL;
@@ -80,7 +93,7 @@ private:
         msg.goal_handle.type = vtr_navigation_msgs::msg::GoalHandle::REPEAT;
         msg.goal_handle.waypoints = {vertex_id};
 
-        RCLCPP_INFO(this->get_logger(), "Publishing ADD_GOAL message for vertex %d", vertex_id);
+        RCLCPP_INFO(this->get_logger(), "Publishing ADD_GOAL message for vertex %ld", vertex_id);
         publisher_->publish(msg);
     }
 
@@ -88,7 +101,8 @@ private:
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Time start_time_;
     uint64_t vertex_;
-    std::vector<double> goal_;
+    std::vector<double> goal2_;
+    std::vector<double> goal3_;
     std::string bag_directory = "/home/adam/Desktop/CurrentBranch/graph/edges";
     std::string bag_name = "edges_0.db3";
 
@@ -149,7 +163,7 @@ private:
         return positions;
     }
 
-    int getClosestVertex(std::vector<Eigen::Matrix4d> positions, std::vector<double> goal)
+    int getClosestVertex3d(std::vector<Eigen::Matrix4d> positions, std::vector<double> goal)
     {
         double min_distance = std::numeric_limits<double>::max();
         int closest_vertex = -1;
@@ -165,10 +179,48 @@ private:
                 closest_vertex = static_cast<int>(i);
             }
         }
+        closest_vertex+=1; //edges to vertices 
 
         RCLCPP_INFO(this->get_logger(), "Closest vertex to goal is %d with distance %.3f", closest_vertex, min_distance);
-        return closest_vertex+1;
+        return closest_vertex;
     }
+    
+    int getClosestVertex2d(std::vector<Eigen::Matrix4d> positions, std::vector<double> goal)
+    {
+        double min_distance = std::numeric_limits<double>::max();
+        int closest_vertex = -1;
+
+        for (size_t i = 0; i < positions.size(); ++i) {
+            double dx = positions[i](0, 3) - goal[0];
+            double dy = positions[i](1, 3) - goal[1];
+            double distance = std::sqrt(dx * dx + dy * dy);
+
+            if (distance < min_distance) {
+                min_distance = distance;
+                closest_vertex = static_cast<int>(i);
+            }
+        }
+        closest_vertex+=1; //edges to vertices 
+        RCLCPP_INFO(this->get_logger(), "Closest vertex to goal is %d with distance %.3f", closest_vertex, min_distance);
+        return closest_vertex;
+    }
+
+    // void visualize(std::vector<Eigen::Matrix4d> positions, std::vector<double> goal)
+    // {
+    //     std::vector<double> x = {1.0,2.0,3.0};
+    //     std::vector<double> y = {1.0,2.0,3.0};
+    //     matplot::scatter(x, y);
+    //     matplot::show();
+    //     // plt::plot(x, y, "r-");  // red line
+    //     // plt::scatter(x, y, 50); // scatter points
+    //     // plt::xlabel("X");
+    //     // plt::ylabel("Y");
+    //     // plt::title("Trajectory");
+
+    //     // // Show popup window
+    //     // plt::show();
+    // }
+
 };
 
 int main(int argc, char * argv[])
