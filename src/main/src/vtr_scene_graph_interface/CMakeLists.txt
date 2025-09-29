@@ -45,7 +45,7 @@ target_include_directories(utils PUBLIC
 )
 
 
-target_link_libraries(add_goal  utils)
+target_link_libraries(add_goal  utils )
 
 
 install(

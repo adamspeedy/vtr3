@@ -117,12 +117,13 @@ private:
 
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         std::vector<lgmath::se3::TransformationWithCovariance> transformed_messages;
+        std::vector<lgmath::se3::TransformationWithCovariance> ordered_transformed_messages;
         std::vector<uint64_t> from_vertex_ids;
         std::vector<uint64_t> to_vertex_ids;
         std::vector<uint32_t> edge_types;
         for (size_t i = 0; i < messages.size(); ++i) {
 
-            if (messages[i].data.type.type==0 && messages[i].data.to_id<10000)
+            if (messages[i].data.type.type==0 && messages[i].data.to_id<1000000 && messages[i].data.from_id<1000000) 
             {
                 from_vertex_ids.push_back(messages[i].data.from_id);
                 to_vertex_ids.push_back(messages[i].data.to_id);
@@ -148,6 +149,9 @@ private:
         for (size_t k = 0; k < 5; ++k) {
             std::cout << "idx " << k << " -> " <<idx[k]  << std::endl;
         }
+        for (size_t i= 0; i < idx.size(); ++i) {
+            ordered_transformed_messages.push_back(transformed_messages[idx[i]]);
+        }
         std::vector<Eigen::Matrix4d> positions;
         // positions.push_back({0.0 , 0.0 , 0.0});
         Eigen::Matrix4d I4 = Eigen::Matrix4d::Identity();
@@ -155,10 +159,10 @@ private:
         auto identity = Eigen::Matrix<double, 4, 4>(I4);
         identity(0, 0) = -1;
         positions.push_back(identity);
-        for (size_t j = 1; j < transformed_messages.size(); ++j){
-            auto calc= positions[j-1]*transformed_messages[j].matrix();
+        for (size_t j = 1; j < ordered_transformed_messages.size(); ++j){
+            auto calc= positions[j-1]*ordered_transformed_messages[j].matrix();
             positions.push_back(calc);
-            // std::cout << "Position " << j << ": \n" << positions[j-1] << std::endl;
+            std::cout << "Position " << j << ": " << positions[j-1].col(3).head(3).transpose() << std::endl;
         }
         return positions;
     }
