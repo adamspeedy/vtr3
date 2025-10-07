@@ -35,7 +35,9 @@ endif()
 ## GPUSURF enable/disable flag (used by vision pipeline only)
 # Note: currently assume that gpusurf is always available, because we have no
 # other options, so do not disable (i.e. comment out) this flag
-add_definitions(-DVTR_ENABLE_GPUSURF)  # set the available flag
+
+# add_definitions(-DVTR_ENABLE_GPUSURF)  # set the available flag
+
 add_definitions(-DVTR_ENABLE_VISION)
 #add_definitions(-DVTR_VISION_LEARNED)
 set(VTR_ENABLE_VISION true)
