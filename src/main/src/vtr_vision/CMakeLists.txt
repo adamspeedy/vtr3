@@ -17,6 +17,8 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 
 find_package(OpenCV REQUIRED)
+set(OpenCV_INCLUDE_DIRS /usr/local/include/opencv4)
+include_directories(${OpenCV_INCLUDE_DIRS})
 find_package(cv_bridge REQUIRED)
 
 
@@ -33,7 +35,7 @@ find_package(vtr_storage REQUIRED)
 find_package(vtr_tactic REQUIRED)
 
 
-find_package(gpusurf REQUIRED) 
+# find_package(gpusurf REQUIRED) 
 
 if(NOT DEFINED ITERATION_BUILD_VISION)
   set(ITERATION_BUILD_VISION 11)  # Default value
@@ -214,7 +216,11 @@ if(${ITERATION_BUILD_VISION} EQUAL 11)
   src/modules/bundle_adjustment/*.cpp
   src/messages/*.cpp
   src/geometry/*.cpp
-  src/features/extractor/*.cpp
+  src/features/extractor/base_feature_extractor.cpp
+  src/features/extractor/feature_extractor_factory.cpp
+  src/features/extractor/learned_feature_extractor.cpp
+  src/features/extractor/orb_feature_extractor.cpp
+  # src/features/extractor/*.cpp
   src/features/matcher/*.cpp
   src/image_publisher.cpp
   )
@@ -224,11 +230,13 @@ add_library(${PROJECT_NAME} ${SRC})
 
 #target_link_libraries(${PROJECT_NAME} ${TORCH_LIBRARIES})
 #set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
+target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
 
 ament_target_dependencies(${PROJECT_NAME}
   OpenCV
   cv_bridge
-  gpusurf lgmath steam
+  # gpusurf 
+  lgmath steam
   vtr_common vtr_logging vtr_vision_msgs vtr_storage vtr_tactic vtr_common_msgs
 )
 target_include_directories(${PROJECT_NAME}
@@ -239,7 +247,9 @@ target_include_directories(${PROJECT_NAME}
 
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(
-  cv_bridge gpusurf lgmath steam
+  cv_bridge 
+  # gpusurf 
+  lgmath steam
   vtr_common vtr_logging vtr_vision_msgs vtr_storage vtr_tactic vtr_common_msgs
 )
 
