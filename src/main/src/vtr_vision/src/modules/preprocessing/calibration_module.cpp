@@ -22,7 +22,7 @@
 // #include <vtr_vision/image_conversions.hpp>
 #include <vtr_vision/modules/preprocessing/calibration_module.hpp>
 #include <vtr_vision/types.hpp>
-#include <cv_bridge/cv_bridge.h>
+#include <cv_bridge/cv_bridge.hpp>
 #include "opencv2/imgproc.hpp"
 
 
@@ -72,8 +72,8 @@ void CalibrationModule::run_(tactic::QueryCache &qdata0, tactic::OutputCache &ou
   r_ba_ina[0] = config_->baseline;
 
   Transform right_extrinsic {eye3, r_ba_ina};
-  CLOG(INFO, "preprocessing") << "Left extrinsic" << left_extrinsic;
-  CLOG(INFO, "preprocessing") << "Right extrinsic" << right_extrinsic;
+  CLOG(INFO, "preprocessing") << "Left extrinsic" << left_extrinsic.matrix();
+  CLOG(INFO, "preprocessing") << "Right extrinsic" << right_extrinsic.matrix();
   Transforms extrinsics {left_extrinsic, right_extrinsic};
 
 

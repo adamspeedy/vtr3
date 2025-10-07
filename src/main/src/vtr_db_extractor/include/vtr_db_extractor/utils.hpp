@@ -32,7 +32,7 @@
 
 #include "sensor_msgs/msg/image.hpp"
 #include <opencv2/opencv.hpp>
-#include <cv_bridge/cv_bridge.h>
+#include <cv_bridge/cv_bridge.hpp> 
 #include <vtr_vision_msgs/msg/time_stamp.hpp>
 #include <vtr_vision_msgs/msg/image.hpp>
 
