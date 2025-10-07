@@ -119,8 +119,8 @@
 
       extraction:
         type: stereo.conversion_extraction
-        visualize: true
-        visualize_raw_features: true
+        visualize: false
+        visualize_raw_features: false
         visualize_topic: false
 
         # specify which conversions to do between different image formats from:
@@ -137,7 +137,7 @@
 
           orb:
             use_STAR_detector: false
-            use_GPU_descriptors: true
+            use_GPU_descriptors: false
             STAR_maxSize: 30  #45
             STAR_responseThreshold: 20 #30 
             STAR_lineThresholdProjected: 30
@@ -172,10 +172,10 @@
 
       triangulation:
         type: image_triangulation
-        visualize: true  # shows the depth
+        visualize: false  # shows the depth
         min_triangulation_depth: 0.01
         max_triangulation_depth: 500.0
-        visualize_features: false # shows match
+        visualize_features: true # shows match
         visualize_stereo_features: false  # shows the matches between stereo pair
         visualize_topic: false
 
@@ -225,7 +225,7 @@
         threshold: 7.0
         early_stop_ratio: 0.8
         early_stop_min_inliers: 200
-        visualize_ransac_inliers: true
+        visualize_ransac_inliers: false
         visualize_topic: false
         use_migrated_points: false
         min_inliers: 5
@@ -465,7 +465,7 @@
         threshold: 10.0
         early_stop_ratio: 1.0
         early_stop_min_inliers: 400
-        visualize_ransac_inliers: true
+        visualize_ransac_inliers: false
         visualize_topic: false
         use_migrated_points: true
         min_inliers: 6
