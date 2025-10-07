@@ -4,7 +4,10 @@ import os.path as osp
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch import LaunchDescription
-from launch.conditions import LaunchConfigurationEquals, LaunchConfigurationNotEquals
+
+from launch.conditions import IfCondition
+from launch.substitutions import EqualsSubstitution, NotEqualsSubstitution
+# from launch.conditions import LaunchConfigurationEquals, LaunchConfigurationNotEquals
 from launch_ros.actions import Node
 
 
@@ -82,8 +85,9 @@ def generate_launch_description():
               },
                 PathJoinSubstitution((config_dir, LaunchConfiguration("override_params")))
             ],
-            remappings=[('/tf','/vtr/tf'),('/tf_static','/vtr/tf_static'), ('/vtr/command', '/a200_0656/joy_teleop/cmd_vel')], #, ('/vtr/command', '/a200_0656/joy_teleop/cmd_vel')
-            condition=LaunchConfigurationNotEquals('data_dir', '')
+            remappings=[('/tf','/vtr/tf'),('/tf_static','/vtr/tf_static'), ('/vtr/command', '/a300_00047/joy_teleop/cmd_vel')], #, ('/vtr/command', '/a200_0656/joy_teleop/cmd_vel')
+            condition=IfCondition(NotEqualsSubstitution(LaunchConfiguration('data_dir'), ''))
+            # condition=LaunchConfigurationNotEquals('data_dir', '')
         ),
         Node(**commonNodeArgs,
             parameters=[
@@ -97,7 +101,8 @@ def generate_launch_description():
                 },
                 PathJoinSubstitution((config_dir, LaunchConfiguration("override_params")))
             ],
-            remappings=[('/tf','/vtr/tf'),('/tf_static','/vtr/tf_static'), ('/vtr/command', '/a200_0656/joy_teleop/cmd_vel')], #, ('/vtr/command', '/a200_0656/joy_teleop/cmd_vel')
-            condition=LaunchConfigurationEquals('data_dir', '')
+            remappings=[('/tf','/vtr/tf'),('/tf_static','/vtr/tf_static'), ('/vtr/command', '/a300_00047/joy_teleop/cmd_vel')], #, ('/vtr/command', '/a200_0656/joy_teleop/cmd_vel')
+            # condition=LaunchConfigurationEquals('data_dir', '')
+            condition=IfCondition(EqualsSubstitution(LaunchConfiguration('data_dir'), ''))
         ),
     ])
