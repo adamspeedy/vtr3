@@ -30,13 +30,14 @@ find_package(vtr_navigation_msgs REQUIRED)
 # find_package(vtr_lidar REQUIRED)
 # find_package(vtr_radar REQUIRED)
 find_package(vtr_vision REQUIRED)
-
+set(NUMPY_INCLUDE_DIR "/usr/lib/python3/dist-packages/numpy/core/include")
 
 ## C++ Libraries
 include_directories(
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
+    ${NUMPY_INCLUDE_DIR}
 )
 
 file(GLOB_RECURSE SERVER_SRC src/graph_map_server.cpp)

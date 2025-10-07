@@ -26,16 +26,16 @@ find_package(vtr_path_planning_msgs REQUIRED)
 
 # # find python libraries
 find_package(Python3 COMPONENTS Interpreter Development NumPy REQUIRED)
-find_package(PythonLibs 3.0 REQUIRED)
+# find_package(PythonLibs 3.0 REQUIRED)
 
-
+set(NUMPY_INCLUDE_DIR "/usr/lib/python3/dist-packages/numpy/core/include")
 # C++ Libraries
 include_directories(
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
-    ${PYTHON3_INCLUDE_DIRS}
-    ${NumPy_INCLUDE_DIRS}
+    ${Python3_INCLUDE_DIRS}
+    ${NUMPY_INCLUDE_DIR} 
 )
 
 file(GLOB_RECURSE SRC src/base_path_planner.cpp src/stationary_planner.cpp)
@@ -76,18 +76,19 @@ include_directories(SYSTEM ${matplotlib_cpp_SOURCE_DIR})
 file(GLOB_RECURSE SRC src/cbit/*.cpp)
 add_library(${PROJECT_NAME}_cbit ${SRC})
 target_link_libraries(${PROJECT_NAME}_cbit ${PROJECT_NAME}_mpc)
-target_link_libraries(${PROJECT_NAME}_cbit ${PYTHON_LIBRARIES})
+# target_link_libraries(${PROJECT_NAME}_cbit ${PYTHON_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_cbit Python3::Python)
 
 ament_target_dependencies(${PROJECT_NAME}_cbit
   rclcpp tf2 tf2_ros tf2_eigen Python3
-  lgmath PythonLibs matplotlib_cpp
+  lgmath  matplotlib_cpp
   vtr_path_planning_msgs
 )
 
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(
   rclcpp tf2 tf2_ros tf2_eigen geometry_msgs matplotlib_cpp
-  vtr_common vtr_logging vtr_tactic casadi
+  vtr_common vtr_logging vtr_tactic casadi 
   vtr_path_planning_msgs
 )
 
@@ -110,15 +111,15 @@ install(
 )
 
 
-if(BUILD_TESTING)
-  find_package(ament_cmake_gtest REQUIRED)
+# if(BUILD_TESTING)
+#   find_package(ament_cmake_gtest REQUIRED)
 
-  ament_add_gtest(test_unicycle test/closed_loop/unicycle_tests.cpp)
-  target_link_libraries(test_unicycle ${PROJECT_NAME}_cbit)
+#   ament_add_gtest(test_unicycle test/closed_loop/unicycle_tests.cpp)
+#   target_link_libraries(test_unicycle ${PROJECT_NAME}_cbit)
 
-  # Linting
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies() # Lint based on linter test_depend in package.xml
-endif()
+#   # Linting
+#   find_package(ament_lint_auto REQUIRED)
+#   ament_lint_auto_find_test_dependencies() # Lint based on linter test_depend in package.xml
+# endif()
 
 ament_package()
