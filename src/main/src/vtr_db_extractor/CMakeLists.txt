@@ -24,6 +24,7 @@ find_package(rosbag2_cpp REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
 
 #message(STATUS "vtr_common include dirs: ${vtr_common_INCLUDE_DIRS}")
