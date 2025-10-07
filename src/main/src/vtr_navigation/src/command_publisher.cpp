@@ -32,10 +32,10 @@ tactic::Timestamp CommandPublisher::getCurrentTime() const {
 
 void CommandPublisher::commandReceived(const Command& command) {
   CLOG(DEBUG, "navigation.command")
-      << "Received control command: [" << command.linear.x << ", "
-      << command.linear.y << ", " << command.linear.z << ", "
-      << command.angular.x << ", " << command.angular.y << ", "
-      << command.angular.z << "]";
+      << "Received control command: [" << command.twist.linear.x << ", "
+      << command.twist.linear.y << ", " << command.twist.linear.z << ", "
+      << command.twist.angular.x << ", " << command.twist.angular.y << ", "
+      << command.twist.angular.z << "]";
   command_pub_->publish(command);
 }
 

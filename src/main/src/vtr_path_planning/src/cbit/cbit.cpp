@@ -251,7 +251,7 @@ void CBIT::initializeRoute(RobotState& robot_state) {
 auto CBIT::computeCommand(RobotState& robot_state) -> Command {
   auto raw_command = computeCommand_(robot_state);
   
-  Eigen::Vector2d output_vel = {raw_command.linear.x, raw_command.angular.z};
+  Eigen::Vector2d output_vel = {raw_command.twist.linear.x, raw_command.twist.angular.z};
 
   // Apply robot motor controller calibration scaling factors if applicable
   output_vel(0) = output_vel(0) * config_->robot_linear_velocity_scale;
@@ -263,8 +263,8 @@ auto CBIT::computeCommand(RobotState& robot_state) -> Command {
   CLOG(INFO, "cbit.control") << "The Saturated linear velocity is:  " << saturated_vel(0) << " The angular vel is: " << saturated_vel(1);
   
   Command command;
-  command.linear.x = saturated_vel(0);
-  command.angular.z = saturated_vel(1);
+  command.twist.linear.x = saturated_vel(0);
+  command.twist.angular.z = saturated_vel(1);
   prev_vel_stamp_ = now();
   applied_vel_ = saturated_vel;
 
@@ -273,10 +273,10 @@ auto CBIT::computeCommand(RobotState& robot_state) -> Command {
   vel_history.push_back(applied_vel_);
 
   CLOG(INFO, "cbit.control")
-    << "Final control command: [" << command.linear.x << ", "
-    << command.linear.y << ", " << command.linear.z << ", "
-    << command.angular.x << ", " << command.angular.y << ", "
-    << command.angular.z << "] for timestamp: " << prev_cost_stamp_;
+    << "Final control command: [" << command.twist.linear.x << ", "
+    << command.twist.linear.y << ", " << command.twist.linear.z << ", "
+    << command.twist.angular.x << ", " << command.twist.angular.y << ", "
+    << command.twist.angular.z << "] for timestamp: " << prev_cost_stamp_;
   
   return command;
 }
@@ -329,7 +329,7 @@ auto CBIT::computeCommand_(RobotState& robot_state) -> Command {
     // Store the transform T_c_w (from costmap to world)
     costmap_ptr->T_c_w = T_start_vertex.inverse(); // note that T_start_vertex is T_w_c if we want to bring keypoints to the world frame
     // Store the grid resolution
-    CLOG(DEBUG, "cbit.obstacle_filtering") << "The costmap to world transform is: " << T_start_vertex.inverse();
+    CLOG(DEBUG, "cbit.obstacle_filtering") << "The costmap to world transform is: " << T_start_vertex.inverse().matrix();
 
     // Storing sequences of costmaps for temporal filtering purposes
     // For the first x iterations, fill the obstacle vector
@@ -389,7 +389,7 @@ auto CBIT::computeCommand_(RobotState& robot_state) -> Command {
       Eigen::Matrix<double, 6, 1> xi_p_r_in_r(-dt * w_p_r_in_r);
       T_p_r_extp = T_p_r * tactic::EdgeTransform(xi_p_r_in_r);
 
-      CLOG(DEBUG, "cbit.debug") << "New extrapolated pose:"  << T_p_r_extp;
+      CLOG(DEBUG, "cbit.debug") << "New extrapolated pose:"  << T_p_r_extp.matrix();
     }
 
     lgmath::se3::Transformation T0 = T_p_r_extp;
@@ -434,8 +434,8 @@ auto CBIT::computeCommand_(RobotState& robot_state) -> Command {
       CLOG(INFO, "cbit.control") << "Successfully solved MPC problem";
       const auto& mpc_vel_vec = mpc_res["vel"](casadi::Slice(), 0).get_elements();
 
-      command.linear.x = mpc_vel_vec[0];
-      command.angular.z = mpc_vel_vec[1];
+      command.twist.linear.x = mpc_vel_vec[0];
+      command.twist.angular.z = mpc_vel_vec[1];
 
       // Get all the mpc velocities 
       for (int i = 0; i < mpc_res["vel"].columns(); i++) {
@@ -449,7 +449,7 @@ auto CBIT::computeCommand_(RobotState& robot_state) -> Command {
     }
 
 
-    CLOG(INFO, "cbit.control") << "The linear velocity is:  " << command.linear.x << " The angular vel is: " << command.angular.z;
+    CLOG(INFO, "cbit.control") << "The linear velocity is:  " << command.twist.linear.x << " The angular vel is: " << command.twist.angular.z;
 
     // grab elements for visualization
     lgmath::se3::Transformation T_w_p_interpolated_closest_to_robot = interpolatedPose(state_p, chain);

@@ -20,7 +20,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 
-#include "geometry_msgs/msg/twist.hpp"
+#include "geometry_msgs/msg/twist_stamped.hpp"
 
 #include "vtr_path_planning/base_path_planner.hpp"
 

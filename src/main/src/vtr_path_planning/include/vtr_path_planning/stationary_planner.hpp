@@ -26,7 +26,7 @@ namespace path_planning {
 class StationaryPlanner : public BasePathPlanner {
  public:
   PTR_TYPEDEFS(StationaryPlanner);
-  using Command = geometry_msgs::msg::Twist;
+  using Command = geometry_msgs::msg::TwistStamped;
 
   static constexpr auto static_name = "stationary";
 

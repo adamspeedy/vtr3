@@ -27,7 +27,7 @@
 #include "vtr_path_planning/path_planner_interface.hpp"
 #include "vtr_tactic/cache.hpp"
 
-#include "geometry_msgs/msg/twist.hpp"
+#include "geometry_msgs/msg/twist_stamped.hpp"
 
 namespace vtr {
 namespace path_planning {
@@ -36,7 +36,7 @@ class PathPlannerCallbackInterface {
  public:
   PTR_TYPEDEFS(PathPlannerCallbackInterface);
 
-  using Command = geometry_msgs::msg::Twist;
+  using Command = geometry_msgs::msg::TwistStamped;
 
   virtual ~PathPlannerCallbackInterface() = default;
 
@@ -67,7 +67,7 @@ class BasePathPlanner : public PathPlannerInterface {
   using UniqueLock = std::unique_lock<Mutex>;
 
   using RobotState = tactic::OutputCache;
-  using Command = geometry_msgs::msg::Twist;
+  using Command = geometry_msgs::msg::TwistStamped;
   using Callback = PathPlannerCallbackInterface;
 
   /** \brief An unique identifier. Subclass should overwrite this. */
