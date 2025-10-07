@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
     auto messages = extractor.extract_messages(-1, "stereo_landmarks",  temp_msg);
     std::cout << "Found " << messages.size() << " messages" << std::endl;
 
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    // EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     std::vector<lgmath::se3::TransformationWithCovariance> transformed_messages;
     std::vector<uint64_t> timestamps;
     std::vector<uint64_t> vertex_timestamps;

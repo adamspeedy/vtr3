@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
     auto messages = extractor.extract_messages(-1, "odometry_result",  temp_msg);
     std::cout << "Found " << messages.size() << " messages" << std::endl;
 
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    // EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     std::vector<lgmath::se3::TransformationWithCovariance> transformed_messages;
     for (size_t i = 0; i < messages.size(); ++i) {
         std::cout << "\nMessage " << i+1 << ":" << std::endl;
