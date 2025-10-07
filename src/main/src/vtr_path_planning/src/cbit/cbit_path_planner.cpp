@@ -173,7 +173,7 @@ void CBITPlanner::plan() {
         const auto [stamp, w_p_r_in_r, T_p_r, T_w_p, T_w_v_odo, T_r_v_odo, curr_sid] = getChainInfo(chain);
 
         robot_pose = T2xyzrpy(T_w_p * T_p_r);
-        CLOG(INFO, "cbit_planner.path_planning") << "Displaying Current Robot Transform: " << T_p_r;
+        CLOG(INFO, "cbit_planner.path_planning") << "Displaying Current Robot Transform: " << T_p_r.matrix();
 
         Pose se3_robot_pose = Pose(std::get<0>(robot_pose),(std::get<1>(robot_pose)),std::get<2>(robot_pose),std::get<3>(robot_pose),std::get<4>(robot_pose),std::get<5>(robot_pose));
         new_state = std::make_unique<Pose> (se3_robot_pose);
