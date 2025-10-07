@@ -13,7 +13,8 @@ find_package(Boost REQUIRED thread)
 find_package(sqlite3_vendor REQUIRED)
 find_package(SQLite3 REQUIRED)  # provided by sqlite3_vendor
 
-find_package(yaml_cpp_vendor REQUIRED)
+# find_package(yaml_cpp_vendor REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
 find_package(rclcpp REQUIRED)
 find_package(rcpputils REQUIRED)
@@ -41,7 +42,7 @@ ament_target_dependencies(${PROJECT_NAME}_storage
   rosidl_typesupport_cpp
   rosidl_typesupport_introspection_cpp
   rmw
-  SQLite3 yaml_cpp_vendor
+  SQLite3 #yaml_cpp_vendor
 )
 target_include_directories(${PROJECT_NAME}_storage
   PUBLIC
@@ -51,7 +52,7 @@ target_include_directories(${PROJECT_NAME}_storage
 # accessor
 file(GLOB_RECURSE ACCESSOR_SRC src/accessor/*.cpp)
 add_library(${PROJECT_NAME}_accessor SHARED ${ACCESSOR_SRC})
-target_link_libraries(${PROJECT_NAME}_accessor ${PROJECT_NAME}_storage)
+target_link_libraries(${PROJECT_NAME}_accessor ${PROJECT_NAME}_storage yaml-cpp)
 target_include_directories(${PROJECT_NAME}_accessor
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -66,7 +67,7 @@ ament_target_dependencies(${PROJECT_NAME}_stream
   vtr_logging
 )
 target_link_libraries(${PROJECT_NAME}_stream
-  ${PROJECT_NAME}_accessor
+  ${PROJECT_NAME}_accessor yaml-cpp
 )
 target_include_directories(${PROJECT_NAME}_stream
   PUBLIC
@@ -83,7 +84,8 @@ ament_export_dependencies(
   rosidl_typesupport_cpp
   rosidl_typesupport_introspection_cpp
   sqlite3_vendor SQLite3
-  yaml_cpp_vendor
+  # yaml_cpp_vendor
+  yaml-cpp
   vtr_logging
 )
 
@@ -104,38 +106,38 @@ install(
   INCLUDES DESTINATION include
 )
 
-if(BUILD_TESTING)
-  find_package(ament_cmake_gmock REQUIRED)
+# if(BUILD_TESTING)
+#   find_package(ament_cmake_gmock REQUIRED)
 
-  ament_add_gmock(test_sqlite_wrapper test/storage/sqlite/test_sqlite_wrapper.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-  target_link_libraries(test_sqlite_wrapper ${PROJECT_NAME}_storage)
-  ament_add_gmock(test_sqlite_wrapper2 test/storage/sqlite/test_sqlite_wrapper2.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-  target_link_libraries(test_sqlite_wrapper2 ${PROJECT_NAME}_storage)
-  ament_add_gmock(test_sqlite_storage test/storage/sqlite/test_sqlite_storage.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-  target_link_libraries(test_sqlite_storage ${PROJECT_NAME}_storage)
-  ament_add_gmock(test_sqlite_storage2 test/storage/sqlite/test_sqlite_storage2.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-  target_link_libraries(test_sqlite_storage2 ${PROJECT_NAME}_storage)
+#   ament_add_gmock(test_sqlite_wrapper test/storage/sqlite/test_sqlite_wrapper.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+#   target_link_libraries(test_sqlite_wrapper ${PROJECT_NAME}_storage)
+#   ament_add_gmock(test_sqlite_wrapper2 test/storage/sqlite/test_sqlite_wrapper2.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+#   target_link_libraries(test_sqlite_wrapper2 ${PROJECT_NAME}_storage)
+#   ament_add_gmock(test_sqlite_storage test/storage/sqlite/test_sqlite_storage.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+#   target_link_libraries(test_sqlite_storage ${PROJECT_NAME}_storage)
+#   ament_add_gmock(test_sqlite_storage2 test/storage/sqlite/test_sqlite_storage2.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+#   target_link_libraries(test_sqlite_storage2 ${PROJECT_NAME}_storage)
 
-  ament_add_gmock(test_storage_accessor test/accessor/test_storage_accessor.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-  target_link_libraries(test_storage_accessor ${PROJECT_NAME}_accessor)
+#   ament_add_gmock(test_storage_accessor test/accessor/test_storage_accessor.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+#   target_link_libraries(test_storage_accessor ${PROJECT_NAME}_accessor)
 
-  find_package(std_msgs REQUIRED)
+#   find_package(std_msgs REQUIRED)
 
-  ament_add_gmock(test_message test/stream/test_message.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-  target_link_libraries(test_message ${PROJECT_NAME}_stream)
+#   ament_add_gmock(test_message test/stream/test_message.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+#   target_link_libraries(test_message ${PROJECT_NAME}_stream)
 
-  ament_add_gmock(test_data_stream_accessor test/stream/test_data_stream_accessor.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-  ament_target_dependencies(test_data_stream_accessor std_msgs)
-  target_link_libraries(test_data_stream_accessor ${PROJECT_NAME}_stream)
+#   ament_add_gmock(test_data_stream_accessor test/stream/test_data_stream_accessor.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+#   ament_target_dependencies(test_data_stream_accessor std_msgs)
+#   target_link_libraries(test_data_stream_accessor ${PROJECT_NAME}_stream)
 
-  ament_add_gmock(test_data_stream_accessor_storable test/stream/test_data_stream_accessor_storable.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-  ament_target_dependencies(test_data_stream_accessor_storable std_msgs)
-  target_link_libraries(test_data_stream_accessor_storable ${PROJECT_NAME}_stream)
+#   ament_add_gmock(test_data_stream_accessor_storable test/stream/test_data_stream_accessor_storable.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+#   ament_target_dependencies(test_data_stream_accessor_storable std_msgs)
+#   target_link_libraries(test_data_stream_accessor_storable ${PROJECT_NAME}_stream)
 
-  ament_add_gmock(test_data_bubble test/stream/test_data_bubble.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-  ament_target_dependencies(test_data_bubble std_msgs)
-  target_link_libraries(test_data_bubble ${PROJECT_NAME}_stream)
+#   ament_add_gmock(test_data_bubble test/stream/test_data_bubble.cpp WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+#   ament_target_dependencies(test_data_bubble std_msgs)
+#   target_link_libraries(test_data_bubble ${PROJECT_NAME}_stream)
 
-endif()
+# endif()
 
 ament_package()

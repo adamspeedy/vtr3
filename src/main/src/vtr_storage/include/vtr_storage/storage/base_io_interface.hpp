@@ -21,6 +21,7 @@
 #pragma once
 
 #include <string>
+#include <cstdint> 
 
 namespace vtr {
 namespace storage {

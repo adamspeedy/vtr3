@@ -12,7 +12,8 @@
 
   <depend>sqlite3_vendor</depend>
 
-  <depend>yaml_cpp_vendor</depend>
+  <!-- <depend>yaml_cpp_vendor</depend> -->
+  <depend>yaml-cpp</depend>
 
   <depend>rclcpp</depend>
   <depend>rcpputils</depend>
