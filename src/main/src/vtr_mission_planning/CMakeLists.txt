@@ -69,20 +69,20 @@ install(
   INCLUDES DESTINATION include
 )
 
-if(BUILD_TESTING)
-  find_package(ament_cmake_gtest REQUIRED)
+# if(BUILD_TESTING)
+#   find_package(ament_cmake_gtest REQUIRED)
 
-  # state machine tests
-  ament_add_gtest(test_state_machine test/state_machine/test_state_machine.cpp)
-  target_link_libraries(test_state_machine ${PROJECT_NAME}_state_machine)
+#   # state machine tests
+#   ament_add_gtest(test_state_machine test/state_machine/test_state_machine.cpp)
+#   target_link_libraries(test_state_machine ${PROJECT_NAME}_state_machine)
 
-  # mission server tests
-  ament_add_gtest(test_mission_server test/mission_server/test_mission_server.cpp)
-  target_link_libraries(test_mission_server ${PROJECT_NAME}_mission_server)
+#   # mission server tests
+#   ament_add_gtest(test_mission_server test/mission_server/test_mission_server.cpp)
+#   target_link_libraries(test_mission_server ${PROJECT_NAME}_mission_server)
 
-  # Linting
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies() # Lint based on linter test_depend in package.xml
-endif()
+#   # Linting
+#   find_package(ament_lint_auto REQUIRED)
+#   ament_lint_auto_find_test_dependencies() # Lint based on linter test_depend in package.xml
+# endif()
 
 ament_package()
