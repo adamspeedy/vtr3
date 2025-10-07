@@ -403,7 +403,7 @@ void LandmarkRecallModule::loadSensorTransform(const VertexId &vid,
   auto rc_transforms = locked_msg.get().getDataPtr();
   common::conversions::fromROSMsg(*rc_transforms, T_s_v_map_[vid]);
   T_s_v_map_[vid].setZeroCovariance();
-  CLOG(DEBUG, "stereo.recall") << "vertexID: " << vid << ", Transform T_s_v: " << T_s_v_map_[vid];
+  CLOG(DEBUG, "stereo.recall") << "vertexID: " << vid << ", Transform T_s_v: " << T_s_v_map_[vid].matrix();
 }
 
 }  // namespace vision

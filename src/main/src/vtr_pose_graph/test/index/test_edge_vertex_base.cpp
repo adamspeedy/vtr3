@@ -44,7 +44,7 @@ TEST(PoseGraph, edge_base_tests) {
   EXPECT_TRUE(edge.isTemporal());
   EXPECT_FALSE(edge.isSpatial());
 
-  CLOG(INFO, "test") << edge << std::endl << edge.T();  // check output
+  // CLOG(INFO, "test") << edge << std::endl << edge.T();  // check output
 }
 
 TEST(PoseGraph, vertex_base_tests) {
