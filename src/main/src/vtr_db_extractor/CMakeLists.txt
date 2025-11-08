@@ -34,6 +34,7 @@ add_executable(graph_image_extractor src/extract_image_from_bag.cpp)
 add_executable(graph_loc_offset_extractor src/extract_loc_result_from_bag.cpp)
 add_executable(graph_edge_extractor src/extract_edge_from_bag.cpp)
 add_executable(graph_landmark_extractor src/extract_landmarks_from_bag.cpp)
+add_executable(graph_descriptor_extractor src/extract_descriptors_from_bag.cpp)
 add_executable(graph_keypoint_extractor src/extract_keypoints_from_bag.cpp)
 add_library(utils src/utils.cpp)
 
@@ -107,6 +108,16 @@ ament_target_dependencies(graph_landmark_extractor
   yaml-cpp
 )
 
+ament_target_dependencies(graph_descriptor_extractor
+  rclcpp
+  vtr_common
+  vtr_vision_msgs
+  Eigen3
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
+)
+
 ament_target_dependencies(graph_keypoint_extractor
   rclcpp
   vtr_common
@@ -167,6 +178,11 @@ target_include_directories(graph_landmark_extractor PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
+target_include_directories(graph_descriptor_extractor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
 target_include_directories(graph_keypoint_extractor PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
@@ -179,6 +195,7 @@ target_include_directories(utils PUBLIC
 )
 
 target_link_libraries(graph_landmark_extractor  utils)
+target_link_libraries(graph_descriptor_extractor  utils)
 target_link_libraries(graph_keypoint_extractor  utils)
 target_link_libraries(graph_edge_extractor  utils)
 target_link_libraries(graph_odom_extractor  utils)
@@ -197,7 +214,7 @@ install(
 )
 
 install(
-  TARGETS utils lie_converter graph_odom_extractor graph_vertex_extractor graph_image_extractor graph_loc_offset_extractor graph_edge_extractor graph_landmark_extractor graph_keypoint_extractor
+  TARGETS utils lie_converter graph_odom_extractor graph_vertex_extractor graph_image_extractor graph_loc_offset_extractor graph_edge_extractor graph_landmark_extractor graph_keypoint_extractor graph_descriptor_extractor
   EXPORT export_${PROJECT_NAME}
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
