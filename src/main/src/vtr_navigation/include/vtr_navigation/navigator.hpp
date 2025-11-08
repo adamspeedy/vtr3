@@ -65,16 +65,21 @@ class Navigator {
 
 typedef message_filters::sync_policies::ApproximateTime<
     sensor_msgs::msg::Image, sensor_msgs::msg::Image, nav_msgs::msg::Odometry
-  > ApproximateImageSync;
+  > ApproximateImageOdomSync;
 
+typedef message_filters::sync_policies::ApproximateTime<
+    sensor_msgs::msg::Image, sensor_msgs::msg::Image
+  > ApproximateImageSync;
 
   const std::string &camera_frame() const { return camera_frame_;}
   const tactic::EdgeTransform &T_camera_robot() const { return T_camera_robot_; }
-  void cameraCallback(const sensor_msgs::msg::Image::SharedPtr msg_r, const sensor_msgs::msg::Image::SharedPtr msg_l, const nav_msgs::msg::Odometry::SharedPtr msg_zed_odom);
+  void cameraOdomCallback(const sensor_msgs::msg::Image::SharedPtr msg_r, const sensor_msgs::msg::Image::SharedPtr msg_l, const nav_msgs::msg::Odometry::SharedPtr msg_zed_odom);
+  void cameraCallback(const sensor_msgs::msg::Image::SharedPtr msg_r, const sensor_msgs::msg::Image::SharedPtr msg_l);
   message_filters::Subscriber<sensor_msgs::msg::Image> right_camera_sub_;
   message_filters::Subscriber<sensor_msgs::msg::Image> left_camera_sub_;
   message_filters::Subscriber<nav_msgs::msg::Odometry> zed_odom_sub_;
-  std::shared_ptr<message_filters::Synchronizer<ApproximateImageSync>> sync_;
+  std::shared_ptr<message_filters::Synchronizer<ApproximateImageOdomSync>> sync_image_odom_;
+  std::shared_ptr<message_filters::Synchronizer<ApproximateImageSync>> sync_image_;
   std::string camera_frame_;
   tactic::EdgeTransform T_camera_robot_;
 

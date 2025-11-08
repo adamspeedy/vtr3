@@ -16,6 +16,7 @@ auto StereoPipeline::Config::fromROS(const rclcpp::Node::SharedPtr &node,
   config->odometry = node->declare_parameter<std::vector<std::string>>(param_prefix + ".odometry", config->odometry);
   config->bundle_adjustment = node->declare_parameter<std::vector<std::string>>(param_prefix + ".bundle_adjustment", config->bundle_adjustment);
   config->localization = node->declare_parameter<std::vector<std::string>>(param_prefix + ".localization", config->localization);
+  config->use_odom_topic_ = node->declare_parameter<bool>(param_prefix + ".use_odom_topic", true);
   // clang-format on
   return config;
 }
@@ -26,7 +27,7 @@ StereoPipeline::StereoPipeline(
     const std::shared_ptr<ModuleFactory> &module_factory,
     const std::string &name)
     : BasePipeline(module_factory, name), config_(config) {
-  
+  use_odom_topic = config_->use_odom_topic_;
   // preprocessing 
   for (auto module : config_->preprocessing)
     preprocessing_.push_back(factory()->get("preprocessing." + module));
@@ -84,7 +85,7 @@ void StereoPipeline::runOdometry_(const tactic::QueryCache::Ptr &qdata0, const t
     setOdometryPrior(qdata, graph);
 
   }
-  else
+  else if(use_odom_topic)
   {
     T_prev_zed = *qdata.T_r_v_zed;
   }
@@ -128,14 +129,18 @@ void StereoPipeline::runOdometry_(const tactic::QueryCache::Ptr &qdata0, const t
   }
 
 
-  // set result
-  // qdata.T_r_v_odo = *qdata.T_r_m;
-  // qdata.T_r_v_odo = *qdata.T_r_v_zed;
-  Eigen::Matrix4d temp4 = ((*qdata.T_r_v_zed).inverse()) ;
-  Eigen::Matrix4d temp3 = (T_prev_zed);
-  Eigen::Matrix4d temp2 = temp4 * temp3;
-  auto temp = lgmath::se3::TransformationWithCovariance(temp2);
-  qdata.T_r_v_odo = temp ;
+  if (use_odom_topic)
+  {
+    Eigen::Matrix4d temp4 = ((*qdata.T_r_v_zed).inverse()) ;
+    Eigen::Matrix4d temp3 = (T_prev_zed);
+    Eigen::Matrix4d temp2 = temp4 * temp3;
+    auto temp = lgmath::se3::TransformationWithCovariance(temp2);
+    qdata.T_r_v_odo = temp ;
+  }
+  else
+  {
+    qdata.T_r_v_odo = *qdata.T_r_m;
+  }
   
 }
 
@@ -198,8 +203,12 @@ void StereoPipeline::onVertexCreation_(const QueryCache::Ptr &qdata0,
   auto live_id = *qdata->vid_odo;
 
   saveLandmarks(*qdata, graph, live_id);
-  Eigen::Matrix4d temp = *qdata->T_r_v_zed;
-  T_prev_zed = temp;
+  
+  if (use_odom_topic)
+  {
+    Eigen::Matrix4d temp = *qdata->T_r_v_zed;
+    T_prev_zed = temp;
+  }
 
   if (*qdata->first_frame) return;
 
