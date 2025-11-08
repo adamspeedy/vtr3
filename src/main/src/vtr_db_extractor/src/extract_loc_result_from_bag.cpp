@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
     
     BagExtractor extractor(bag_directory, bag_name);
     vtr_tactic_msgs::msg::LocalizationResult temp_msg;
-    auto messages = extractor.extract_messages(-1, "stereo_landmarks",  temp_msg);
+    auto messages = extractor.extract_messages(-1, "localization_result",  temp_msg);
     std::cout << "Found " << messages.size() << " messages" << std::endl;
 
     // EIGEN_MAKE_ALIGNED_OPERATOR_NEW
