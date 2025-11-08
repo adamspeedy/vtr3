@@ -28,6 +28,7 @@
 #include <vtr_vision/features/extractor/base_feature_extractor.hpp>
 #include <vtr_vision/features/extractor/extractor_configs.hpp>
 #include <vtr_vision/visualize.hpp>
+#include <vtr_vision/features/extractor/surf_configuration.hpp>
 
 namespace vtr {
 namespace vision {
@@ -57,6 +58,8 @@ class ConversionExtractionModule : public tactic::BaseModule {
         "ASRL_GPU_SURF";  // ["OPENCV_ORB", "ASRL_GPU_SURF"]
 
     ORBConfiguration opencv_orb_params;
+
+    SURFConfiguration opencv_surf_params;
 
     static ConstPtr fromROS(const rclcpp::Node::SharedPtr &node,
                             const std::string &param_prefix);

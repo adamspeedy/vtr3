@@ -178,6 +178,8 @@ class ASRLFeatureMatcher {
   /////////////////////////////////////////////////////////////////////////
   static float surfmatch(const float *d1, const float *d2, unsigned size);
 
+  static float cvsurfmatch(cv::Mat *d1,cv::Mat *d2);
+
   /////////////////////////////////////////////////////////////////////////
   /// @brief Compares the distance between two learned feature descriptors
   /// @param[in] d1 two pointers to floats of size 'size'

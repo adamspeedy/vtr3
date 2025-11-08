@@ -158,6 +158,7 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
   }
 
   // go through each rig
+  CLOG(DEBUG, "stereo.matcher") << "Iterating through Rig: " << query_landmarks.size();
   for (uint32_t rig_idx = 0; rig_idx < query_landmarks.size(); ++rig_idx) {
     // grab the data for this rig
     const vision::RigLandmarks &query_rig_lm = query_landmarks[rig_idx];
@@ -171,6 +172,7 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
     rig_matches.name = query_rig_lm.name;
 
     // go through each channel.
+    CLOG(DEBUG, "stereo.matcher") << "Iterating through Channel: " << query_rig_lm.channels.size();
     for (uint32_t channel_idx = 0; channel_idx < query_rig_lm.channels.size();
          ++channel_idx) {
 
@@ -200,8 +202,9 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
         channel_matches.name = qry_channel_lm.name;
 
 // multi-thread
+      CLOG(DEBUG, "stereo.matcher") << "Iterating through  Query Landmarks: " << qry_channel_lm.appearance.feat_infos.size();
+      CLOG(DEBUG, "stereo.matcher") << "Iterating through  Map Landmarks: " << map_channel_lm.appearance.feat_infos.size();
 #pragma omp parallel for num_threads(config_->parallel_threads)
-
         // for each landmark in the query
         for (uint32_t qry_lm_idx = 0;
              qry_lm_idx < qry_channel_lm.appearance.feat_infos.size();
@@ -263,6 +266,7 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
 
               if (qry_channel_lm.appearance.feat_type.impl ==
                   vision::FeatureImpl::OPENCV_ORB) {
+                CLOG(ERROR, "stereo.matcher") << "Should not be using ORB or LEARNED_FEATURE in stereo matcher!"; 
                 match_dist = matcher.briefmatch(
                     &qry_channel_lm.appearance.descriptors.at<unsigned char>(
                         qry_lm_idx, 0),
@@ -270,10 +274,22 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
                         map_lm_idx, 0),
                     qry_channel_lm.appearance.feat_type.bytes_per_desc);
                 //CLOG(DEBUG, "stereo.matcher") << "match distance: " << match_dist;
+              } else if (qry_channel_lm.appearance.feat_type.impl ==
+                  vision::FeatureImpl::OPENCV_SURF) {
+                // CLOG(INFO, "stereo.matcher") << "We are matching";
+                cv::Mat desc1 = qry_channel_lm.appearance.descriptors.row(qry_lm_idx);
+                cv::Mat desc2 = map_channel_lm.appearance.descriptors.row(map_lm_idx);
+                match_dist =  matcher.cvsurfmatch(&desc1, &desc2);
+                // match_dist = matcher.cvsurfmatch(
+                //     qry_channel_lm.appearance.descriptors.row(qry_lm_idx),
+                //     map_channel_lm.appearance.descriptors.row(map_lm_idx));
+                // CLOG(INFO, "stereo.matcher") << "dist:" << match_dist; 
+                //CLOG(DEBUG, "stereo.matcher") << "match distance: " << match_dist;
               } else if ((qry_channel_lm.appearance.feat_type.impl ==
                          vision::FeatureImpl::ASRL_GPU_SURF) ||
                          qry_channel_lm.appearance.feat_type.impl ==
                          vision::FeatureImpl::LEARNED_FEATURE) {
+                CLOG(ERROR, "stereo.matcher") << "Should not be using ASRL GPU SURF or LEARNED_FEATURE in stereo matcher!"; 
                 match_dist = matcher.surfmatch(
                     &qry_channel_lm.appearance.descriptors.at<float>(qry_lm_idx,
                                                                      0),
@@ -285,8 +301,10 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
 
               // check if the descriptor distant meets the threshold and is
               // better than any other
+              // CLOG(DEBUG, "stereo.matcher") << "distance between descriptors: " << match_dist;
               if (match_dist < config_->descriptor_thresh &&
                   match_dist < best_dist) {
+                CLOG(DEBUG, "stereo.matcher") << " We got a good one here"<< match_dist;
                 best_dist = match_dist;
                 match_idx = map_lm_idx;
               }
@@ -359,13 +377,13 @@ bool ASRLStereoMatcherModule::checkConditions(
   float window_scale = config_->use_pixel_variance
                            ? std::sqrt(1.0 / lm_info_qry.precision)
                            : 1.0;
-  CLOG(INFO, "stereo.testing") << "window scale: " << window_scale;
+  // CLOG(INFO, "stereo.testing") << "window scale: " << window_scale;
 
   // scale it by the desired window size
   float window_size = window_scale * (use_tight_pixel_thresh
                                           ? config_->tight_matching_pixel_thresh
                                           : config_->matching_pixel_thresh);
-  CLOG(INFO, "stereo.testing") << "window size: " << window_size;
+  // CLOG(INFO, "stereo.testing") << "window size: " << window_size;
   // now check that the keypoints meet the minimum position error metrics (given
   // the transformed point and the window if the window size is 0 or below, that
   // indicates we don't care about it
