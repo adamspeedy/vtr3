@@ -4,8 +4,8 @@
   <name>vtr_db_extractor</name>
   <version>0.0.1</version>
   <description>A package to read arrays from files using vtr_common</description>
-  <maintainer email="your.email@example.com">Your Name</maintainer>
-  <license>TODO: License declaration</license>
+  <maintainer email="adamsa@mweb.co.za">Adam Speed-Andrews</maintainer>
+  <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
@@ -15,6 +15,7 @@
   <depend>vtr_common_msgs</depend>
   <depend>vtr_tactic_msgs</depend>
   <depend>vtr_vision_msgs</depend>
+  <depend>cv_bridge</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

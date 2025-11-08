@@ -28,11 +28,11 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='Yuchen Wu',
-    maintainer_email='cheney.wu@mail.utoronto.ca',
     description='VTR web-based GUI.',
     license='Apache License 2.0',
-    tests_require=['pytest'],
+    extras_require={
+        'test': ['pytest'],
+    },
     entry_points={
         'console_scripts': [
             'setup_server = vtr_gui.setup_server:main',
