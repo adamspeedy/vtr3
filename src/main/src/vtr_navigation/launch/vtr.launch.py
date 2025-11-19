@@ -30,9 +30,11 @@ def generate_launch_description():
     camera_tf_publisher1 = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
-        name='camera_tf_publisher',
+        name='camera_to_mount_tf_publisher',
         arguments=[
-            '0.3', '0', '0', '1.57', '-3.14', '1.57', 'default_mount', 'camera'   # '0', '0', '0.25', '1.57', '-3.14', '1.57', 'default_mount', 'camera'
+            '--x', '0.3', '--y', '0', '--z', '0',
+            '--roll', '1.57', '--pitch', '-3.14', '--yaw', '1.57',
+            '--frame-id', 'default_mount', '--child-frame-id', 'camera'
         ],
         remappings=[
             ('/tf_static', '/vtr/tf_static')
@@ -41,9 +43,11 @@ def generate_launch_description():
     camera_tf_publisher2 = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
-        name='camera_tf_publisher',
+        name='mount_to_base_tf_publisher',
         arguments=[
-            '0', '0', '0.25', '0', '0', '0', 'base_link', 'default_mount'
+            '--x', '0', '--y', '0', '--z', '0.25',
+            '--roll', '0', '--pitch', '0', '--yaw', '0',
+            '--frame-id', 'base_link', '--child-frame-id', 'default_mount'
         ],
         remappings=[
             ('/tf_static', '/vtr/tf_static')
@@ -52,9 +56,11 @@ def generate_launch_description():
     camera_tf_publisher3 = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
-        name='camera_tf_publisher',
+        name='base_to_robot_tf_publisher',
         arguments=[
-            '0', '0', '0', '0', '0', '0', 'robot','base_link'
+            '--x', '0', '--y', '0', '--z', '0',
+            '--roll', '0', '--pitch', '0', '--yaw', '0',
+            '--frame-id', 'robot', '--child-frame-id', 'base_link'
         ],
         remappings=[
             ('/tf_static', '/vtr/tf_static')
