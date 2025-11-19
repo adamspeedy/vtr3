@@ -102,7 +102,7 @@ void LandmarkRecallModule::initializeLandmarkMemory(
   decltype(CV_8UC1) cv_type;
   std::tie(cv_type, byte_depth) =
       messages::featureCvType(channel_lm.appearance.feat_type.impl);
-
+  CLOG(DEBUG, "stereo.recall") << "cv_type: " << cv_type << " byte_depth: " << byte_depth;
   if (cv_type == CV_32F) {
     channel_lm.appearance.descriptors =
         cv::Mat(num_landmarks, channel_lm.appearance.feat_type.dims, CV_32F);

@@ -201,7 +201,7 @@ typedef std::vector<Keypoint> Keypoints;
 // Descriptors
 
 enum struct FeatureImpl { UNKNOWN = 0, OPENCV_ORB, ASRL_GPU_SURF, 
-                          LEARNED_FEATURE };
+                          LEARNED_FEATURE, OPENCV_SURF };
 struct FeatureType {
   /// The implementation used for feature extraction
   FeatureImpl impl;

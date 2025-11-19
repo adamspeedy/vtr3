@@ -30,6 +30,35 @@ using namespace tactic;
 
 namespace {
 
+void configureCVSURFDetector(const rclcpp::Node::SharedPtr &node,
+                          vision::SURFConfiguration &config,
+                          const std::string &param_prefix) {
+  // clang-format off
+  config.hessianThreshold_  = node->declare_parameter<double>(param_prefix + ".extractor.surf.hessianThreshold", 400.0);
+  config.use_GPU_descriptors_  = node->declare_parameter<bool>(param_prefix + ".extractor.surf.use_GPU_descriptors", false);
+  config.num_detector_features_  = node->declare_parameter<int>(param_prefix + ".extractor.surf.num_detector_features", 10000);
+  config.num_binned_features_  = node->declare_parameter<int>(param_prefix + ".extractor.surf.num_binned_features", 2000);
+  config.nOctaves_  = node->declare_parameter<int>(param_prefix + ".extractor.surf.nOctaves", 4);
+  config.nOctaveLayers_  = node->declare_parameter<int>(param_prefix + ".extractor.surf.nOctaveLayers", 2);
+  config.extended_  = node->declare_parameter<bool>(param_prefix + ".extractor.surf.extended", false);
+  config.keypointRatio_  = node->declare_parameter<double>(param_prefix + ".extractor.surf.keypointRatio", 0.01);
+  config.upright_  = node->declare_parameter<bool>(param_prefix + ".extractor.surf.upright_flag", true);
+  config.x_bins_  = node->declare_parameter<int>(param_prefix + ".extractor.surf.x_bins", 6);
+  config.y_bins_  = node->declare_parameter<int>(param_prefix + ".extractor.surf.y_bins", 4);
+  config.num_threads_  = node->declare_parameter<int>(param_prefix + ".extractor.surf.num_threads", 8);
+  config.stereo_matcher_config_.descriptor_match_thresh_ = node->declare_parameter<double>(param_prefix + ".extractor.surf.matcher.descriptor_match_thresh", 0.55);
+  config.stereo_matcher_config_.stereo_descriptor_match_thresh_ = node->declare_parameter<double>(param_prefix + ".extractor.surf.matcher.stereo_descriptor_match_thresh", 0.55);
+  config.stereo_matcher_config_.stereo_y_tolerance_ = node->declare_parameter<double>(param_prefix + ".extractor.surf.matcher.stereo_y_tolerance", 2.0f);
+  config.stereo_matcher_config_.stereo_x_tolerance_min_  = node->declare_parameter<double>(param_prefix + ".extractor.surf.matcher.stereo_x_tolerance_min", 0.0);
+  config.stereo_matcher_config_.stereo_x_tolerance_max_  = node->declare_parameter<double>(param_prefix + ".extractor.surf.matcher.stereo_x_tolerance_max", 250.0);
+  config.stereo_matcher_config_.check_octave_  = node->declare_parameter<bool>(param_prefix + ".extractor.surf.matcher.check_octave", true);
+  config.stereo_matcher_config_.check_response_  = node->declare_parameter<bool>(param_prefix + ".extractor.surf.matcher.check_response", true);
+  config.stereo_matcher_config_.min_response_ratio_  = node->declare_parameter<double>(param_prefix + ".extractor.surf.matcher.min_response_ratio", 0.2);
+  config.stereo_matcher_config_.scale_x_tolerance_by_y_  = node->declare_parameter<bool>(param_prefix + ".extractor.surf.matcher.scale_x_tolerance_by_y", true);
+  config.stereo_matcher_config_.x_tolerance_scale_ = node->declare_parameter<double>(param_prefix + ".extractor.surf.matcher.x_tolerance_scale", 768);
+  // clang-format on
+}
+
 void configureORBDetector(const rclcpp::Node::SharedPtr &node,
                           vision::ORBConfiguration &config,
                           const std::string &param_prefix) {
@@ -184,7 +213,10 @@ auto ConversionExtractionModule::Config::fromROS(
   // configure the detector
   if (config->feature_type == "OPENCV_ORB") {
     configureORBDetector(node, config->opencv_orb_params, param_prefix);
-  } else if (config->feature_type == "ASRL_GPU_SURF") {
+  } else if (config->feature_type == "OPENCV_SURF") {
+    configureCVSURFDetector(node, config->opencv_surf_params, param_prefix);
+  }
+  else if (config->feature_type == "ASRL_GPU_SURF") {
 #ifdef VTR_ENABLE_GPUSURF
     configureSURFDetector(node, config->gpu_surf_params, param_prefix);
     configureSURFStereoDetector(node, config->gpu_surf_stereo_params, param_prefix);
@@ -233,6 +265,10 @@ void ConversionExtractionModule::createExtractor() {
     vision::OrbFeatureExtractor *dextractor =
         dynamic_cast<vision::OrbFeatureExtractor *>(extractor_.get());
     dextractor->initialize(config_->opencv_orb_params);
+  } else if (config_->feature_type == "OPENCV_SURF") {
+    vision::SurfFeatureExtractor *dextractor =
+        dynamic_cast<vision::SurfFeatureExtractor *>(extractor_.get());
+    dextractor->initialize(config_->opencv_surf_params);
   } else {
     CLOG(ERROR, static_name) << "Couldn't determine feature type!";
   }

@@ -35,6 +35,8 @@ namespace messages {
 std::tuple<decltype(CV_32F), decltype(sizeof(float))> featureCvType(
     const vision::FeatureImpl &type) {
   switch (type) {
+    case vision::FeatureImpl::OPENCV_SURF:
+      return std::make_tuple(CV_32F, sizeof(float));
     case vision::FeatureImpl::ASRL_GPU_SURF:
       return std::make_tuple(CV_32F, sizeof(float));
     case vision::FeatureImpl::OPENCV_ORB:
@@ -62,6 +64,8 @@ vision::FeatureImpl str2FeatureType(std::string str) {
 
 std::string featureType2Str(const vision::FeatureImpl &impl) {
   switch (impl) {
+    case vision::FeatureImpl::OPENCV_SURF:
+      return "surf";
     case vision::FeatureImpl::ASRL_GPU_SURF:
       return "surf";
     case vision::FeatureImpl::OPENCV_ORB:

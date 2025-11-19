@@ -359,7 +359,9 @@ void MelMatcherModule::matchChannelGPU(
   } else if ((query_channel_lm.appearance.feat_type.impl ==
               vision::FeatureImpl::ASRL_GPU_SURF) ||
              (query_channel_lm.appearance.feat_type.impl ==
-              vision::FeatureImpl::LEARNED_FEATURE)) {
+              vision::FeatureImpl::LEARNED_FEATURE) ||
+             (query_channel_lm.appearance.feat_type.impl ==
+              vision::FeatureImpl::OPENCV_SURF)){
     // create the matcher
     cudabfmatcher = cv::cuda::DescriptorMatcher::createBFMatcher(cv::NORM_L2);
 

@@ -220,6 +220,7 @@ if(${ITERATION_BUILD_VISION} EQUAL 11)
   src/features/extractor/feature_extractor_factory.cpp
   src/features/extractor/learned_feature_extractor.cpp
   src/features/extractor/orb_feature_extractor.cpp
+  src/features/extractor/surf_feature_extractor.cpp
   # src/features/extractor/*.cpp
   src/features/matcher/*.cpp
   src/image_publisher.cpp

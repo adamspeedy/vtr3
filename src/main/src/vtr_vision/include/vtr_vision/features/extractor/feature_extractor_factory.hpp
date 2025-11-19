@@ -25,6 +25,7 @@
 
 #include <vtr_vision/features/extractor/extractor_configs.hpp>
 #include <vtr_vision/features/extractor/orb_feature_extractor.hpp>
+#include <vtr_vision/features/extractor/surf_feature_extractor.hpp>
 
 
 #ifdef VTR_VISION_LEARNED

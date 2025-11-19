@@ -37,6 +37,9 @@ std::shared_ptr<BaseFeatureExtractor> FeatureExtractorFactory::createExtractor(
   if (type == "OPENCV_ORB") {
     // CPU Based Feature Extractors
     extractor.reset(new vtr::vision::OrbFeatureExtractor());
+  } else if (type == "OPENCV_SURF")
+  {
+    extractor.reset(new vtr::vision::SurfFeatureExtractor());
   } else if (type == "ASRL_GPU_SURF") {
     // CUDA Based Feature Extractors
 #ifdef VTR_ENABLE_GPUSURF

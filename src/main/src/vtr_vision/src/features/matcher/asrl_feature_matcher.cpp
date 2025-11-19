@@ -171,15 +171,28 @@ SimpleMatches ASRLFeatureMatcher::matchFeatures(
           dist = surfmatch(&frame1.descriptors.at<float>(ii, 0),
                            &frame2.descriptors.at<float>(jj, 0),
                            frame1.feat_type.bytes_per_desc / sizeof(float));
+        } else if (frame1.feat_type.impl == FeatureImpl::OPENCV_SURF) {
+          cv::Mat desc1 = frame1.descriptors.row(ii);
+          cv::Mat desc2 = frame2.descriptors.row(jj);
+          dist = cvsurfmatch(&desc1, &desc2);
+          // dist = surfmatch(&frame1.descriptors.at<float>(ii, 0),
+          //                  &frame2.descriptors.at<float>(jj, 0),
+          //                  frame1.feat_type.bytes_per_desc / sizeof(float));
+          // CLOG(DEBUG, "stereo.matcher") << "distance between descriptors: " << dist;
+          // CLOG(DEBUG, "stereo.features") << "descriptor: " << frame2.descriptors.at<float>(jj, 0);
         } else {
           CLOG(ERROR, "stereo.features")
               << "ASRLFeatureMatcher::matchfeatures(): unknown feature type!";
         }
+        // CLOG(DEBUG, "stereo.matcher") << "distance between descriptors no. "<<jj<<"/"<< ii << " - " << dist << " - " << config_.descriptor_match_thresh_;
         if (dist < config_.descriptor_match_thresh_ && dist < best_dist) {
           best_dist = dist;
           match_idx = jj;
         }
       }
+      // else{
+      //   CLOG(ERROR, "stereo.matcher") << "Keypoint Failed";
+      // }
     }
     
     // did we find a good match?
@@ -202,11 +215,13 @@ bool ASRLFeatureMatcher::checkConditions(
     const float &y_window_size, const CheckType &type) {
   // check that the octave of the two keypoints are roughly similar
   if (config_.check_laplacian_bit_ && fi1.laplacian_bit != fi2.laplacian_bit) {
+    // CLOG(INFO, "stereo.matcher") << "BAD laplacian bit";
     return false;
   }
 
   // check that the octave of the two keypoints are roughly similar
   if (config_.check_octave_ && kp1.octave != kp2.octave) {
+    // CLOG(INFO, "stereo.matcher") << "BAD Octave";
     return false;
   }
 
@@ -215,8 +230,12 @@ bool ASRLFeatureMatcher::checkConditions(
     float highest_response = std::max(kp1.response, kp2.response);
     float lowest_response = std::min(kp1.response, kp2.response);
     if (lowest_response / highest_response < config_.min_response_ratio_) {
+      // CLOG(INFO, "stereo.matcher") << "BAD response ratio";
       return false;
     }
+    // else{
+    //   CLOG(DEBUG, "stereo.matcher") <<"Response ratio "<< config_.min_response_ratio_  << " versus " << lowest_response/highest_response ;
+    // }
   }
 
   // if we're using the epipolar check we need to be a bit more involved
@@ -231,6 +250,10 @@ bool ASRLFeatureMatcher::checkConditions(
     // do the two points lie close to each other within conditions?
     if (x_dist < x_window_size_min || x_dist > x_window_size_max ||
         std::fabs(y_dist) > y_window_size) {
+      // CLOG(INFO, "stereo.matcher") << "BAD frame location";
+      // CLOG(INFO, "stereo.matcher") << "x_window_size_min: " << x_window_size_min ;
+      // CLOG(INFO, "stereo.matcher") << "x_window_size_max: " << x_window_size_max ;
+      // CLOG(INFO, "stereo.matcher") << "y_window_size: " << y_window_size ;
       return false;
     }
   }
@@ -313,6 +336,25 @@ float ASRLFeatureMatcher::briefmatch(const unsigned char *d1,
   return score;
 }
 
+float ASRLFeatureMatcher::cvsurfmatch(cv::Mat *d1, cv::Mat *d2) {
+  std::vector<cv::DMatch> matches;
+  CLOG(DEBUG, "stereo.matcher") << "Desc 1 "<< *d1;
+  CLOG(DEBUG, "stereo.matcher") << "Desc 2 "<< *d2;
+  cv::BFMatcher matcher(cv::NORM_L2, /*crossCheck=*/false);
+  matcher.match(*d1, *d2, matches);
+  CLOG(DEBUG, "stereo.matcher") << "Match result "<< matches[0].distance;
+  // return the value
+  // if (matches[0].distance>=1)
+  // {
+  //   // CLOG(DEBUG, "stereo.matcher") << "Loooking rough "<< matches[0].distance;
+  //   return 1.f;
+  // }
+  // else{
+    // CLOG(DEBUG, "stereo.matcher") << "seems OK "<< matches[0].distance;
+  return matches[0].distance;
+  // }
+}
+
 float ASRLFeatureMatcher::surfmatch(const float *d1, const float *d2,
                                     unsigned size) {
   // todo: check if this flag is/should be defined
@@ -328,6 +370,7 @@ float ASRLFeatureMatcher::surfmatch(const float *d1, const float *d2,
   // size is the number of bytes used for the descriptor
   float score = m1.transpose() * m2;
 #endif
+  // CLOG(DEBUG, "stereo.features") << "descriptor score: " << score;
   // return the value
   return 1.f - score;
 }
@@ -361,7 +404,10 @@ float ASRLFeatureMatcher::distance(const void *d1, const void *d2,
   } else if (feat_type.impl == vtr::vision::FeatureImpl::ASRL_GPU_SURF) {
     return vision::ASRLFeatureMatcher::surfmatch(
         (float *)d1, (float *)d2, feat_type.bytes_per_desc / sizeof(float));
-
+  } else if (feat_type.impl == vtr::vision::FeatureImpl::OPENCV_SURF) {
+    return vision::ASRLFeatureMatcher::surfmatch(
+        (float *)d1, (float *)d2, feat_type.bytes_per_desc / sizeof(float));
+    // [TODO]
   } else if (feat_type.impl == vtr::vision::FeatureImpl::LEARNED_FEATURE){
     return vision::ASRLFeatureMatcher::learnedfeaturematch(
         (float *)d1, (float *)d2, feat_type.bytes_per_desc / sizeof(float));
