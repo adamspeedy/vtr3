@@ -39,8 +39,10 @@ void store_messages_to_file(const std::vector<lgmath::se3::TransformationWithCov
 int main(int argc, char** argv) {
     rclcpp::init(argc, argv);
     
-    std::string bag_directory = "/home/adam/Desktop/CurrentBranch/graph/edges";
-    std::string output_directory = "/home/adam/Desktop/CurrentBranch/src/main/src/vtr_db_extractor/edge_results";
+    std::string vtr_root = std::getenv("VTRROOT");
+    std::string bag_directory = vtr_root + "/graph/edges";
+    // std::string bag_directory = "/home/adam/Desktop/CurrentBranch/graph/edges";
+    std::string output_directory = vtr_root + "/src/main/src/vtr_db_extractor/edge_results";
     std::string bag_name = "edges_0.db3";
 
     BagExtractor extractor(bag_directory, bag_name);
