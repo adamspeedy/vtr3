@@ -54,6 +54,7 @@ using ImageMsg = vtr_vision_msgs::msg::Image;
 class StereoPipeline : public tactic::BasePipeline {
  public:
   PTR_TYPEDEFS(StereoPipeline);
+  bool use_odom_topic;
 
   /** \brief Static pipeline identifier. */
   static constexpr auto static_name = "stereo";
@@ -65,6 +66,7 @@ class StereoPipeline : public tactic::BasePipeline {
     std::vector<std::string> odometry;
     std::vector<std::string> localization;
     std::vector<std::string> bundle_adjustment;
+    bool use_odom_topic_;
 
 
     static ConstPtr fromROS(const rclcpp::Node::SharedPtr &node,

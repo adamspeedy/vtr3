@@ -45,6 +45,8 @@
     camera_frame: camera 
     camera_left_topic: /zed/zed_node/left_gray/image_rect_gray    
     camera_right_topic: /zed/zed_node/right_gray/image_rect_gray  
+    use_odom_topic: false
+    odom_topic: /zed/zed_node/odom
 
     ############ map projection configuration ############
     graph_projection:
@@ -95,6 +97,7 @@
       odometry:  ["recall", "matcher", "ransac", "keyframe_optimize", "vertex_test"] 
       bundle_adjustment: ["recall", "steam"] 
       localization: ["recall", "sub_map_extraction", "tod_recognition", "experience_triage", "migration", "matcher", "ransac", "steam"] 
+      use_odom_topic: false
     
     preprocessing:
       adapter:
@@ -118,9 +121,9 @@
 
       extraction:
         type: stereo.conversion_extraction
-        visualize: false
+        visualize: true
         visualize_raw_features: true
-        visualize_topic: false
+        visualize_topic: true
 
         # specify which conversions to do between different image formats from:
         # RGB_TO_GRAYSCALE, RGB_TO_COLOR_CONSTANT
@@ -171,7 +174,7 @@
 
       triangulation:
         type: image_triangulation
-        visualize: true  # shows the depth
+        visualize: false  # shows the depth
         min_triangulation_depth: 0.01
         max_triangulation_depth: 500.0
         visualize_features: false # shows match
@@ -210,7 +213,7 @@
         descriptor_thresh: 0.25   
         parallel_threads: 16
         visualize_feature_matches: true
-        visualize_topic: false
+        visualize_topic: true
         min_matches: 6
 
       ransac:
@@ -225,7 +228,7 @@
         early_stop_ratio: 0.8
         early_stop_min_inliers: 200
         visualize_ransac_inliers: true
-        visualize_topic: false
+        visualize_topic: true
         use_migrated_points: false
         min_inliers: 5
         mask_depth: 200.0
@@ -464,7 +467,7 @@
         threshold: 10.0
         early_stop_ratio: 1.0
         early_stop_min_inliers: 400
-        visualize_ransac_inliers: true
+        visualize_ransac_inliers: false
         visualize_topic: false
         use_migrated_points: true
         min_inliers: 6

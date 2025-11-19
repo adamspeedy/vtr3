@@ -47,9 +47,9 @@ EdgeTransform loadTransform(const std::string& source_frame,
   tf2_ros::Buffer tf_buffer{clock};
   tf2_ros::TransformListener tf_listener{tf_buffer};
   if (tf_buffer.canTransform(source_frame, target_frame, tf2::TimePoint(),
-                             tf2::durationFromSec(1))) {
+                             tf2::durationFromSec(5))) {
     auto tf_source_target = tf_buffer.lookupTransform(
-        source_frame, target_frame, tf2::TimePoint(), tf2::durationFromSec(1));
+        source_frame, target_frame, tf2::TimePoint(), tf2::durationFromSec(5));
     tf2::Stamped<tf2::Transform> tf2_source_target;
     tf2::fromMsg(tf_source_target, tf2_source_target);
     EdgeTransform T_source_target(
@@ -144,6 +144,9 @@ if (pipeline->name() == "stereo") {
 
   camera_frame_ = node_->declare_parameter<std::string>("camera_frame", "camera");
   T_camera_robot_ = loadTransform(camera_frame_, robot_frame_);
+  CLOG(INFO, "navigation") << "Camera Frame: " << camera_frame_;
+  CLOG(INFO, "navigation") << "robot Frame: " << robot_frame_;
+  CLOG(INFO, "navigation") << "Camera Frame: " << T_camera_robot_;
   // static transform
   tf_sbc_ = std::make_shared<tf2_ros::StaticTransformBroadcaster>(node_);
   auto msg = tf2::eigenToTransform(Eigen::Affine3d(T_camera_robot_.inverse().matrix()));
@@ -153,21 +156,32 @@ if (pipeline->name() == "stereo") {
   // camera images subscription
   const auto right_image_topic = node_->declare_parameter<std::string>("camera_right_topic", "/image_right");
   const auto left_image_topic = node_->declare_parameter<std::string>("camera_left_topic", "/image_left");
+  const auto use_odom_topic = node_->declare_parameter<bool>("use_odom_topic", true);
+  const auto odom_topic = node_->declare_parameter<std::string>("odom_topic", "/zed/zed_node/odom");
 
   auto camera_qos = rclcpp::QoS(10);
   camera_qos.reliable();
 
   right_camera_sub_.subscribe(node_, right_image_topic, camera_qos.get_rmw_qos_profile());
   left_camera_sub_.subscribe(node_, left_image_topic, camera_qos.get_rmw_qos_profile());
-  zed_odom_sub_.subscribe(node_, "/zed/zed_node/odom", camera_qos.get_rmw_qos_profile());
 
-  sync_ = std::make_shared<message_filters::Synchronizer<ApproximateImageSync>>(ApproximateImageSync(10), right_camera_sub_, left_camera_sub_, zed_odom_sub_);
-  sync_->registerCallback(&Navigator::cameraCallback, this);
+  auto odom_qos = rclcpp::QoS(10);
+  odom_qos.best_effort();
+
+  if (use_odom_topic) {
+    CLOG(INFO, "navigation") << "Using odom topic for pose graph";
+
+    zed_odom_sub_.subscribe(node_, odom_topic, odom_qos.get_rmw_qos_profile());
+    sync_image_odom_ = std::make_shared<message_filters::Synchronizer<ApproximateImageOdomSync>>(ApproximateImageOdomSync(10), right_camera_sub_, left_camera_sub_, zed_odom_sub_);
+    sync_image_odom_->registerCallback(&Navigator::cameraOdomCallback, this);
+  }
+  else {
+    sync_image_ = std::make_shared<message_filters::Synchronizer<ApproximateImageSync>>(ApproximateImageSync(10), right_camera_sub_, left_camera_sub_);
+    sync_image_->registerCallback(&Navigator::cameraCallback, this);
+  }
+  
 }
-
   // clang-format on
-
-
 
   /// This creates a thread to process the sensor input
   thread_count_ = 1;
@@ -238,7 +252,7 @@ void Navigator::envInfoCallback(const tactic::EnvInfo::SharedPtr msg) {
 }
 
 
-void Navigator::cameraCallback(
+void Navigator::cameraOdomCallback(
     const sensor_msgs::msg::Image::SharedPtr msg_r, const sensor_msgs::msg::Image::SharedPtr msg_l, const nav_msgs::msg::Odometry::SharedPtr msg_zed_odom) {
   LockGuard lock(mutex_);
   CLOG(DEBUG, "navigation") << "Received an image.";
@@ -283,7 +297,46 @@ void Navigator::cameraCallback(
   // add the current environment info
   query_data->env_info.emplace(env_info_);
 
+  
+  // fill in the vehicle to sensor transform and frame names
+  query_data->T_s_r.emplace(T_camera_robot_);
 
+
+  // add to the queue and notify the processing thread
+  queue_.push(query_data);
+  cv_set_or_stop_.notify_one();
+};
+
+
+void Navigator::cameraCallback(
+    const sensor_msgs::msg::Image::SharedPtr msg_r, const sensor_msgs::msg::Image::SharedPtr msg_l) {
+  LockGuard lock(mutex_);
+  CLOG(DEBUG, "navigation") << "Received an image.";
+
+  /// Discard old frames if our queue is too big
+  if (queue_.size() > max_queue_size_) {
+    CLOG(WARNING, "navigation")
+        << "Dropping old image " << *queue_.front()->stamp << " because the queue is full.";
+    queue_.pop();
+  }
+
+  // Convert message to query_data format and store into query_data
+  auto query_data = std::make_shared<vision::CameraQueryCache>();
+
+  // some modules require node for visualization
+  query_data->node = node_;
+
+  query_data->left_image = msg_l;
+  query_data->right_image = msg_r;
+
+  // set the timestamp
+  Timestamp timestamp = msg_r->header.stamp.sec * 1e9 + msg_r->header.stamp.nanosec;
+  query_data->stamp.emplace(timestamp);
+
+  // add the current environment info
+  query_data->env_info.emplace(env_info_);
+
+  
   // fill in the vehicle to sensor transform and frame names
   query_data->T_s_r.emplace(T_camera_robot_);
 

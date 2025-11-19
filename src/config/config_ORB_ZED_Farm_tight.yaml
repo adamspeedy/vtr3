@@ -45,6 +45,8 @@
     camera_frame: camera 
     camera_left_topic: /zed/zed_node/left_gray/image_rect_gray    
     camera_right_topic: /zed/zed_node/right_gray/image_rect_gray  
+    use_odom_topic: true
+    odom_topic: /zed/zed_node/odom # /a300_00047/sensors/camera_0/_odom
 
     ############ map projection configuration ############
     graph_projection:
@@ -95,6 +97,7 @@
       odometry:  ["recall", "matcher", "ransac", "keyframe_optimize", "vertex_test"] 
       bundle_adjustment: ["recall", "steam"] 
       localization: ["recall", "sub_map_extraction", "tod_recognition", "experience_triage", "migration", "matcher", "ransac", "steam"] 
+      use_odom_topic: true
     
     preprocessing:
       adapter:
@@ -118,8 +121,8 @@
 
       extraction:
         type: stereo.conversion_extraction
-        visualize: false
-        visualize_raw_features: false
+        visualize: true
+        visualize_raw_features: true
         visualize_topic: false
 
         # specify which conversions to do between different image formats from:
