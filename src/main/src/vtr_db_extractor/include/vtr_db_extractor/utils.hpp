@@ -12,29 +12,34 @@
 #include "rclcpp/serialization.hpp"
 #include "lgmath.hpp"
 #include <vtr_common/timing/utils.hpp>
+#include <geometry_msgs/msg/vector3.hpp>
+
 #include <vtr_vision_msgs/msg/rig_landmarks.hpp>
 #include <vtr_vision_msgs/msg/channel_landmarks.hpp>
 #include <vtr_vision_msgs/msg/h_vec3.hpp>
 #include <vtr_vision_msgs/msg/rig_observations.hpp>
 #include <vtr_vision_msgs/msg/keypoint.hpp>
-#include <geometry_msgs/msg/vector3.hpp>
+#include <vtr_vision_msgs/msg/time_stamp.hpp>
+#include <vtr_vision_msgs/msg/image.hpp>
+#include <vtr_vision_msgs/msg/localization_status.hpp>
 
 #include "vtr_pose_graph_msgs/msg/edge_type.hpp"
 #include "vtr_pose_graph_msgs/msg/edge_mode.hpp"
 #include "vtr_pose_graph_msgs/msg/edge.hpp"
-#include "vtr_common_msgs/msg/lie_group_transform.hpp"
-#include "vtr_tactic_msgs/msg/odometry_result.hpp"
 
 #include <vtr_pose_graph_msgs/msg/vertex.hpp>
 #include <vtr_pose_graph_msgs/msg/timestamp.hpp>
 #include <vtr_pose_graph_msgs/msg/timestamp_range.hpp>
+
+#include "vtr_common_msgs/msg/lie_group_transform.hpp"
+#include "vtr_tactic_msgs/msg/odometry_result.hpp"
 #include "vtr_tactic_msgs/msg/localization_result.hpp"
+
 
 #include "sensor_msgs/msg/image.hpp"
 #include <opencv2/opencv.hpp>
 #include <cv_bridge/cv_bridge.h>
-#include <vtr_vision_msgs/msg/time_stamp.hpp>
-#include <vtr_vision_msgs/msg/image.hpp>
+
 
 
 namespace fs = std::filesystem;

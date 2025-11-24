@@ -32,6 +32,7 @@ add_executable(graph_odom_extractor src/extract_odom_from_bag.cpp)
 add_executable(graph_vertex_extractor src/extract_vertex_from_bag.cpp)
 add_executable(graph_image_extractor src/extract_image_from_bag.cpp)
 add_executable(graph_loc_offset_extractor src/extract_loc_result_from_bag.cpp)
+add_executable(graph_loc_status_extractor src/extract_loc_status_from_bag.cpp)
 add_executable(graph_edge_extractor src/extract_edge_from_bag.cpp)
 add_executable(graph_landmark_extractor src/extract_landmarks_from_bag.cpp)
 add_executable(graph_descriptor_extractor src/extract_descriptors_from_bag.cpp)
@@ -81,6 +82,17 @@ ament_target_dependencies(graph_loc_offset_extractor
   rclcpp
   vtr_common
   vtr_tactic_msgs
+  Eigen3
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
+)
+
+ament_target_dependencies(graph_loc_status_extractor
+  rclcpp
+  vtr_common
+  vtr_tactic_msgs
+  vtr_vision_msgs
   Eigen3
   rosbag2_cpp
   SQLite3
@@ -163,6 +175,11 @@ target_include_directories(graph_image_extractor PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
+target_include_directories(graph_loc_status_extractor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
 target_include_directories(graph_loc_offset_extractor PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
@@ -201,6 +218,7 @@ target_link_libraries(graph_edge_extractor  utils)
 target_link_libraries(graph_odom_extractor  utils)
 target_link_libraries(graph_vertex_extractor  utils)
 target_link_libraries(graph_loc_offset_extractor  utils)
+target_link_libraries(graph_loc_status_extractor  utils)
 target_link_libraries(graph_image_extractor  utils)
 # target_link_libraries(lie_converter  vtr_common vtr_common_msgs lgmath)
 # target_include_directories(lie_converter  PUBLIC  ${vtr_common_INCLUDE_DIRS}
@@ -214,7 +232,9 @@ install(
 )
 
 install(
-  TARGETS utils lie_converter graph_odom_extractor graph_vertex_extractor graph_image_extractor graph_loc_offset_extractor graph_edge_extractor graph_landmark_extractor graph_keypoint_extractor graph_descriptor_extractor
+  TARGETS utils lie_converter graph_odom_extractor graph_vertex_extractor graph_image_extractor 
+  graph_loc_offset_extractor graph_edge_extractor graph_landmark_extractor graph_keypoint_extractor 
+  graph_descriptor_extractor graph_loc_status_extractor
   EXPORT export_${PROJECT_NAME}
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
