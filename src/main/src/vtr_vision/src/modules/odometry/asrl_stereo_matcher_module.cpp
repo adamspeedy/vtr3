@@ -266,7 +266,7 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
 
               if (qry_channel_lm.appearance.feat_type.impl ==
                   vision::FeatureImpl::OPENCV_ORB) {
-                CLOG(ERROR, "stereo.matcher") << "Should not be using ORB or LEARNED_FEATURE in stereo matcher!"; 
+                // CLOG(ERROR, "stereo.matcher") << "Should not be using ORB or LEARNED_FEATURE in stereo matcher!"; 
                 match_dist = matcher.briefmatch(
                     &qry_channel_lm.appearance.descriptors.at<unsigned char>(
                         qry_lm_idx, 0),
@@ -289,7 +289,7 @@ unsigned ASRLStereoMatcherModule::matchFeatures(CameraQueryCache &qdata,
                          vision::FeatureImpl::ASRL_GPU_SURF) ||
                          qry_channel_lm.appearance.feat_type.impl ==
                          vision::FeatureImpl::LEARNED_FEATURE) {
-                CLOG(ERROR, "stereo.matcher") << "Should not be using ASRL GPU SURF or LEARNED_FEATURE in stereo matcher!"; 
+                // CLOG(ERROR, "stereo.matcher") << "Should not be using ASRL GPU SURF or LEARNED_FEATURE in stereo matcher!"; 
                 match_dist = matcher.surfmatch(
                     &qry_channel_lm.appearance.descriptors.at<float>(qry_lm_idx,
                                                                      0),

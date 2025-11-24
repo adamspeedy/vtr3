@@ -144,6 +144,7 @@ if (pipeline->name() == "stereo") {
 
   camera_frame_ = node_->declare_parameter<std::string>("camera_frame", "camera");
   T_camera_robot_ = loadTransform(camera_frame_, robot_frame_);
+  CLOG(INFO, "navigation") << "Camera Frame: " << T_camera_robot_;
   // static transform
   tf_sbc_ = std::make_shared<tf2_ros::StaticTransformBroadcaster>(node_);
   auto msg = tf2::eigenToTransform(Eigen::Affine3d(T_camera_robot_.inverse().matrix()));
