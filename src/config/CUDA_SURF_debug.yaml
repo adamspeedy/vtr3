@@ -22,9 +22,9 @@
         # "stereo.matcher",
         # "stereo.features",
         # "preprocessing",
-        "odometry",
+        # "odometry",
         # "stereo.recall",
-        "stereo.odom_debug",
+        # "stereo.odom_debug",
         # "stereo.testing",
         # "stereo.triangulation",
         # "stereo.vertex_test",
@@ -46,8 +46,8 @@
 
     robot_frame: base_link
     camera_frame: camera 
-    camera_left_topic: /zed/zed_node/left_gray/image_rect_gray  # /a300_00047/sensors/camera_0/left/gray/image   
-    camera_right_topic: /zed/zed_node/right_gray/image_rect_gray # /a300_00047/sensors/camera_0/right/gray/image     
+    camera_left_topic:  /zed/zed_node/left_gray/image_rect_gray # /zed/zed_node/left/image_rect_color  
+    camera_right_topic: /zed/zed_node/right_gray/image_rect_gray   # /zed/zed_node/right/image_rect_color  
     use_odom_topic: true
     odom_topic: /zed/zed_node/odom #/a300_00047/sensors/ins_0/odom # /a300_00047/sensors/camera_0/_odom 
 
@@ -63,7 +63,7 @@
       enable_parallelization: true
       preprocessing_skippable: true
       odometry_mapping_skippable: true
-      extrapolate_odometry: false # path tracker
+      extrapolate_odometry: true # path tracker
       localization_only_keyframe: true # not used?
       localization_skippable: true # false
       route_completion_translation_threshold: 0.5
@@ -164,7 +164,7 @@
           visualize_disparity: false # looks like it needs a disparity channel
 
           surf:
-            hessianThreshold: 500.0
+            hessianThreshold: 1000.0
             use_GPU_descriptors: true
             num_detector_features: 1000
             num_binned_features: 1000
@@ -179,12 +179,12 @@
             matcher:
               descriptor_match_thresh: 0.3
               stereo_descriptor_match_thresh: 0.3 #lower is better
-              stereo_y_tolerance: 3.0
+              stereo_y_tolerance: 2.0
               stereo_x_tolerance_min: 0.0
               stereo_x_tolerance_max: 64.0
               check_octave: true
               check_response: true
-              min_response_ratio: 0.6  #Higher is more strict
+              min_response_ratio: 0.65  #Higher is more strict
               scale_x_tolerance_by_y: false
               x_tolerance_scale: 720.0
 
@@ -207,7 +207,7 @@
         check_laplacian_bit: true
         check_octave: true
         check_response: true
-        min_response_ratio: 0.5
+        min_response_ratio: 0.6
         matching_pixel_thresh: 200
         tight_matching_pixel_thresh: 50
 
@@ -226,7 +226,7 @@
         use_pixel_variance: true
         prediction_method: se3
         max_point_depth: 500.0   # not used
-        descriptor_thresh: 0.5   
+        descriptor_thresh: 0.4   
         parallel_threads: 16
         visualize_feature_matches: true
         visualize_topic: true
@@ -240,7 +240,7 @@
         iterations: 2000
         flavor: Vanilla
         sigma: 3.5
-        threshold: 7.0
+        threshold: 6.0
         early_stop_ratio: 0.8
         early_stop_min_inliers: 200
         visualize_ransac_inliers: true

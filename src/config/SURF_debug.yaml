@@ -5,32 +5,34 @@
     start_new_graph: true
     log_to_file: true
     log_debug: true
-    data_dir: ${VTRROOT}
+    data_dir: ${VTRROOT} 
     log_enabled: 
       [
         "navigation",
         "navigator",
         # "tactic",
         "tactic.pipeline",
+        # "tactic.module",
+        # "odom_debugging",
         # "stereo.pipeline",
         # "tactic.module",
         # "tactic.module.live_mem_manager",
         # "tactic.module.graph_mem_manager",
         # "stereo.preprocessing",
-        # "preprocessing",
-        # "tactic.module",
-        # "odometry",
-        # "mission.server",
-        # "stereo.recall",
         # "stereo.matcher",
+        # "stereo.features",
+        # "preprocessing",
+        # "odometry",
+        # "stereo.recall",
+        # "stereo.testing",
         # "stereo.triangulation",
         # "stereo.vertex_test",
         # "stereo.ransac",
         # "mission.state_machine",
-        # "stereo.features",
         # "stereo.keyframe_optimization",
         # "stereo.optimization",
-        # "stereo.testing",
+        # "stereo.mel_matcher",
+        # "stereo.triage",
         # "cbit",
         # "cbit.visualization",
         # "cbit_planner.path_planning",
@@ -39,15 +41,14 @@
         # "mpc.solver",
         # "mpc.speed_scheduler",
         # "stereo.migration"
-        # stereo.matcher1
       ]
 
     robot_frame: base_link
     camera_frame: camera 
-    camera_left_topic: /zed/zed_node/left/image_rect_color #  /zed/zed_node/left_gray/image_rect_gray   # 
-    camera_right_topic:   /zed/zed_node/right/image_rect_color  #/zed/zed_node/right_gray/image_rect_gray  
+    camera_left_topic:  /zed/zed_node/left_gray/image_rect_gray # /zed/zed_node/left/image_rect_color  
+    camera_right_topic: /zed/zed_node/right_gray/image_rect_gray   # /zed/zed_node/right/image_rect_color  
     use_odom_topic: true
-    odom_topic: /zed/zed_node/odom # /a300_00047/sensors/camera_0/_odom
+    odom_topic: /zed/zed_node/odom
 
     ############ map projection configuration ############
     graph_projection:
@@ -104,7 +105,7 @@
       adapter:
         type: stereo.adapter
         # zed 960/AUTO
-        distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] 
+        distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] # rather use rect images
         intrinsic:
         - 533.1552
         - 0.0
@@ -115,16 +116,7 @@
         - 0.0
         - 0.0
         - 1.0
-        # - 635.501504
-        # - 0.0
-        # - 491.290857
-        # - 0.0
-        # - 636.319082
-        # - 304.354794
-        # - 0.0
-        # - 0.0
-        # - 1.0
-                  
+          
         baseline: 0.12 #0.12
         target_width: 0 #  #used for resizing but doesn't look very good
         rig_name: "stereo"
@@ -137,58 +129,48 @@
 
         # specify which conversions to do between different image formats from:
         # RGB_TO_GRAYSCALE, RGB_TO_COLOR_CONSTANT
-        conversions: ["RGB_TO_GRAYSCALE"] #, "RGB_TO_COLOR_CONSTANT" , "RGB_TO_GRAYSCALE"
+        conversions: ["RGB_TO_GRAYSCALE"] #["RGB_TO_COLOR_CONSTANT"] #  , "RGB_TO_COLOR_CONSTANT" ,"RGB_TO_GRAYSCALE"
         color_constant:
-          weights: [0.43]
-          histogram_equalization: false
+          weights: [0.4]  #[0.43]
+          histogram_equalization: true
 
         extractor:
-          type: OPENCV_ORB #ASRL_GPU_SURF 
-          channels: ["grayscale"] #, "cc_0.430000"
+          type: OPENCV_SURF 
+          channels: ["grayscale"] # ["cc_0.430000"] ##, "cc_0.430000"  
           visualize_disparity: false # looks like it needs a disparity channel
 
-          orb:
-            use_STAR_detector: false
+          surf:
+            hessianThreshold: 100.0
             use_GPU_descriptors: false
-            STAR_maxSize: 30  #45
-            STAR_responseThreshold: 20 #30 
-            STAR_lineThresholdProjected: 30
-            STAR_lineThresholdBinarized: 30
-            STAR_suppressNonmaxSize: 3
             num_detector_features: 1000
             num_binned_features: 1000
-            scaleFactor: 2.0
-            nlevels: 8
-            edgeThreshold: 8
-            firstLevel: 0
-            WTA_K: 2
-            upright_flag:  true
-            orb.num_threads: 16
-            scoreType: HARRIS #FAST 
-            patchSize: 48 #64
-            fastThreshold: 8
-            orb.x_bins: 6
-            orb.y_bins: 4
+            nOctaves: 4
+            nOctaveLayers: 4 #2
+            extended: false
+            keypointRatio: 0.01  # 0.1
+            upright: true
+            x_bins: 6
+            y_bins: 8
+            num_threads: 16
             matcher:
-              descriptor_match_thresh: 0.4
-              stereo_descriptor_match_thresh: 0.4
-              stereo_y_tolerance: 5.0
+              descriptor_match_thresh: 0.5
+              stereo_descriptor_match_thresh: 0.5 #lower is better
+              stereo_y_tolerance: 3.0
               stereo_x_tolerance_min: 0.0
               stereo_x_tolerance_max: 64.0
               check_octave: true
               check_response: true
-              min_response_ratio: 0.1
+              min_response_ratio: 0.2  #Higher is more strict
               scale_x_tolerance_by_y: false
               x_tolerance_scale: 720.0
 
-
       triangulation:
         type: image_triangulation
-        visualize: false  # shows the depth
+        visualize: true  # shows the depth
         min_triangulation_depth: 0.01
         max_triangulation_depth: 500.0
         visualize_features: true # shows match
-        visualize_stereo_features: true  # shows the matches between stereo pair
+        visualize_stereo_features: false # shows the matches between stereo pair
         visualize_topic: true
 
     odometry:
@@ -202,7 +184,7 @@
         check_octave: true
         check_response: true
         min_response_ratio: 0.2
-        matching_pixel_thresh: 100
+        matching_pixel_thresh: 400
         tight_matching_pixel_thresh: 50
 
         # !!! The covariance is currently set to identity * dt*dt,
@@ -214,17 +196,17 @@
         # the covariance is multiplied by 4 (dt is doubled).
         # This is not currently configurable.
         # e.g. 0.4 is 400 ms while extrapolating, and 200 ms with identity
-        tight_matching_x_sigma: 0.4 # in s
-        tight_matching_y_sigma: 0.4 # in s
-        tight_matching_theta_sigma: 0.4 # in s
+        tight_matching_x_sigma: 0.6 # in s
+        tight_matching_y_sigma: 0.6 # in s
+        tight_matching_theta_sigma: 0.6 # in s
         use_pixel_variance: true
         prediction_method: se3
         max_point_depth: 500.0   # not used
-        descriptor_thresh: 0.45   
+        descriptor_thresh: 0.3   
         parallel_threads: 16
         visualize_feature_matches: true
         visualize_topic: true
-        min_matches: 6
+        min_matches: 5
 
       ransac:
         type: stereo_ransac
@@ -234,14 +216,14 @@
         iterations: 2000
         flavor: Vanilla
         sigma: 3.5
-        threshold: 7.0
+        threshold: 5.0
         early_stop_ratio: 0.8
         early_stop_min_inliers: 200
         visualize_ransac_inliers: true
         visualize_topic: true
         use_migrated_points: false
         min_inliers: 5
-        mask_depth: 200.0
+        mask_depth: 500.0
         mask_depth_inlier_count: 0
         use_covariance: false
         is_odometry: true
@@ -265,11 +247,11 @@
         growCoeff: 3.0
         maxShrinkSteps: 50
 
-        perform_planarity_check: false
+        perform_planarity_check: true
         plane_distance: 20.0
 
         min_point_depth: 0.0
-        max_point_depth: 200.0
+        max_point_depth: 500.0
         backtrackMultiplier: 0.5
         maxBacktrackSteps: 10
 
@@ -323,12 +305,14 @@
         type: simple_vertex_creation_test
 
         min_distance: 0.05
-        min_creation_distance: 0.3
-        max_creation_distance: 3.0
-        rotation_threshold_min: 5.0
+        min_creation_distance: 0.3 #0.3
+        max_creation_distance: 5.0
+        rotation_threshold_min: 3.0 # 3.0
         rotation_threshold_max: 50.0
-        match_threshold_min_count: 40
+        match_threshold_min_count: 50
         match_threshold_fail_count: 15
+
+
 
     bundle_adjustment:
       recall:
@@ -457,13 +441,13 @@
         tight_matching_theta_sigma: 0.0 # in [rad] Note: In VTR2 was listed as 0.00349 but bug so always 0 in ModuleLoc
         min_response_ratio: 0.2
         time_allowance: 2000.0
-        descriptor_thresh_cpu: 0.25
-        descriptor_thresh_gpu: 0.25
+        descriptor_thresh_cpu: 0.3
+        descriptor_thresh_gpu: 0.3
         screen_matched_landmarks: true
         max_depth_diff: 5.0
-        parallel_threads: 16
+        parallel_threads: 12
         match_on_gpu: true
-        match_gpu_knn_match_num: 8
+        match_gpu_knn_match_num: 8 # 	Count of best matches found per each query descriptor
         visualize: true
 
       ransac:
@@ -477,8 +461,8 @@
         threshold: 10.0
         early_stop_ratio: 1.0
         early_stop_min_inliers: 400
-        visualize_ransac_inliers: false
-        visualize_topic: false
+        visualize_ransac_inliers: true
+        visualize_topic: true
         use_migrated_points: true
         min_inliers: 6
 
@@ -556,7 +540,7 @@
         planar_curv_weight: 2.50
         profile_curv_weight: 0.5 
         eop_weight: 1.0
-        min_vel: 0.5
+        min_vel: 0.45
 
       mpc:
         # Controller Params
@@ -565,12 +549,9 @@
         homotopy_guided_mpc: false
         horizon_steps: 20
         horizon_step_size: 0.3
-        forward_vel: 0.5
-        max_lin_vel: 0.5
-        max_ang_vel: 0.5
-        # forward_vel: 0.9  
-        # max_lin_vel: 1.0  
-        # max_ang_vel: 0.8  
+        forward_vel: 0.45  # 0.5
+        max_lin_vel: 0.45  # 0.5
+        max_ang_vel: 0.4  # 0.5
         robot_linear_velocity_scale: 1.0 # Used to scale the output twist linear velocity messages by some constant factor to compensate internal low level control miscalibration
         robot_angular_velocity_scale: 1.0 # Used to scale the output twist angular velocity messages by some constant factor to compensate internal low level control miscalibration
 
