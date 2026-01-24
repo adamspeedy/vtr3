@@ -88,7 +88,7 @@
         lookahead_distance: 15
         vertex_life_span: 10
 
-      visualize: false  #for rviz visualization
+      visualize: true  #for rviz visualization
       vis_loc_path_offset: [0., 0., 0.]
 
     ############ pipeline configuration ############
@@ -140,7 +140,7 @@
           visualize_disparity: false # looks like it needs a disparity channel
 
           surf:
-            hessianThreshold: 100.0
+            hessianThreshold: 500.0
             use_GPU_descriptors: false
             num_detector_features: 1000
             num_binned_features: 1000
@@ -149,8 +149,8 @@
             extended: false
             keypointRatio: 0.01  # 0.1
             upright: true
-            x_bins: 6
-            y_bins: 8
+            x_bins: 8
+            y_bins: 6
             num_threads: 16
             matcher:
               descriptor_match_thresh: 0.5
@@ -160,7 +160,7 @@
               stereo_x_tolerance_max: 64.0
               check_octave: true
               check_response: true
-              min_response_ratio: 0.2  #Higher is more strict
+              min_response_ratio: 0.1  #Higher is more strict
               scale_x_tolerance_by_y: false
               x_tolerance_scale: 720.0
 
@@ -183,7 +183,7 @@
         check_laplacian_bit: true
         check_octave: true
         check_response: true
-        min_response_ratio: 0.2
+        min_response_ratio: 0.1
         matching_pixel_thresh: 400
         tight_matching_pixel_thresh: 50
 
