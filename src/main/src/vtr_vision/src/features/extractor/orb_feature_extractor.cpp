@@ -262,7 +262,9 @@ Features OFE::extractFeatures(const cv::Mat &image) {
     // the GPU can only compute descriptors one at a time, so need a mutex here
     {
       std::lock_guard<std::mutex> lock(__gpu_mutex__);
-      cv::cuda::GpuMat gpuimage(image);
+      // cv::cuda::GpuMat gpuimage(image);
+      cv::cuda::GpuMat gpuimage;
+      gpuimage.upload(image);
       cudadetector_->compute(gpuimage, frame.keypoints, frame.gpu_descriptors);
       frame.gpu_descriptors.download(frame.descriptors);
     }
