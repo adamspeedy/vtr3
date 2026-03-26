@@ -18,14 +18,14 @@ BagExtractor::BagExtractor(const std::string& bag_path, const std::string& bag_n
     }
     if (!fs::exists(metadata_path)) {
         std::cerr << "Error: Metadata file not found at " << metadata_path << std::endl;
-        exit(1);
+        // exit(1);
     }
     // Load metadata
     try {
         metadata_ = YAML::LoadFile(metadata_path);
     } catch (const YAML::Exception& e) {
         std::cerr << "Error loading YAML: " << e.what() << std::endl;
-        exit(1);
+        // exit(1);
     }
     // Connect to the database
     int rc = sqlite3_open(db_path.c_str(), &db_);
