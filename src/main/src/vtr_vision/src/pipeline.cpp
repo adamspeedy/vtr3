@@ -882,9 +882,9 @@ void StereoPipeline::saveLocResults(CameraQueryCache &qdata,
   status.map_id = map_id;
   status.success = *qdata.loc_success;
 
-  // if (qdata.T_r_m.valid()) {
-  //   status.t_query_map << *qdata.T_r_m;
-  // }
+  if (qdata.T_r_m.valid()) {
+    status.t_query_map << *qdata.T_r_m;
+  }
 
   for (auto &rig : inliers) {
     for (auto &channel : rig.channels) {
