@@ -22,6 +22,9 @@
 #include <vtr_vision_msgs/msg/time_stamp.hpp>
 #include <vtr_vision_msgs/msg/image.hpp>
 #include <vtr_vision_msgs/msg/localization_status.hpp>
+#include <vtr_vision_msgs/msg/matches.hpp>
+#include <vtr_vision_msgs/msg/match.hpp>
+#include <vtr_vision_msgs/msg/feature_id.hpp>
 
 #include "vtr_pose_graph_msgs/msg/edge_type.hpp"
 #include "vtr_pose_graph_msgs/msg/edge_mode.hpp"

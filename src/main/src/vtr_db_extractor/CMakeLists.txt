@@ -37,6 +37,7 @@ add_executable(graph_edge_extractor src/extract_edge_from_bag.cpp)
 add_executable(graph_landmark_extractor src/extract_landmarks_from_bag.cpp)
 add_executable(graph_descriptor_extractor src/extract_descriptors_from_bag.cpp)
 add_executable(graph_keypoint_extractor src/extract_keypoints_from_bag.cpp)
+add_executable(graph_landmark_matches_extractor src/extract_matches_from_bag.cpp)
 add_library(utils src/utils.cpp)
 
 ament_target_dependencies(lie_converter
@@ -141,6 +142,17 @@ ament_target_dependencies(graph_keypoint_extractor
   geometry_msgs
 )
 
+ament_target_dependencies(graph_landmark_matches_extractor
+  rclcpp
+  vtr_common
+  vtr_vision_msgs
+  Eigen3
+  rosbag2_cpp
+  SQLite3
+  yaml-cpp
+  geometry_msgs
+)
+
 ament_target_dependencies(utils
   rclcpp
   vtr_common
@@ -205,6 +217,11 @@ target_include_directories(graph_keypoint_extractor PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
+target_include_directories(graph_landmark_matches_extractor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
 target_include_directories(utils PUBLIC
   include/
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -220,6 +237,7 @@ target_link_libraries(graph_vertex_extractor  utils)
 target_link_libraries(graph_loc_offset_extractor  utils)
 target_link_libraries(graph_loc_status_extractor  utils)
 target_link_libraries(graph_image_extractor  utils)
+target_link_libraries(graph_landmark_matches_extractor  utils)
 # target_link_libraries(lie_converter  vtr_common vtr_common_msgs lgmath)
 # target_include_directories(lie_converter  PUBLIC  ${vtr_common_INCLUDE_DIRS}
 #   ${vtr_common_msgs_INCLUDE_DIRS}
@@ -234,7 +252,7 @@ install(
 install(
   TARGETS utils lie_converter graph_odom_extractor graph_vertex_extractor graph_image_extractor 
   graph_loc_offset_extractor graph_edge_extractor graph_landmark_extractor graph_keypoint_extractor 
-  graph_descriptor_extractor graph_loc_status_extractor
+  graph_descriptor_extractor graph_loc_status_extractor graph_landmark_matches_extractor
   EXPORT export_${PROJECT_NAME}
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib

@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     std::cout << "Found " << messages.size() << " messages" << std::endl;
 
     // EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    // std::vector<lgmath::se3::TransformationWithCovariance> transformed_messages;
+    std::vector<lgmath::se3::TransformationWithCovariance> transformed_messages;
     std::vector<uint64_t> keyframe_time;
     std::vector<uint64_t> query_id;
     std::vector<uint64_t> map_id;
@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
         std::cout << "Window num Vertices: " << messages[i].data.window_num_vertices << std::endl;
 
         inliers.push_back(messages[i].data.inlier_channel_matches);
-        for (int k=0; k< 5; k++) {
+        for (int k=1; k<= 5; k++) {
             std::cout << "Inlier" << k << ": " << messages[i].data.inlier_channel_matches[k] << std::endl;
         }
         // std::cout << "Inlier: " << messages[i].data.inlier_channel_matches << std::endl;
@@ -112,8 +112,8 @@ int main(int argc, char** argv) {
         // auto msg = lgmath::se3::TransformationWithCovariance(Eigen::Matrix<double, 6, 1>(eigen_vec));
         // transformed_messages.push_back(msg);
         // std::cout << msg << std::endl;
-        //std::cout << "message" << temp  << std::endl;
-        std::cout << "Fin" << std::endl;
+        // // std::cout << "message" << temp.matrix()  << std::endl;
+        // std::cout << "Fin" << std::endl;
     }
     
     // Store messages to file
