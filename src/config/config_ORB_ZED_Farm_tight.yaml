@@ -8,7 +8,7 @@
     data_dir: ${VTRROOT}
     log_enabled: 
       [
-        # "navigation",
+        "navigation",
         "navigator",
         # "tactic",
         "tactic.pipeline",
@@ -105,12 +105,12 @@
         # zed 960/AUTO
         distortion:  [0.0, 0.0, 0.0, 0.0, 0.0] 
         intrinsic:
-        - 635.501504
+        - 533.1552
         - 0.0
-        - 491.290857
+        - 640.2941
         - 0.0
-        - 636.319082
-        - 304.354794
+        - 536.7738
+        - 328.0449
         - 0.0
         - 0.0
         - 1.0
@@ -123,7 +123,7 @@
         type: stereo.conversion_extraction
         visualize: true
         visualize_raw_features: true
-        visualize_topic: false
+        visualize_topic: true
 
         # specify which conversions to do between different image formats from:
         # RGB_TO_GRAYSCALE, RGB_TO_COLOR_CONSTANT
@@ -156,12 +156,12 @@
             orb.num_threads: 16
             scoreType: HARRIS #FAST 
             patchSize: 48 #64
-            fastThreshold: 7
+            fastThreshold: 8
             orb.x_bins: 16 #6
             orb.y_bins: 16 #4
             matcher:
-              descriptor_match_thresh: 0.2
-              stereo_descriptor_match_thresh: 0.2
+              descriptor_match_thresh: 0.3
+              stereo_descriptor_match_thresh: 0.3
               stereo_y_tolerance: 5.0
               stereo_x_tolerance_min: 0.0
               stereo_x_tolerance_max: 64.0
@@ -177,9 +177,9 @@
         visualize: true  # shows the depth
         min_triangulation_depth: 0.01
         max_triangulation_depth: 500.0
-        visualize_features: false # shows match
+        visualize_features: true # shows match
         visualize_stereo_features: false  # shows the matches between stereo pair
-        visualize_topic: false
+        visualize_topic: true
 
     odometry:
       recall:
@@ -191,7 +191,7 @@
         check_laplacian_bit: true
         check_octave: true
         check_response: true
-        min_response_ratio: 0.2
+        min_response_ratio: 0.15
         matching_pixel_thresh: 200
         tight_matching_pixel_thresh: 50
 
@@ -213,7 +213,7 @@
         descriptor_thresh: 0.25   
         parallel_threads: 16
         visualize_feature_matches: true
-        visualize_topic: false
+        visualize_topic: true
         min_matches: 6
 
       ransac:
@@ -228,7 +228,7 @@
         early_stop_ratio: 0.8
         early_stop_min_inliers: 200
         visualize_ransac_inliers: true
-        visualize_topic: false
+        visualize_topic: true
         use_migrated_points: false
         min_inliers: 5
         mask_depth: 200.0
@@ -468,7 +468,7 @@
         early_stop_ratio: 1.0
         early_stop_min_inliers: 400
         visualize_ransac_inliers: true
-        visualize_topic: false
+        visualize_topic: true
         use_migrated_points: true
         min_inliers: 6
 

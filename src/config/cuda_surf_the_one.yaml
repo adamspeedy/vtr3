@@ -19,8 +19,8 @@
         # "tactic.module.live_mem_manager",
         # "tactic.module.graph_mem_manager",
         # "stereo.preprocessing",
-        # "stereo.matcher",
-        # "stereo.features",
+        "stereo.matcher",
+        "stereo.features",
         # "preprocessing",
         # "odometry",
         # "stereo.recall",
@@ -28,7 +28,7 @@
         # "stereo.testing",
         # "stereo.triangulation",
         # "stereo.vertex_test",
-        # "stereo.ransac",
+        "stereo.ransac",
         # "mission.state_machine",
         # "stereo.keyframe_optimization",
         # "stereo.optimization",
@@ -429,7 +429,7 @@
         # Whether to print out debug logs
         verbose: true
         # The number of experiences to recommend for localization
-        num_desired_experiences: 1 #8
+        num_desired_experiences: 4 #8
         # Whether or not we make the recommendation and restrict the experiences
         in_the_loop: true
         # The weight to convert time-of-day difference to a distance
