@@ -154,20 +154,20 @@ RUN apt install wget
 RUN apt install nano
 
 # Install ZED SDK 
-ENV ZED_SDK_URL="https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/${ZED_SDK_MAJOR}.${ZED_SDK_MINOR}/ZED_SDK_Tegra_L4T${L4T_MAJOR}.${L4T_MINOR}_v${ZED_SDK_MAJOR}.${ZED_SDK_MINOR}.${ZED_SDK_PATCH}.zstd.run"
-# Check that this SDK exists
-RUN echo "SDK link: $ZED_SDK_URL"
-RUN echo "# R${L4T_MAJOR} (release), REVISION: ${L4T_MINOR}" > /etc/nv_tegra_release && \
-  apt update && \
-  apt install -y --no-install-recommends zstd wget less cmake curl gnupg2 \
-  build-essential python3 python3-pip python3-dev python3-setuptools libusb-1.0-0-dev \ 
-  libgeographic-dev libdraco-dev zlib1g-dev -y && \
-  pip install protobuf && \
-  wget -q --no-check-certificate -O ZED_SDK_Linux_JP.run \
-  ${ZED_SDK_URL} && \
-  chmod +x ZED_SDK_Linux_JP.run ; ./ZED_SDK_Linux_JP.run silent skip_tools && \
-  rm -rf /usr/local/zed/resources/* && \
-  rm -rf ZED_SDK_Linux_JP.run #&& \
+# ENV ZED_SDK_URL="https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/${ZED_SDK_MAJOR}.${ZED_SDK_MINOR}/ZED_SDK_Tegra_L4T${L4T_MAJOR}.${L4T_MINOR}_v${ZED_SDK_MAJOR}.${ZED_SDK_MINOR}.${ZED_SDK_PATCH}.zstd.run"
+# # Check that this SDK exists
+# RUN echo "SDK link: $ZED_SDK_URL"
+# RUN echo "# R${L4T_MAJOR} (release), REVISION: ${L4T_MINOR}" > /etc/nv_tegra_release && \
+#   apt update && \
+#   apt install -y --no-install-recommends zstd wget less cmake curl gnupg2 \
+#   build-essential python3 python3-pip python3-dev python3-setuptools libusb-1.0-0-dev \ 
+#   libgeographic-dev libdraco-dev zlib1g-dev -y && \
+#   pip install protobuf && \
+#   wget -q --no-check-certificate -O ZED_SDK_Linux_JP.run \
+#   ${ZED_SDK_URL} && \
+#   chmod +x ZED_SDK_Linux_JP.run ; ./ZED_SDK_Linux_JP.run silent skip_tools && \
+#   rm -rf /usr/local/zed/resources/* && \
+#   rm -rf ZED_SDK_Linux_JP.run #&& \
 #  rm -rf /var/lib/apt/lists/*
 
 
