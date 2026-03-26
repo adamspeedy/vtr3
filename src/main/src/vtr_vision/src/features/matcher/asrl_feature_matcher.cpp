@@ -338,11 +338,11 @@ float ASRLFeatureMatcher::briefmatch(const unsigned char *d1,
 
 float ASRLFeatureMatcher::cvsurfmatch(cv::Mat *d1, cv::Mat *d2) {
   std::vector<cv::DMatch> matches;
-  CLOG(DEBUG, "stereo.matcher") << "Desc 1 "<< *d1;
-  CLOG(DEBUG, "stereo.matcher") << "Desc 2 "<< *d2;
+  // CLOG(DEBUG, "stereo.matcher") << "Desc 1 "<< *d1;
+  // CLOG(DEBUG, "stereo.matcher") << "Desc 2 "<< *d2;
   cv::BFMatcher matcher(cv::NORM_L2, /*crossCheck=*/false);
   matcher.match(*d1, *d2, matches);
-  CLOG(DEBUG, "stereo.matcher") << "Match result "<< matches[0].distance;
+  // CLOG(DEBUG, "stereo.matcher") << "Match result "<< matches[0].distance;
   // return the value
   // if (matches[0].distance>=1)
   // {
