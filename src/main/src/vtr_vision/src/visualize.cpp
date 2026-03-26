@@ -19,12 +19,14 @@
  *
  * \author Autonomous Space Robotics Lab (ASRL)
  */
+
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <vtr_common/timing/stopwatch.hpp>
 #include <vtr_vision/messages/bridge.hpp>
 #include <vtr_vision/visualize.hpp>
+
 
 namespace vtr {
 namespace vision {
@@ -240,11 +242,11 @@ void showDisparity(std::mutex &vis_mtx, CameraQueryCache &qdata, std::string suf
           cv::Mat display_image = setupDisplayImage(camera.data);
    
           // show the images
-          {
-            std::lock_guard<std::mutex> lock(vis_mtx);
-            cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
-            cv::imshow(title, display_image);
-          }
+          // {
+          //   std::lock_guard<std::mutex> lock(vis_mtx);
+          //   cv::namedWindow(title, cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
+          //   cv::imshow(title, display_image);
+          // }
 
         }  // end for camera
       }

@@ -9,7 +9,7 @@
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/cudastereo.hpp>
 
-
+#undef VTR_VISION_LEARNED
 #ifdef VTR_VISION_LEARNED
 #include <vtr_vision/features/extractor/learned_feature_extractor.hpp>
 

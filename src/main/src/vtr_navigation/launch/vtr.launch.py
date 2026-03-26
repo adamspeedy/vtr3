@@ -16,7 +16,7 @@ def generate_launch_description():
 
     commonNodeArgs = {
         "package": 'vtr_navigation',
-        "namespace": 'vtr',
+        "namespace": 'vtr',   #a200_0656/vtr
         "executable": 'vtr_navigation',
         "output": 'screen',
         #"prefix": ["gdbserver localhost:3000"]

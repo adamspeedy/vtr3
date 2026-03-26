@@ -30,6 +30,8 @@
 #include "vtr_vision/pipeline.hpp"
 
 
+
+
 namespace vtr {
 namespace navigation {
 
@@ -115,6 +117,10 @@ Navigator::Navigator(const rclcpp::Node::SharedPtr& node) : node_(node) {
 
   /// mission server
   mission_server_ = std::make_shared<ROSMissionServer>();
+
+  /// image topic publisher 
+  publisher_ = std::make_shared<ImagePublisher>(node_);
+  vtr::vision::visualize::setImagePublisher(publisher_);
 
   /// state machine
   state_machine_ = std::make_shared<StateMachine>(

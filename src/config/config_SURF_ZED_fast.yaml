@@ -235,6 +235,7 @@
         mask_depth: 200.0
         mask_depth_inlier_count: 0
         use_covariance: false
+        use_covariance: false
         is_odometry: true
         enable_local_opt: true
         num_threads: 2
@@ -256,7 +257,7 @@
         growCoeff: 3.0
         maxShrinkSteps: 50
 
-        perform_planarity_check: false
+        perform_planarity_check: true
         plane_distance: 20.0
 
         min_point_depth: 0.0
@@ -266,7 +267,7 @@
 
         disable_solver: false # Set true to do everything but run optimise()
 
-        use_T_q_m_prior: false
+        use_T_q_m_prior: true
 
         ## sample and save trajectory results to disk
         save_trajectory: true
@@ -439,9 +440,10 @@
 
         target_match_count: 200
         min_match_count: 10
+        min_match_count: 10
         min_track_length: 1
-        max_landmark_depth: 200.0
-        matching_pixel_thresh: 200
+        max_landmark_depth: 500.0
+        matching_pixel_thresh: 75
         tight_matching_pixel_thresh: 50
         tight_matching_x_sigma: 0.1 # in [m]
         tight_matching_y_sigma: 0.1 # in [m]
@@ -547,14 +549,14 @@
         planar_curv_weight: 2.50
         profile_curv_weight: 0.5 
         eop_weight: 1.0
-        min_vel: 0.5
+        min_vel: 0.3
 
       mpc:
         # Controller Params
         extrapolate_robot_pose: false
         mpc_verbosity: false
         homotopy_guided_mpc: false
-        horizon_steps: 20
+        horizon_steps: 10
         horizon_step_size: 0.3
         forward_vel: 0.3
         max_lin_vel: 0.4

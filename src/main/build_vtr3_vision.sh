@@ -5,7 +5,7 @@ set -e
 
 ITERATION=11
 
-TARGET_DIR="/home/adam/Desktop/CurrentBranch/src/main"
+TARGET_DIR="/home/orin/code/vtr3/src/main"
 cd $TARGET_DIR
 
 echo "Running a loop from 1 to $ITERATION:"

@@ -171,6 +171,9 @@ void MelMatcherModule::matchAcrossExperiences(
     }
     matchVertex(qdata, map_itr->v());
     ++visited;
+    CLOG(INFO, "stereo.mel_matcher") << visited << " vertices visited, "
+                                     << total_match_count_
+                                     << " matches";
   }
 }
 
@@ -304,6 +307,9 @@ void MelMatcherModule::matchChannel(
   output_channel_matches.matches.insert(output_channel_matches.matches.end(),
                                         channel_matches.begin(),
                                         channel_matches.end());
+  CLOG(INFO, "stereo.mel_matcher") << output_channel_matches.matches.size()
+                                   << " matches for channel "
+                                   << channel_id.channel;
 }
 
 void MelMatcherModule::matchChannelGPU(

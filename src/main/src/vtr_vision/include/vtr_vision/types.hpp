@@ -28,6 +28,7 @@
 #include <Eigen/Core>
 #include <Eigen/StdVector>
 
+#undef VTR_VISION_LEARNED
 #ifdef VTR_VISION_LEARNED
 #include <torch/script.h> 
 #include <torch/torch.h>
