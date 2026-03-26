@@ -165,7 +165,7 @@ ChannelImages RGB2ColorConstant(const ChannelImages &src, float alpha,
                                 bool histogram_equalization) {
   // set up the channel.
   ChannelImages dst;
-  dst.name = "cc_" + std::to_string(alpha);
+  dst.name = "cc"; // + std::to_string(alpha);
 
   // start the conversion job in parallel for each camera in the channel.
   std::list<std::future<Image>> futures;

@@ -207,7 +207,8 @@ void showStereoMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
           }
           else
           {
-            if (feature_channel_itr->name == "cc_0.430000"){
+            // if (feature_channel_itr->name == "cc_0.430000"){
+            if (feature_channel_itr->name[0] == 'c'){
               g_image_publisher->publishImage(display_image, "/visualization/"+feature_itr->name + "/cc"+suffix);
             }
             else{
@@ -317,7 +318,8 @@ void showRawFeatures(std::mutex &vis_mtx, CameraQueryCache &qdata,
             cv::imshow(title2, display_image);
           }
           else{
-            if (feature_channel_itr->name == "cc_0.430000")
+            // if (feature_channel_itr->name == "cc_0.430000")
+            if (feature_channel_itr->name[0] == 'c')
             {
               g_image_publisher->publishImage(display_image, "/visualization/"+features_itr->name + "/cc/" + feature_camera_itr->name +suffix);
             }
@@ -409,7 +411,8 @@ void showFeatures(std::mutex &vis_mtx, CameraQueryCache &qdata,
             cv::imshow(title2, display_image);
           }
           else{
-            if (feature_channel_itr->name == "cc_0.430000"){
+            // if (feature_channel_itr->name == "cc_0.430000"){
+            if (feature_channel_itr->name[0] == 'c'){
               g_image_publisher->publishImage(display_image, "/visualization/"+features_itr->name + "/cc/" + feature_camera_itr->name +suffix);
             }
             else{
@@ -687,7 +690,8 @@ void showMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
         }
         else
         {
-          if (feature_channel_itr->name == "cc_0.430000"){
+          // if (feature_channel_itr->name == "cc_0.430000"){
+          if (feature_channel_itr->name[0] == 'c'){
             g_image_publisher->publishImage(display_image, "/visualization/"+features_itr->name + "/cc/" + feature_camera_itr->name +suffix);
           }
           else{
@@ -862,15 +866,15 @@ void showMelMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
       } else {
         T_q_m = *qdata.T_r_m_prior;
       }
-      // print the number of matches
-      std::stringstream display_text;
-      display_text.precision(3);
-      display_text << "(" << sqrt(T_q_m.cov()(0, 0)) * 100 << "cm,"
-                   << sqrt(T_q_m.cov()(1, 1)) * 100 << "cm,"
-                   << sqrt(T_q_m.cov()(5, 5)) * 57.29577 << "deg)";
-      cv::putText(display_image, display_text.str().c_str(), cv::Point(25, 370),
-                  cv::FONT_HERSHEY_DUPLEX, 1.0, cv::Scalar(255, 255, 255, 125),
-                  3);
+      // // print the number of matches
+      // std::stringstream display_text;
+      // display_text.precision(3);
+      // display_text << "(" << sqrt(T_q_m.cov()(0, 0)) * 100 << "cm,"
+      //              << sqrt(T_q_m.cov()(1, 1)) * 100 << "cm,"
+      //              << sqrt(T_q_m.cov()(5, 5)) * 57.29577 << "deg)";
+      // cv::putText(display_image, display_text.str().c_str(), cv::Point(25, 370),
+      //             cv::FONT_HERSHEY_DUPLEX, 1.0, cv::Scalar(255, 255, 255, 125),
+      //             3);
 
       // show the images
       {
@@ -882,7 +886,8 @@ void showMelMatches(std::mutex &vis_mtx, CameraQueryCache &qdata,
           cv::imshow(title, display_image);
         }
         else{
-          if (query_landmarks[0].observations.channels.back().name == "cc_0.430000"){
+          // if (query_landmarks[0].observations.channels.back().name == "cc_0.430000"){
+          if (query_landmarks[0].observations.channels.back().name[0] == 'c'){
             g_image_publisher->publishImage(display_image, "/visualization/"+query_landmarks[0].observations.name + "/cc/"+query_landmarks[0].observations.channels.back().cameras[0].name + suffix);
           }
           else{
