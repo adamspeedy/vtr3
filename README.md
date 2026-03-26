@@ -70,9 +70,6 @@ or through an ssh tunnel you can view it at:
 
 http://192.168.131.18:5200/index.html
 
-or through an ssh tunnel you can view it at:
-
-http://192.168.131.18:5200/index.html
 
 ### Launch the navigator
 We can run this using some bag files on our computer using the command below:
